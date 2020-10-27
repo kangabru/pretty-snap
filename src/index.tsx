@@ -1,7 +1,8 @@
 import { Fragment, h, render } from 'preact';
 import { useState } from 'preact/hooks';
+import { useDownload } from './canvas';
 import './index.css';
-import { onInputChange, useImageDrop, useImagePaste } from './upload';
+import { DataImage, onInputChange, useImageDrop, useImagePaste } from './upload';
 
 const IMG_BG_DEFAULT = "https://images.unsplash.com/photo-1480499484268-a85a2414da81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
 
@@ -18,29 +19,39 @@ function App() {
 }
 
 function Image() {
-    const [dataUrl, setDataUrl] = useState<string | null>(null)
+    const [dataImage, setDataImage] = useState<DataImage | undefined>(undefined)
+    const dataUrl = dataImage?.dataUrl
     const [dataUrlBg, setDataUrlBg] = useState(IMG_BG_DEFAULT)
 
-    useImagePaste(setDataUrl)
-    const [dropZone, isDropping] = useImageDrop<HTMLDivElement>(setDataUrl)
+    useImagePaste(setDataImage)
+    const [dropZone, isDropping] = useImageDrop<HTMLDivElement>(setDataImage)
 
-    return <section class="w-full rounded-xl bg-gray-200 shadow-lg bg-cover bg-center p-10" style={{ backgroundImage: `url('${dataUrlBg}')` }}>
-        <div ref={dropZone} class="bg-white shadow h-64 rounded-lg p-5">
-            <div class={join("border-dashed border-4 w-full h-full rounded-3xl col justify-center text-2xl space-y-5",
-                isDropping ? "bg-blue-500" : "border-gray-500")}>
-                {dataUrl
-                    ? <img src={dataUrl} alt="Screenshot" />
-                    : <Fragment>
-                        <p class="font-bold">Ctrl + V</p>
-                        <label class="px-2 py-2 bg-white shadow rounded-lg cursor-pointer">
-                            Upload
-                            <input hidden type="file" accept="image/*" onChange={onInputChange(setDataUrl)} />
-                        </label>
-                    </Fragment>
+    const padding = 40
+
+    const [ref, download, isDownloading] = useDownload({ dataImage, padding })
+
+    return <Fragment>
+        <button class="bg-blue-500 rounded-lg py-2 px-3 shadow-lg" onClick={download}>Download</button>
+        <div> {/* div required so parent padding doesn't affect snapshot */}
+            <section ref={ref} class={join("inline-block bg-gray-200 bg-cover bg-center", !isDownloading && "rounded-xl overflow-hidden")}
+                style={{ padding, backgroundImage: `url('${dataUrlBg}')` }}>
+                {dataUrl ? <img src={dataUrl} alt="Screenshot" class="rounded shadow" />
+                    : <div ref={dropZone} class="bg-white shadow h-64 rounded-lg p-5">
+                        <div class={join("border-dashed border-4 w-full h-full rounded-lg px-20 col justify-center text-2xl space-y-5",
+                            isDropping ? "bg-blue-500" : "border-gray-500")}>
+                            <Fragment>
+                                <p class="font-bold">Ctrl + V</p>
+                                <label class="px-2 py-2 bg-white shadow rounded-lg cursor-pointer">
+                                    Upload
+                            <input hidden type="file" accept="image/*" onChange={onInputChange(setDataImage)} />
+                                </label>
+                            </Fragment>
+                        </div>
+                    </div>
                 }
-            </div>
+            </section>
         </div>
-    </section>
+    </Fragment>
 }
 
 function Controls() {
