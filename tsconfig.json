@@ -19,6 +19,8 @@
         "noEmit": true,
         "jsx": "react",
         "jsxFactory": "h",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
     },
     "include": [
         "src"

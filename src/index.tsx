@@ -2,6 +2,7 @@ import { Fragment, h, render } from 'preact';
 import { useState } from 'preact/hooks';
 import { useDownload } from './canvas';
 import './index.css';
+import { useUnsplash } from './unsplash';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './upload';
 
 const IMG_BG_DEFAULT = "https://images.unsplash.com/photo-1480499484268-a85a2414da81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
@@ -14,6 +15,7 @@ function App() {
             <span>📸 Pretty Snap</span>
         </h1>
         <Image />
+        <Images />
         <Controls />
     </div>
 }
@@ -21,7 +23,7 @@ function App() {
 function Image() {
     const [dataImage, setDataImage] = useState<DataImage | undefined>(undefined)
     const dataUrl = dataImage?.dataUrl
-    const [dataUrlBg, setDataUrlBg] = useState(IMG_BG_DEFAULT)
+    const [dataUrlBg,] = useState(IMG_BG_DEFAULT)
 
     useImagePaste(setDataImage)
     const [dropZone, isDropping] = useImageDrop<HTMLDivElement>(setDataImage)
@@ -52,6 +54,14 @@ function Image() {
             </section>
         </div>
     </Fragment>
+}
+
+function Images() {
+    const images = useUnsplash()
+
+    return <div class="row rounded bg-gray-200 p-5 space-x-3 row justify-center">
+        {images?.results?.map(img => <img src={img.urls.thumb} title={img.description} alt={img.alt_description} />)}
+    </div>
 }
 
 function Controls() {

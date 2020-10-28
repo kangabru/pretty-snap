@@ -68,7 +68,7 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<DataImage> {
         if (!dataUrl) return reject()
         const image = new Image()
         image.onerror = reject
-        image.onload = evt => {
+        image.onload = _ => {
             const width = image.naturalWidth
             const height = image.naturalHeight
             accept({ dataUrl, width, height })
@@ -77,7 +77,7 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<DataImage> {
     })
 }
 
-export function onInputChange(setDataUrl: ) {
+export function onInputChange(setDataUrl: SetDataImage) {
     return (e: Event) => loadImageOnChange(e).then(setDataUrl)
 }
 
