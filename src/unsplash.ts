@@ -1,5 +1,5 @@
-import { useState } from "preact/hooks"
-import { defaultResponse } from "./constants"
+import { useEffect, useState } from "preact/hooks"
+import { defaultResponseDev, GetUnsplashBatchDev, urls } from "./constants"
 
 export type UnsplashResponse = { results?: UnsplashImage[] }
 export type UnsplashImage = {
@@ -24,10 +24,38 @@ export type UnsplashImage = {
     },
 }
 
-export function useUnsplash(): UnsplashResponse {
-    const [response,] = useState<UnsplashResponse>(defaultResponse)
+type UnsplashExtra = { loadMore: () => void, isLoading: boolean }
 
-    // TODO
+export function useUnsplash(): [UnsplashImage[], UnsplashExtra] {
+    const [images, setImages] = useState<UnsplashImage[]>([])
+    const [page, setPage] = useState(1)
+    const [isLoading, setIsLoading] = useState(false)
 
-    return response
+    const getResponse = process.env.NODE_ENV == 'production' ? GetResponseProd : GetResponseDev
+    useEffect(() => {
+        setIsLoading(true)
+        getResponse().then(x => {
+            setIsLoading(false)
+            x.results && setImages([...images, ...x.results])
+        })
+    }, [page])
+
+    const loadMore = () => setPage(page + 1)
+
+    return [images, { isLoading, loadMore }]
+}
+
+async function GetResponseProd(): Promise<UnsplashResponse> {
+    const params = new URLSearchParams()
+    params.append('query', 'nature')
+    params.append('page', '1')
+    return fetch(`${urls.api}?${params.toString()}`)
+        .then(x => x.json())
+}
+
+function GetResponseDev(): Promise<UnsplashResponse> {
+    return new Promise(accept => {
+        const randTime = 500 + Math.random() * 1000
+        setTimeout(() => accept({ results: GetUnsplashBatchDev() }), randTime)
+    })
 }
