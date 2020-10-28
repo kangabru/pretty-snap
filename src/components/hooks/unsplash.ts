@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks"
-import { defaultResponseDev, GetUnsplashBatchDev, urls } from "./constants"
+import { urls } from "../../constants"
+import { GetUnsplashBatchDev } from "../utils"
 
 export type UnsplashResponse = { results?: UnsplashImage[] }
 export type UnsplashImage = {
