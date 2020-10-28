@@ -1,8 +1,9 @@
 import { Fragment, h, render } from 'preact';
 import { useState } from 'preact/hooks';
+import useMeasure from 'react-use-measure';
 import { useDownload } from './canvas';
 import './index.css';
-import { useUnsplash } from './unsplash';
+import { useUnsplash, UnsplashImage } from './unsplash';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './upload';
 
 const IMG_BG_DEFAULT = "https://images.unsplash.com/photo-1480499484268-a85a2414da81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
@@ -15,7 +16,7 @@ function App() {
             <span>📸 Pretty Snap</span>
         </h1>
         <Image />
-        <Images />
+        <MasonryImages />
         <Controls />
     </div>
 }
@@ -56,12 +57,52 @@ function Image() {
     </Fragment>
 }
 
-function Images() {
-    const images = useUnsplash()
+type RenderImage = UnsplashImage & { x: number, y: number, widthLocal: number, heightLocal: number }
 
-    return <div class="row rounded bg-gray-200 p-5 space-x-3 row justify-center">
-        {images?.results?.map(img => <img src={img.urls.thumb} title={img.description} alt={img.alt_description} />)}
+function MasonryImages() {
+    const IMG_PADDING = 10
+    const IMG_PADDING_2 = 2 * IMG_PADDING
+    const IMG_WIDTH_TARGET = 180
+
+    const [bind, { width }] = useMeasure()
+
+    const columns = Math.max(1, Math.floor(width / IMG_WIDTH_TARGET))
+    const heights = new Array(columns).fill(0) // Each column gets a height starting with zero
+
+    const unsplashImages = useUnsplash()
+    const widthLocal = (width - IMG_PADDING_2) / columns
+    const images = unsplashImages.results?.map<RenderImage>(img => {
+        // Convert real to local heights
+        const heightLocal = img.width && img.height ? (widthLocal - 2 * IMG_PADDING) / img.width * img.height + 2 * IMG_PADDING : 0
+
+        const column = heights.indexOf(Math.min(...heights)) // Basic masonry-grid placing, puts tile into the smallest column using Math.min
+        const x = widthLocal * column, y = (heights[column] += heightLocal) - heightLocal
+        return { ...img, x, y, widthLocal, heightLocal }
+    }) ?? []
+
+    const heightMax = Math.max(...heights) + IMG_PADDING_2
+    const widthMax = images.length ? width : "100%"
+
+    return <div ref={bind} class="w-full h-full">
+        <div style={{ width: widthMax, height: heightMax, padding: IMG_PADDING }}
+            class="relative mx-auto rounded-lg bg-gray-200">
+            {images.map(({ x, y, widthLocal, heightLocal, ...img }, i) => (
+                <div key={i} class="absolute"
+                    style={{
+                        width: widthLocal, height: heightLocal,
+                        padding: IMG_PADDING, transform: `translate3d(${x}px,${y}px,0)`
+                    }} >
+                    <MasonryImage {...img} />
+                </div>
+            ))}
+        </div>
     </div>
+}
+
+function MasonryImage(img: UnsplashImage) {
+    return <button title={img.description} style={{ backgroundImage: `url('${img.urls.small}')` }}
+        class="group col relative w-full h-full p-2 space-y-2 overflow-hidden shadow rounded bg-no-repeat transform transition-all duration-100 hover:scale-102 hover:shadow-lg bg-cover bg-top">
+    </button>
 }
 
 function Controls() {
