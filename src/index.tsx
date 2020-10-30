@@ -1,6 +1,5 @@
 import { h, render } from 'preact';
 import Compositor from './components/compositor';
-import Controls from './components/controls';
 import MasonryGrid from './components/masonry';
 import './index.css';
 
@@ -13,6 +12,5 @@ function App() {
         </h1>
         <Compositor />
         <MasonryGrid />
-        <Controls />
     </div>
 }
