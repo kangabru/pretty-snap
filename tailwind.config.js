@@ -12,8 +12,22 @@ module.exports = {
         "./src/**/*.ts",
         "./src/**/*.tsx",
     ],
+    experimental: {
+        applyComplexClasses: true,
+    },
+    variants: {
+        opacity: ['responsive', 'group-hover', 'hover', 'disabled'],
+        textDecoration: ['responsive', 'hover', 'focus'],
+    },
     theme: {
-        extend: {},
+        extend: {
+            inset: {
+                '1/2': '50%',
+            },
+            boxShadow: {
+                outline: '0 0 0 3px rgba(99, 179, 237, 0.3)',
+            },
+        },
     },
     plugins: [],
 }
