@@ -10,13 +10,14 @@ const IMG_PADDING_2 = 2 * IMG_PADDING
 const IMG_WIDTH_TARGET = 180
 
 export default function MasonryGrid() {
-
     const [bind, { width }] = useMeasure()
 
     const columns = Math.max(1, Math.floor(width / IMG_WIDTH_TARGET))
     const heights = new Array(columns).fill(0) // Each column gets a height starting with zero
 
-    const [unsplashImages, { isLoading, loadMore }] = useUnsplash()
+    const isSearching = useStore(s => s.isSeaching)
+    const [unsplashImages, loadMore] = useUnsplash()
+
     const widthLocal = (width - IMG_PADDING_2) / columns
     const images = unsplashImages.map<RenderImage>(img => {
         // Convert real to local heights
@@ -45,9 +46,9 @@ export default function MasonryGrid() {
                 ))}
             </div>
         </div>
-        <button onClick={loadMore} disabled={isLoading}
+        <button onClick={loadMore} disabled={isSearching}
             class="row pill px-3 mx-auto">
-            {isLoading && <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
+            {isSearching && <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
             <span>Load more</span>
         </button>
     </Fragment>

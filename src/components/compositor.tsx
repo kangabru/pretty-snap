@@ -54,7 +54,7 @@ export default function Compositor() {
 
         {/* Controls */}
         <div class="row justify-center w-full max-w-xl space-x-3 bg-gray-100 p-3 rounded-lg">
-            <input type="text" placeholder="Search unsplash" class="flex-1 pill rounded-lg px-3" />
+            <SearchInput />
 
             <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
@@ -67,9 +67,15 @@ export default function Compositor() {
     </Fragment>
 }
 
+function SearchInput() {
+    const isSearching = useStore(s => s.isSeaching)
+    const search = (e: KeyboardEvent) => e.key == "Enter" && useStore.setState({ searchPage: 1, searchTerm: (e.target as HTMLInputElement).value })
+    return <input disabled={isSearching} onKeyUp={search} type="text" placeholder="Search unsplash" class="flex-1 pill rounded-lg px-3" />
+}
+
 function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {
     const { status, ...buttonProps } = props
-    return <button {...buttonProps} class="pill disabled:opacity-50" disabled={buttonProps.disabled || status == SaveState.disabled}>
+    return <button {...buttonProps} class="pill" disabled={buttonProps.disabled || status == SaveState.disabled}>
         {status == SaveState.error
             ? <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             : status == SaveState.success
@@ -77,5 +83,4 @@ function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class
                 : props.children
         }
     </button>
-
 }

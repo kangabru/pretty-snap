@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks"
 import { urls } from "../../constants"
+import useStore from "../store"
 import { GetUnsplashBatchDev } from "../utils"
 
 export type UnsplashResponse = { results?: UnsplashImage[] }
@@ -25,36 +26,39 @@ export type UnsplashImage = {
     },
 }
 
-type UnsplashExtra = { loadMore: () => void, isLoading: boolean }
+export function useUnsplash(): [UnsplashImage[], () => void] {
+    const searchTerm = useStore(s => s.searchTerm)
+    const searchPage = useStore(s => s.searchPage)
 
-export function useUnsplash(): [UnsplashImage[], UnsplashExtra] {
     const [images, setImages] = useState<UnsplashImage[]>([])
-    const [page, setPage] = useState(1)
-    const [isLoading, setIsLoading] = useState(false)
 
     const getResponse = process.env.NODE_ENV == 'production' ? GetResponseProd : GetResponseDev
     useEffect(() => {
-        setIsLoading(true)
-        getResponse().then(x => {
-            setIsLoading(false)
-            x.results && setImages([...images, ...x.results])
+        const options: SearchInput = { searchTerm, page: searchPage }
+        useStore.setState({ isSeaching: true })
+        const imagesToKeep = searchPage <= 1 ? [] : images // reset for new searches
+        setImages(imagesToKeep)
+        getResponse(options).then(x => {
+            useStore.setState({ isSeaching: false })
+            x.results && setImages([...imagesToKeep, ...x.results])
         })
-    }, [page])
+    }, [searchPage, searchTerm])
 
-    const loadMore = () => setPage(page + 1)
+    const loadMore = () => useStore.setState({ searchPage: searchPage + 1 })
 
-    return [images, { isLoading, loadMore }]
+    return [images, loadMore]
 }
 
-async function GetResponseProd(): Promise<UnsplashResponse> {
+type SearchInput = { searchTerm?: string, page: number }
+
+async function GetResponseProd(options: SearchInput): Promise<UnsplashResponse> {
     const params = new URLSearchParams()
-    params.append('query', 'nature')
-    params.append('page', '1')
-    return fetch(`${urls.api}?${params.toString()}`)
-        .then(x => x.json())
+    options.searchTerm && params.append('query', options.searchTerm)
+    params.append('page', '' + options.page)
+    return fetch(`${urls.api}?${params.toString()}`).then(x => x.json())
 }
 
-function GetResponseDev(): Promise<UnsplashResponse> {
+function GetResponseDev(_: SearchInput): Promise<UnsplashResponse> {
     return new Promise(accept => {
         const randTime = 500 + Math.random() * 1000
         setTimeout(() => accept({ results: GetUnsplashBatchDev() }), randTime)
