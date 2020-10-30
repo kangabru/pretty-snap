@@ -2,19 +2,18 @@ import { Fragment, h } from 'preact';
 import { useState } from 'preact/hooks';
 import { useDownload } from './hooks/canvas';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './hooks/upload';
+import useStore from './store';
 import { join } from './utils';
-
-const IMG_BG_DEFAULT = "https://images.unsplash.com/photo-1480499484268-a85a2414da81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1355&q=80"
 
 export default function Compositor() {
     const [dataImage, setDataImage] = useState<DataImage | undefined>(undefined)
     const dataUrl = dataImage?.dataUrl
-    const [dataUrlBg,] = useState(IMG_BG_DEFAULT)
 
     useImagePaste(setDataImage)
     const [dropZone, isDropping] = useImageDrop<HTMLDivElement>(setDataImage)
 
-    const padding = 40
+    const padding = useStore(s => s.padding)
+    const srcBg = useStore(s => s.backgroundSrc)
 
     const [ref, download, isDownloading] = useDownload({ dataImage, padding })
 

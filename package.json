@@ -26,6 +26,7 @@
     "dependencies": {
         "dom-to-image": "^2.6.0",
         "preact": "^10.5.5",
-        "react-use-measure": "^2.0.2"
+        "react-use-measure": "^2.0.2",
+        "zustand": "^3.1.3"
     }
 }
