@@ -42,9 +42,11 @@ function useSaveImage({ dataImage, padding }: Settings, saveImage: (o: Options) 
         if (dataImage) {
             try {
                 setSaveState(SaveState.loading)
-                await saveImage({ width: dataImage.width + 2 * padding, height: dataImage.height + 2 * padding })
-                setSaveState(SaveState.success)
-                setTimeout(() => setSaveState(SaveState.ready), 1000)
+                setTimeout(async () => {
+                    await saveImage({ width: dataImage.width + 2 * padding, height: dataImage.height + 2 * padding })
+                    setSaveState(SaveState.success)
+                    setTimeout(() => setSaveState(SaveState.ready), 1000)
+                }, 500)
             } catch (error) {
                 console.error(error)
                 setSaveState(SaveState.error)
