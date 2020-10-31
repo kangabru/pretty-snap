@@ -1,8 +1,9 @@
 import { Fragment, h, JSX } from 'preact';
 import { useState } from 'preact/hooks';
+import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './compositor-styles';
 import { SaveState, useCopy, useDownload } from './hooks/canvas';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './hooks/upload';
-import useStore from './store';
+import useStore, { Position } from './store';
 import { join } from './utils';
 
 export default function Compositor() {
@@ -19,17 +20,15 @@ export default function Compositor() {
     const [_ref, download, downloadState] = useDownload(settings)
     const [ref, canCopy, copy, copyState] = useCopy(settings, _ref)
 
-    const width = dataImage?.width ?? 0
-    const height = dataImage?.height ?? 0
-    const widthExt = width + 2 * padding, heightExt = height + 2 * padding
+    const togglePosition = useTogglePosition()
+    const [refScreenOuter, stylesScreen, stylesRender] = useCompositionStyles(srcBg, dataImage)
 
     return <Fragment>
 
         {/* The compositor viewer */}
-        <section class="inline-block bg-gray-200 bg-cover bg-center rounded-xl overflow-hidden"
-            style={{ padding, backgroundImage: `url('${srcBg}')` }}>
-            {dataUrl ? <img src={dataUrl} alt="Screenshot" class="rounded shadow-xl" />
-                : <div ref={dropZone} class="bg-white shadow h-64 rounded-lg p-5">
+        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "inline-block max-w-screen-lg rounded-xl overflow-hidden")} style={stylesScreen.outer}>
+            {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner} />
+                : <div ref={dropZone} class="bg-white shadow h-64 rounded-lg p-5" style={stylesScreen.inner}>
                     <div class={join("border-dashed border-4 w-full h-full rounded-lg px-20 col justify-center text-2xl space-y-5",
                         isDropping ? "bg-blue-500" : "border-gray-500")}>
                         <Fragment>
@@ -46,9 +45,8 @@ export default function Compositor() {
 
         {/* A hacky hidden element used to render consistent on different browsers. */}
         {dataImage && <div class="hidden">
-            <section ref={ref} class="bg-gray-200 bg-cover bg-center"
-                style={{ padding, backgroundImage: `url('${srcBg}')`, width: widthExt, height: heightExt }}>
-                <img src={dataImage.dataUrl} alt="Screenshot" class="rounded shadow-xl" style={{ width, height }} />
+            <section ref={ref} class={CLASSES_OUTER} style={stylesRender.outer}>
+                <img src={dataImage.dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesRender.inner} />
             </section>
         </div>}
 
@@ -66,13 +64,16 @@ export default function Compositor() {
 }
 
 function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {
-    const { status, ...buttonProps } = props
-    return <button {...buttonProps} class="pill" disabled={buttonProps.disabled || status == SaveState.disabled}>
+    const { status, disabled, ...buttonProps } = props
+    const isDisabled = disabled || status == SaveState.disabled || status == SaveState.loading
+    return <button {...buttonProps} class="pill" disabled={isDisabled}>
         {status == SaveState.error
             ? <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             : status == SaveState.success
                 ? <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                : props.children
+                : status == SaveState.loading
+                    ? <svg class="animate-spin h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    : props.children
         }
     </button>
 }
