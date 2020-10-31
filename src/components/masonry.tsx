@@ -32,6 +32,8 @@ export default function MasonryGrid() {
     const widthMax = images.length ? width : "100%"
 
     return <Fragment>
+        <SearchInput />
+
         <div ref={bind} class="w-full h-full max-w-screen-lg">
             <div style={{ width: widthMax, height: heightMax, padding: IMG_PADDING }}
                 class="relative mx-auto rounded-lg bg-gray-100">
@@ -67,4 +69,10 @@ function MasonryImage(img: UnsplashImage) {
             <div class="absolute inset-0 z-0 bg-gradient-to-t from-black to-transparent opacity-25"></div>
         </div>
     </div>
+}
+
+function SearchInput() {
+    const isSearching = useStore(s => s.isSeaching)
+    const search = (e: KeyboardEvent) => e.key == "Enter" && useStore.setState({ searchPage: 1, searchTerm: (e.target as HTMLInputElement).value })
+    return <input disabled={isSearching} onKeyUp={search} type="text" placeholder="Search unsplash" class="flex-1 pill rounded-lg px-3" />
 }
