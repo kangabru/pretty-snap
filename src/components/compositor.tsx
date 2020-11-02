@@ -50,7 +50,7 @@ export default function Compositor() {
         </div>}
 
         {/* Controls */}
-        <div class="row justify-center w-full max-w-xl space-x-3 bg-gray-100 p-3 rounded-lg">
+        <div class="row justify-center w-full max-w-xl space-x-3 p-3 rounded-lg bg-white shadow-lg">
 
             <PositionButtonGroup />
 

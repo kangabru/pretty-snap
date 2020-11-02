@@ -21,6 +21,9 @@ module.exports = {
     },
     theme: {
         extend: {
+            colors: {
+                'primary': '#35de76',
+            },
             inset: {
                 '1/2': '50%',
             },
