@@ -20,7 +20,6 @@ export default function Compositor() {
     const [_ref, download, downloadState] = useDownload(settings)
     const [ref, canCopy, copy, copyState] = useCopy(settings, _ref)
 
-    const togglePosition = useTogglePosition()
     const [refScreenOuter, stylesScreen, stylesRender] = useCompositionStyles(srcBg, dataImage)
 
     return <Fragment>
@@ -52,6 +51,9 @@ export default function Compositor() {
 
         {/* Controls */}
         <div class="row justify-center w-full max-w-xl space-x-3 bg-gray-100 p-3 rounded-lg">
+
+            <PositionButtonGroup />
+
             <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
             </ControlButton>
@@ -61,6 +63,47 @@ export default function Compositor() {
             </ControlButton>
         </div>
     </Fragment>
+}
+
+function PositionButtonGroup() {
+    return <div class="inline-flex" role="group">
+        <PositionButton position={Position.Center} />
+        <PositionButton position={Position.Bottom} />
+        <PositionButton position={Position.Left} />
+        <PositionButton position={Position.Right} />
+    </div>
+}
+
+function PositionButton(props: { position: Position }) {
+    const { position } = props
+    const positionActual = useStore(x => x.position)
+    const setPosition = () => useStore.setState({ position: props.position })
+
+    const cData: { cx: number, cy: number } = {
+        [Position.Left]: { cx: 7, cy: 12 },
+        [Position.Center]: { cx: 12, cy: 12 },
+        [Position.Bottom]: { cx: 12, cy: 17 },
+        [Position.Right]: { cx: 17, cy: 12 },
+    }[position]
+
+    const title = {
+        [Position.Left]: "Left",
+        [Position.Center]: "Center",
+        [Position.Bottom]: "Bottom",
+        [Position.Right]: "Right",
+    }[position]
+
+    return <button onClick={setPosition} title={title} class={join(
+        "p-2 focus:outline-none focus:shadow-outline bg-gray-200",
+        position == positionActual && "bg-primary text-white z-10",
+        position == Position.Center && "rounded-l",
+        position == Position.Right && "rounded-r",
+    )} tabIndex={position == positionActual ? 0 : -1}>
+        <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle fill="currentColor" r="2.5" {...cData} />
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+    </button>
 }
 
 function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {

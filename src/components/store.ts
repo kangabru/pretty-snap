@@ -1,7 +1,7 @@
 import create from "zustand"
 import { IMG_PADDING_DEFAULT, SRC_BG_DEFAULT } from "../constants"
 
-export enum Position { Center, Left, Top, Right, Bottom }
+export enum Position { Center, Left, Right, Bottom }
 
 type Options = {
     // Images
