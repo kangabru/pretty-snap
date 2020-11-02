@@ -13,4 +13,23 @@
     @apply p-2 rounded-lg bg-gray-200 hover:bg-gray-400 focus:outline-none focus:shadow-outline disabled:opacity-50;
 }
 
+.slider:focus {
+    @apply outline-none
+}
+
+.slider::-moz-range-track,
+.slider::-webkit-slider-runnable-track {
+    @apply w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
+}
+
+.slider::-moz-range-thumb,
+.slider::-webkit-slider-thumb {
+    @apply appearance-none h-6 w-6 rounded-full bg-primary shadow cursor-pointer -mt-2 transition-all duration-100 border-transparent;
+}
+
+.slider:focus::-moz-range-thumb,
+.slider:focus::-webkit-slider-thumb {
+    @apply shadow-outline;
+}
+
 @tailwind utilities;

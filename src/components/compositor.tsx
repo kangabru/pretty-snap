@@ -1,5 +1,6 @@
 import { Fragment, h, JSX } from 'preact';
 import { useState } from 'preact/hooks';
+import { PADDING_MAX, PADDING_MIN } from '../constants';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './compositor-styles';
 import { SaveState, useCopy, useDownload } from './hooks/canvas';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './hooks/upload';
@@ -54,6 +55,8 @@ export default function Compositor() {
 
             <PositionButtonGroup />
 
+            <PaddingSlider />
+
             <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
             </ControlButton>
@@ -78,6 +81,7 @@ function PositionButton(props: { position: Position }) {
     const { position } = props
     const positionActual = useStore(x => x.position)
     const setPosition = () => useStore.setState({ position: props.position })
+    const isSelected = positionActual == position
 
     const cData: { cx: number, cy: number } = {
         [Position.Left]: { cx: 7, cy: 12 },
@@ -95,7 +99,7 @@ function PositionButton(props: { position: Position }) {
 
     return <button onClick={setPosition} title={title} class={join(
         "p-2 focus:outline-none focus:shadow-outline bg-gray-200",
-        position == positionActual && "bg-primary text-white z-10",
+        isSelected ? "bg-primary hover:opacity-75 text-white z-10" : "hover:bg-gray-400",
         position == Position.Center && "rounded-l",
         position == Position.Right && "rounded-r",
     )} tabIndex={position == positionActual ? 0 : -1}>
@@ -104,6 +108,16 @@ function PositionButton(props: { position: Position }) {
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
     </button>
+}
+
+function PaddingSlider() {
+    const padding = useStore(s => s.padding)
+    const setPadding = (e: Event) => useStore.setState({ padding: e.target?.value })
+    return <div class="inline-flex flex-row space-x-2 text-primary">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        <input class="slider" type="range" min={PADDING_MIN} max={PADDING_MAX} value={padding} onChange={setPadding} />
+        <svg class="w-6 h-6 transform scale-50" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+    </div>
 }
 
 function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {

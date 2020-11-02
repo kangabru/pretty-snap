@@ -1,5 +1,5 @@
 import create from "zustand"
-import { IMG_PADDING_DEFAULT, SRC_BG_DEFAULT } from "../constants"
+import { PADDING_INIT, SRC_BG_DEFAULT } from "../constants"
 
 export enum Position { Center, Left, Right, Bottom }
 
@@ -22,7 +22,7 @@ type Options = {
 const useStore = create<Options>(() => ({
     backgroundSrc: SRC_BG_DEFAULT,
     searchPage: 1,
-    padding: IMG_PADDING_DEFAULT,
+    padding: PADDING_INIT,
     position: Position.Center,
 }))
 
