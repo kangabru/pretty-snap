@@ -92,12 +92,12 @@ function PositionButton(props: { position: Position }) {
     const setPosition = () => useStore.setState({ position: props.position })
     const isSelected = positionActual == position
 
-    const cData: { cx: number, cy: number } = {
-        [Position.Left]: { cx: 7, cy: 12 },
-        [Position.Center]: { cx: 12, cy: 12 },
-        [Position.Bottom]: { cx: 12, cy: 17 },
-        [Position.Right]: { cx: 17, cy: 12 },
-        [Position.Top]: { cx: 17, cy: 12 },
+    const cData: { x: number, y: number } = {
+        [Position.Left]: { x: 2, y: 6 },
+        [Position.Center]: { x: 6, y: 6 },
+        [Position.Bottom]: { x: 6, y: 10 },
+        [Position.Right]: { x: 10, y: 6 },
+        [Position.Top]: { x: 6, y: 2 },
     }[position]
 
     const title = {
@@ -110,13 +110,13 @@ function PositionButton(props: { position: Position }) {
 
     return <button onClick={setPosition} title={title} class={join(
         "flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition-all duration-150 rounded",
-        isSelected ? "bg-primary-base hover:bg-primary-dark text-white z-10" : "text-gray-700 hover:bg-gray-300",
+        isSelected ? "bg-primary-base hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
         position == Position.Center && "rounded-l",
         position == Position.Right && "rounded-r",
     )} tabIndex={position == positionActual ? 0 : -1}>
-        <svg class="inline w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle fill="currentColor" r="2.5" {...cData} />
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        <svg class="inline w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+            <rect fill="currentColor" stroke="none" rx="2" {...cData} width="12" height="12" />
+            <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
         </svg>
     </button>
 }
