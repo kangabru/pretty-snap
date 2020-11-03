@@ -1,7 +1,8 @@
 import { Ref } from 'preact';
 import useMeasure from 'react-use-measure';
+import { Position } from '../types';
 import { DataImage } from './hooks/upload';
-import useStore, { Position } from './store';
+import useOptionsStore from './stores/options';
 
 export const CLASSES_OUTER = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_INNER = "rounded shadow-xl"
@@ -17,8 +18,8 @@ type InnerSettings = {
 }
 
 export default function useCompositionStyles(srcBg: string, dataImage: DataImage | undefined): [Ref<HTMLElement>, CompStyle, CompStyle] {
-    const padding = useStore(s => s.padding)
-    const position = useStore(s => s.position)
+    const padding = useOptionsStore(s => s.padding)
+    const position = useOptionsStore(s => s.position)
 
     const settings = {
         backgroundImage: `url('${srcBg}')`,

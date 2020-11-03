@@ -36,3 +36,5 @@ export const quickSearches = {
     sun: <QuickSearch>{ searchTerm: 'sun', src: sun },
     abstract: <QuickSearch>{ searchTerm: 'abstract', src: abstract },
 }
+
+export const MAX_SEARCH_COUNT = 5

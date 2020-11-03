@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks"
 import { urls } from "../constants"
-import { UnsplashImage } from "./hooks/unsplash"
+import { UnsplashImage } from "../types"
 
 type ClassProp = string | boolean | undefined | null
 export function join(...classes: ClassProp[]): string {

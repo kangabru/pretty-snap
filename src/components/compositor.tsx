@@ -1,10 +1,11 @@
 import { Fragment, h, JSX } from 'preact';
 import { useState } from 'preact/hooks';
 import { PADDING_MAX, PADDING_MIN, urls } from '../constants';
+import { Position } from '../types';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './compositor-styles';
 import { SaveState, useCopy, useDownload } from './hooks/canvas';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from './hooks/upload';
-import useStore, { Position } from './store';
+import useOptionsStore from './stores/options';
 import { join } from './utils';
 
 export default function Compositor() {
@@ -14,8 +15,8 @@ export default function Compositor() {
     useImagePaste(setDataImage)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setDataImage)
 
-    const padding = useStore(s => s.padding)
-    const srcBg = useStore(s => s.backgroundSrc)
+    const padding = useOptionsStore(s => s.padding)
+    const srcBg = useOptionsStore(s => s.backgroundSrc)
 
     const settings = { dataImage, padding }
     const [_ref, download, downloadState] = useDownload(settings)
@@ -95,8 +96,8 @@ function PositionButtonGroup() {
 
 function PositionButton(props: { position: Position }) {
     const { position } = props
-    const positionActual = useStore(x => x.position)
-    const setPosition = () => useStore.setState({ position: props.position })
+    const positionActual = useOptionsStore(x => x.position)
+    const setPosition = () => useOptionsStore.setState({ position: props.position })
     const isSelected = positionActual == position
 
     const cData: { x: number, y: number } = {
@@ -130,8 +131,8 @@ function PositionButton(props: { position: Position }) {
 
 function PaddingSlider() {
     // @ts-ignore
-    const setPadding = (e: Event) => useStore.setState({ padding: PADDING_MAX - e.target.value })
-    const padding = useStore(s => s.padding)
+    const setPadding = (e: Event) => useOptionsStore.setState({ padding: PADDING_MAX - e.target.value })
+    const padding = useOptionsStore(s => s.padding)
 
     const valInverse = PADDING_MAX - padding
     const maxInverse = PADDING_MAX - PADDING_MIN
