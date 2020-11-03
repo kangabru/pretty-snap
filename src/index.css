@@ -41,4 +41,13 @@
 .slider:focus::-moz-range-thumb { @apply shadow-outline; }
 .slider:focus::-webkit-slider-thumb { @apply shadow-outline; }
 
+.animate-fade-in {
+    animation: fade-in 500ms ease-in-out;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0;}
+    100% {opacity: 1;}
+}
+
 @tailwind utilities;
