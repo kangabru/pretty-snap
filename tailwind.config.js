@@ -27,8 +27,11 @@ module.exports = {
                 cursive: ["'Pacifico'", 'cursive'],
             },
             colors: {
-                'primary': 'hsl(143, 72%, 54%)',
-                'primary-dark': 'hsl(143, 76%, 48%)',
+                'primary': {
+                    light: 'hsl(143, 68%, 60%)',
+                    base: 'hsl(143, 72%, 54%)',
+                    dark: 'hsl(143, 76%, 48%)',
+                }
             },
             inset: {
                 '1/2': '50%',

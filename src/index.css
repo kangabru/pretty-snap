@@ -32,7 +32,7 @@
 
 .slider::-moz-range-thumb,
 .slider::-webkit-slider-thumb {
-    @apply appearance-none h-6 w-6 rounded-full bg-primary shadow cursor-pointer -mt-2 transition-all duration-150 border-transparent;
+    @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition-all duration-150 border-transparent;
 }
 
 .slider:hover::-moz-range-thumb,

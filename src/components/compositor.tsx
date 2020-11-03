@@ -26,21 +26,16 @@ export default function Compositor() {
     return <Fragment>
 
         {/* The compositor viewer */}
-        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "inline-block max-w-screen-lg rounded-xl overflow-hidden")} style={stylesScreen.outer}>
-            {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner} />
-                : <div ref={dropZone} class="bg-white shadow h-64 rounded-lg p-5" style={stylesScreen.inner}>
-                    <div class={join("border-dashed border-4 w-full h-full rounded-lg px-20 col justify-center text-2xl space-y-5",
-                        isDropping ? "bg-blue-500" : "border-gray-500")}>
-                        <Fragment>
-                            <p class="font-bold">Ctrl + V</p>
-                            <label class="pill cursor-pointer">
-                                Upload
-                                    <input hidden type="file" accept="image/*" onChange={onInputChange(setDataImage)} />
-                            </label>
-                        </Fragment>
-                    </div>
-                </div>
-            }
+        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden")} style={stylesScreen.outer}>
+            <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
+                <label class="cursor-pointer">
+                    <input hidden type="file" accept="image/*" onChange={onInputChange(setDataImage)} />
+                    {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner} />
+                        : <div class="col justify-center h-64 w-full py-5 px-12 space-y-5 bg-white shadow rounded" style={stylesScreen.inner}>
+                            <InfoSection isDropping={isDropping} />
+                        </div>}
+                </label>
+            </div>
         </section>
 
         {/* A hacky hidden element used to render consistent on different browsers. */}
@@ -51,25 +46,39 @@ export default function Compositor() {
         </div>}
 
         {/* Controls */}
-        <div class="row justify-center w-full max-w-xl space-x-3 p-3 rounded-lg bg-white shadow-lg">
+        <div class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-3 p-3 rounded-lg bg-white shadow-lg">
 
             <PositionButtonGroup />
 
             <PaddingSlider />
 
-            <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-            </ControlButton>
+            <div class="row space-x-3">
+                <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </ControlButton>
 
-            <ControlButton onClick={download} title="Download" status={downloadState}>
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
-            </ControlButton>
+                <ControlButton onClick={download} title="Download" status={downloadState}>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+                </ControlButton>
+            </div>
+        </div>
+    </Fragment>
+}
+
+function InfoSection(props: { isDropping: boolean }) {
+    return <Fragment>
+        <h2 class="flex flex-wrap justify-center space-x-2 text-4xl font-open font-semibold leading-none">
+            Make your snapshots <svg class="inline w-12 h-12 ml-1 -mt-1 text-orange-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+        </h2>
+        <div class={join("w-full p-5 space-y-2 text-xl text-center rounded-3xl border-4 border-primary-light", props.isDropping ? "border-solid" : "border-dashed")}>
+            <p class="font-semibold text-2xl">Add a snapshot</p>
+            <p>Click here, paste from clipboard, or drop an image file</p>
         </div>
     </Fragment>
 }
 
 function PositionButtonGroup() {
-    return <div class="inline-flex" role="group">
+    return <div class="inline-flex w-full bg-gray-100" role="group">
         <PositionButton position={Position.Center} />
         <PositionButton position={Position.Bottom} />
         <PositionButton position={Position.Left} />
@@ -88,22 +97,24 @@ function PositionButton(props: { position: Position }) {
         [Position.Center]: { cx: 12, cy: 12 },
         [Position.Bottom]: { cx: 12, cy: 17 },
         [Position.Right]: { cx: 17, cy: 12 },
+        [Position.Top]: { cx: 17, cy: 12 },
     }[position]
 
     const title = {
-        [Position.Left]: "Left",
-        [Position.Center]: "Center",
-        [Position.Bottom]: "Bottom",
-        [Position.Right]: "Right",
+        [Position.Left]: "Align left",
+        [Position.Center]: "Align center",
+        [Position.Bottom]: "Align bottom",
+        [Position.Right]: "Align right",
+        [Position.Top]: "Align top",
     }[position]
 
     return <button onClick={setPosition} title={title} class={join(
-        "p-2 focus:outline-none focus:shadow-outline bg-gray-200",
-        isSelected ? "bg-primary hover:opacity-75 text-white z-10" : "hover:bg-gray-400",
+        "flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition-all duration-150 rounded",
+        isSelected ? "bg-primary-base hover:bg-primary-dark text-white z-10" : "text-gray-700 hover:bg-gray-300",
         position == Position.Center && "rounded-l",
         position == Position.Right && "rounded-r",
     )} tabIndex={position == positionActual ? 0 : -1}>
-        <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="inline w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <circle fill="currentColor" r="2.5" {...cData} />
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
@@ -111,12 +122,18 @@ function PositionButton(props: { position: Position }) {
 }
 
 function PaddingSlider() {
+    // @ts-ignore
+    const setPadding = (e: Event) => useStore.setState({ padding: PADDING_MAX - e.target.value })
     const padding = useStore(s => s.padding)
-    const setPadding = (e: Event) => useStore.setState({ padding: e.target?.value })
-    return <div class="inline-flex flex-row space-x-2 text-primary">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-        <input class="slider" type="range" min={PADDING_MIN} max={PADDING_MAX} value={padding} onChange={setPadding} />
-        <svg class="w-6 h-6 transform scale-50" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+
+    const valInverse = PADDING_MAX - padding
+    const maxInverse = PADDING_MAX - PADDING_MIN
+    const minInverse = PADDING_MAX - PADDING_MAX
+
+    return <div class="inline-flex flex-row space-x-2 text-primary-base">
+        <svg class="w-6 h-6 transform scale-50" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        <input class="slider" type="range" min={minInverse} max={maxInverse} value={valInverse} onChange={setPadding} />
+        <svg class="w-6 h-6" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
     </div>
 }
 
