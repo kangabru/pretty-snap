@@ -12,6 +12,7 @@ function App() {
         <Header />
         <Compositor />
         <MasonryGrid />
+        <Footer />
     </div>
 }
 
@@ -44,4 +45,10 @@ function Header() {
             </a>
         </div>
     </div>
+}
+
+function Footer() {
+    return <footer class="py-10">
+        Made with 🤙 by Kangabru
+    </footer>
 }
