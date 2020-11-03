@@ -80,9 +80,3 @@ function MasonryImage(img: UnsplashImage) {
         </div>
     </div>
 }
-
-function SearchInput() {
-    const isSearching = useStore(s => s.isSeaching)
-    const search = (e: KeyboardEvent) => e.key == "Enter" && useStore.setState({ searchPage: 1, searchTerm: (e.target as HTMLInputElement).value })
-    return <input disabled={isSearching} onKeyUp={search} type="text" placeholder="Search unsplash" class="flex-1 pill rounded-lg px-3" />
-}
