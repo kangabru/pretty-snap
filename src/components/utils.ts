@@ -1,3 +1,4 @@
+import { useState } from "preact/hooks"
 import { urls } from "../constants"
 import { UnsplashImage } from "./hooks/unsplash"
 
@@ -5,6 +6,9 @@ type ClassProp = string | boolean | undefined | null
 export function join(...classes: ClassProp[]): string {
     return classes.filter(x => !!x).join(" ")
 }
+
+export const getRandomMessage = (messages: string[]) => messages[Math.floor(Math.random() * messages.length)]
+export const useRandomMessage = (messages: string[]) => useState(getRandomMessage(messages))[0]
 
 /** Returns a url to the authors profile as required by the API guidelines.
  *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
