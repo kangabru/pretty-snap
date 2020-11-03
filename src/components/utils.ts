@@ -1,8 +1,15 @@
+import { urls } from "../constants"
 import { UnsplashImage } from "./hooks/unsplash"
 
 type ClassProp = string | boolean | undefined | null
 export function join(...classes: ClassProp[]): string {
     return classes.filter(x => !!x).join(" ")
+}
+
+/** Returns a url to the authors profile as required by the API guidelines.
+ *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
+export function GetUnsplashBacklink(image: UnsplashImage) {
+    return `${urls.unsplash}/@${image.user.username}?utm_source=pretty_snap&utm_medium=referral`
 }
 
 export function GetUnsplashBatchDev(): UnsplashImage[] {

@@ -8,6 +8,7 @@ type RenderImage = UnsplashImage & { x: number, y: number, widthLocal: number, h
 const IMG_PADDING = 10
 const IMG_PADDING_2 = 2 * IMG_PADDING
 const IMG_WIDTH_TARGET = 180
+import { GetUnsplashBacklink } from './utils';
 
 export default function MasonryGrid() {
     const [bind, { width }] = useMeasure()
@@ -72,7 +73,7 @@ function MasonryImage(img: UnsplashImage) {
                 <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
             </button>
 
-            <a href={img.user.portfolio_url} target="blank"
+            <a href={GetUnsplashBacklink(img)} target="blank"
                 class="row items-center justify-center space-x-2 w-full h-full opacity-85 hover:opacity-100 bg-black bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150  focus:outline-none">
                 <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
                 <span class="text-white">{img.user.name}</span>
