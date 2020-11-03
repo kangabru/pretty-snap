@@ -28,16 +28,16 @@ module.exports = {
             },
             colors: {
                 'primary': {
-                    light: 'hsl(143, 68%, 60%)',
-                    base: 'hsl(143, 72%, 54%)',
-                    dark: 'hsl(143, 76%, 48%)',
-                }
+                    light: 'hsl(27, 78%, 72%)',
+                    base: 'hsl(27, 84%, 66%)',
+                    dark: 'hsl(27, 90%, 60%)',
+                },
             },
             inset: {
                 '1/2': '50%',
             },
             boxShadow: {
-                outline: '0 0 0 4px hsla(143, 72%, 54%, 0.5)',
+                outline: '0 0 0 4px hsla(27, 90%, 50%, 0.4)',
             },
             opacity: {
                 85: '0.85',
