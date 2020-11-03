@@ -36,6 +36,9 @@ module.exports = {
             boxShadow: {
                 outline: '0 0 0 4px hsla(143, 72%, 54%, 0.5)',
             },
+            opacity: {
+                85: '0.85',
+            },
         },
     },
     plugins: [],

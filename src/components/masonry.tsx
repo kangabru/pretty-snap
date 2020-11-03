@@ -64,15 +64,19 @@ function SearchInput() {
 
 function MasonryImage(img: UnsplashImage) {
     const onClick = () => useStore.setState({ backgroundSrc: img.urls.regular })
-    return <div onClick={onClick} title={img.description} style={{ backgroundImage: `url('${img.urls.small}')` }}
-        class="group relative w-full h-full p-2 space-y-2 overflow-hidden shadow rounded bg-no-repeat transform transition-all duration-100 hover:scale-102 hover:shadow-lg bg-cover bg-top focus:outline-none cursor-pointer">
-        <div class="col justify-end w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-            <a src={img.user.portfolio_url} target="blank" onClick={e => e.stopPropagation()}
-                class="row w-full space-x-2 relative z-10 opacity-75 hover:opacity-100 transition-opacity duration-150">
+    return <div title={img.description} style={{ backgroundImage: `url('${img.urls.small}')` }}
+        class="relative w-full h-full space-y-2 overflow-hidden shadow rounded bg-no-repeat transform transition-all duration-100 hover:scale-102 hover:shadow-lg bg-cover bg-top">
+        <div class="grid grid-rows-2 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition-opacity duration-150">
+
+            <button onClick={onClick} class="w-full h-full opacity-85 hover:opacity-100 bg-black bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150 focus:outline-none">
+                <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
+            </button>
+
+            <a href={img.user.portfolio_url} target="blank"
+                class="row items-center justify-center space-x-2 w-full h-full opacity-85 hover:opacity-100 bg-black bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150  focus:outline-none">
                 <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
                 <span class="text-white">{img.user.name}</span>
             </a>
-            <div class="absolute inset-0 z-0 bg-gradient-to-t from-black to-transparent opacity-25"></div>
         </div>
     </div>
 }
