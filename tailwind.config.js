@@ -27,9 +27,9 @@ module.exports = {
             },
             colors: {
                 'primary': {
-                    light: 'hsl(27, 78%, 72%)',
-                    base: 'hsl(27, 84%, 66%)',
-                    dark: 'hsl(27, 90%, 60%)',
+                    light: 'hsl(38, 93%, 77%)',
+                    base: 'hsl(33, 90%, 65%)',
+                    dark: 'hsl(27, 84%, 57%)',
                 },
             },
             inset: {

@@ -11,12 +11,16 @@
     @apply flex flex-col items-center;
 }
 
-.pill {
-    @apply p-2 rounded-lg bg-gray-200 hover:bg-gray-400 focus:outline-none focus:shadow-outline disabled:opacity-50;
+.button-blank {
+    @apply p-2 rounded hover:bg-gray-200 outline-primary;
+}
+
+.button {
+    @apply p-2 rounded bg-gray-100 hover:bg-gray-200 outline-primary;
 }
 
 .outline-link {
-    @apply outline-primary hover:underline p-1 rounded-sm;
+    @apply text-primary-dark outline-primary hover:underline px-1 rounded-sm;
 }
 
 .outline-primary {
