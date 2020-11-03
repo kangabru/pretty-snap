@@ -23,7 +23,6 @@ module.exports = {
         extend: {
             fontFamily: {
                 open: ["'Open Sans'", "sans-serif"],
-                roboto: ["'Roboto'", "sans-serif"],
                 cursive: ["'Pacifico'", 'cursive'],
             },
             colors: {
