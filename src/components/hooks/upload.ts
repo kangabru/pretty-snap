@@ -11,9 +11,10 @@ export function useImagePaste(setDataUrl: SetDataImage) {
     }, [])
 }
 
-export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [Ref<T>, boolean] {
+export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [Ref<T>, boolean, boolean] {
     const dropZone = useRef<T>()
     const [isDropping, setIsDropping] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     const onFileOver = (e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
@@ -28,8 +29,12 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [
     const onFileDrop = (e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         loadImageOnDrop(e).then(dataUrl => {
+            setIsError(false)
             setIsDropping(false)
             setDataUrl(dataUrl)
+        }).catch(_ => {
+            setIsDropping(false)
+            setIsError(true)
         })
     }
 
@@ -46,7 +51,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [
         }
     }, [dropZone.current])
 
-    return [dropZone, isDropping]
+    return [dropZone, isDropping, isError]
 }
 
 function loadImageFromFile(file: File | null | undefined): Promise<DataImage> {
