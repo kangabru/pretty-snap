@@ -22,6 +22,7 @@ type Options = {
 const useStore = create<Options>(() => ({
     backgroundSrc: SRC_BG_DEFAULT,
     searchPage: 1,
+    searchTerm: "nature",
     padding: PADDING_INIT,
     position: Position.Center,
 }))

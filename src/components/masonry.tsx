@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { QuickSearch, quickSearches } from '../constants';
 import { UnsplashImage, useUnsplash } from './hooks/unsplash';
 import useStore from './store';
 import { GetUnsplashBacklink } from './utils';
@@ -9,6 +10,7 @@ export default function MasonryGrid() {
     return <section class="bg-white shadow-md p-5 space-y-3 rounded-lg">
         <div class="row space-x-2">
             <SearchInput />
+            <QuickSearches />
             <div class="flex-1"></div>
             {!!images.length && <LoadMore onClick={loadMore} />}
         </div>
@@ -30,7 +32,21 @@ function SearchInput() {
     </div>
 }
 
+function QuickSearches() {
+    return <div class="row space-x-2">
+        <QuickSearch {...quickSearches.nature} />
+        <QuickSearch {...quickSearches.mountain} />
+        <QuickSearch {...quickSearches.palm} />
+        <QuickSearch {...quickSearches.yosemite} />
+        <QuickSearch {...quickSearches.summer} />
+        <QuickSearch {...quickSearches.snow} />
+        <QuickSearch {...quickSearches.abstract} />
+    </div>
+}
 
+function QuickSearch({ searchTerm, src }: QuickSearch) {
+    const onClick = () => useStore.setState({ searchTerm })
+    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: `url('${src}')` }} class="w-12 h-12 bg-cover rounded-full shadow-sm hover:shadow outline-primary" />
 }
 
 function LoadMore({ onClick }: { onClick: () => void }) {
