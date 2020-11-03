@@ -3,6 +3,7 @@ const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome
 
 export const urls = {
     api: process.env.URL_API,
+    unsplash: "https://unsplash.com/",
     kangabru: "https://twitter.com/kanga_bru",
     pandasnap: "https://pandasnap.io",
     github: "https://github.com/kangabru/pretty-snap",
