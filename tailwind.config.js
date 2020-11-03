@@ -21,14 +21,20 @@ module.exports = {
     },
     theme: {
         extend: {
+            fontFamily: {
+                open: ["'Open Sans'", "sans-serif"],
+                roboto: ["'Roboto'", "sans-serif"],
+                cursive: ["'Pacifico'", 'cursive'],
+            },
             colors: {
-                'primary': '#35de76',
+                'primary': 'hsl(143, 72%, 54%)',
+                'primary-dark': 'hsl(143, 76%, 48%)',
             },
             inset: {
                 '1/2': '50%',
             },
             boxShadow: {
-                outline: '0 0 0 3px rgba(99, 179, 237, 0.3)',
+                outline: '0 0 0 4px hsla(143, 72%, 54%, 0.5)',
             },
         },
     },
