@@ -25,26 +25,31 @@ export default function Controls(props: { canCopy: boolean, copy: () => void, co
 }
 
 function PaddingSlider() {
+    const setPadding = (padding: number) => useOptionsStore.setState({ padding })
     // @ts-ignore
-    const setPadding = (e: Event) => useOptionsStore.setState({ padding: PADDING_MAX - e.target.value })
-    const padding = useOptionsStore(s => s.padding)
+    const setPaddingSlider = (e: Event) => setPadding(PADDING_MAX - e.target.value)
 
+    const padding = useOptionsStore(s => s.padding)
     const valInverse = PADDING_MAX - padding
     const maxInverse = PADDING_MAX - PADDING_MIN
     const minInverse = PADDING_MAX - PADDING_MAX
 
     return <div class="inline-flex flex-row space-x-2 text-gray-700">
-        <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
-            <rect fill="currentColor" stroke="none" rx="2" x="8" y="8" width="8" height="8" />
-            <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-        </svg>
+        <button title="Set maximum padding" onClick={_ => setPadding(PADDING_MAX)} class="outline-primary rounded">
+            <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+                <rect fill="currentColor" stroke="none" rx="2" x="8" y="8" width="8" height="8" />
+                <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+            </svg>
+        </button>
 
-        <input class="slider" type="range" min={minInverse} max={maxInverse} value={valInverse} onChange={setPadding} />
+        <input title="Adjust padding" class="slider" type="range" min={minInverse} max={maxInverse} value={valInverse} onChange={setPaddingSlider} />
 
-        <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
-            <rect fill="currentColor" stroke="none" rx="2" x="5" y="5" width="14" height="14" />
-            <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-        </svg>
+        <button title="Set minimum padding" onClick={_ => setPadding(PADDING_MIN)} class="outline-primary rounded">
+            <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+                <rect fill="currentColor" stroke="none" rx="2" x="5" y="5" width="14" height="14" />
+                <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+            </svg>
+        </button>
     </div>
 }
 
