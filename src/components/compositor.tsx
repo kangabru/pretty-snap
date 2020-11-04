@@ -1,5 +1,5 @@
 import { Fragment, h, JSX } from 'preact';
-import { useState } from 'preact/hooks';
+import { Ref, useEffect, useRef, useState } from 'preact/hooks';
 import { PADDING_MAX, PADDING_MIN, urls } from '../constants';
 import { Position } from '../types';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './compositor-styles';
@@ -85,12 +85,16 @@ function InfoSection({ isDropping, isError }: { isDropping: boolean, isError: bo
     </Fragment>
 }
 
+const positions = [
+    Position.Center,
+    Position.Left,
+    Position.Right,
+    Position.Bottom,
+]
+
 function PositionButtonGroup() {
     return <div class="inline-flex w-full bg-gray-100 rounded" role="group">
-        <PositionButton position={Position.Center} />
-        <PositionButton position={Position.Left} />
-        <PositionButton position={Position.Right} />
-        <PositionButton position={Position.Bottom} />
+        {positions.map(p => <PositionButton position={p} />)}
     </div>
 }
 
@@ -99,6 +103,8 @@ function PositionButton(props: { position: Position }) {
     const positionActual = useOptionsStore(x => x.position)
     const setPosition = () => useOptionsStore.setState({ position: props.position })
     const isSelected = positionActual == position
+
+    const [ref, onKeyDown] = useLeftRightActionWhenFocused(isSelected)
 
     const cData: { x: number, y: number } = {
         [Position.Left]: { x: 2, y: 6 },
@@ -116,7 +122,7 @@ function PositionButton(props: { position: Position }) {
         [Position.Top]: "Align top",
     }[position]
 
-    return <button onClick={setPosition} title={title} class={join(
+    return <button ref={ref} title={title} onClick={setPosition} onKeyDown={onKeyDown} class={join(
         "flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition rounded",
         isSelected ? "bg-primary-base hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
         position == Position.Center && "rounded-l",
@@ -127,6 +133,22 @@ function PositionButton(props: { position: Position }) {
             <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
         </svg>
     </button>
+}
+
+function useLeftRightActionWhenFocused(isSelected: boolean): [Ref<HTMLButtonElement>, (e: KeyboardEvent) => void] {
+    const ref = useRef<HTMLButtonElement>()
+    useEffect(() => { isSelected && ref.current.focus() }, [isSelected])
+
+    const currentPosition = useOptionsStore(x => x.position)
+    const index = positions.indexOf(currentPosition)
+    const onKeyDown = (e: KeyboardEvent) => {
+        var newIndex = index
+        if (e.key == 'ArrowLeft') newIndex = Math.max(0, index - 1)
+        if (e.key == 'ArrowRight') newIndex = Math.min(index + 1, positions.length - 1)
+        if (index != newIndex) useOptionsStore.setState({ position: positions[newIndex] })
+    }
+
+    return [ref, onKeyDown]
 }
 
 function PaddingSlider() {
