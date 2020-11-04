@@ -1,5 +1,5 @@
 import create from "zustand"
-import { PADDING_INIT, SRC_BG_DEFAULT } from "../../constants"
+import { PADDING_INIT, randomSearch } from "../../constants"
 import { Position } from "../../types"
 
 type Options = {
@@ -14,7 +14,7 @@ type Options = {
 
 /** zustand state for state management  */
 const useOptionsStore = create<Options>(() => ({
-    backgroundSrc: SRC_BG_DEFAULT,
+    backgroundSrc: randomSearch.src,
     padding: PADDING_INIT,
     position: Position.Center,
 }))

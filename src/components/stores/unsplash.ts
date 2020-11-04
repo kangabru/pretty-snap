@@ -1,7 +1,7 @@
 import create, { GetState, SetState } from "zustand"
-import { MAX_SEARCH_COUNT, quickSearches, urls } from "../../constants"
+import { MAX_SEARCH_COUNT, randomSearch, urls } from "../../constants"
 import { UnsplashImage, UnsplashResponse } from "../../types"
-import { getRandomMessage, GetUnsplashBatchDev } from "../utils"
+import { GetUnsplashBatchDev } from "../utils"
 
 type UnsplashState = {
     // Search
@@ -18,7 +18,7 @@ type UnsplashState = {
 const useUnsplashStore = create<UnsplashState>((set, get) => ({
     images: [],
     searchPage: 1,
-    searchTerm: getRandomMessage(Object.values(quickSearches).map(x => x.searchTerm)),
+    searchTerm: randomSearch.searchTerm,
     canLoadMore: true,
     search: () => fetchImages(get, set),
     loadMore: () => fetchImages(get, set, get().images),

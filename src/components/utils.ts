@@ -3,12 +3,10 @@ import { urls } from "../constants"
 import { UnsplashImage } from "../types"
 
 type ClassProp = string | boolean | undefined | null
-export function join(...classes: ClassProp[]): string {
-    return classes.filter(x => !!x).join(" ")
-}
+export const join = (...classes: ClassProp[]): string => classes.filter(x => !!x).join(" ")
 
-export const getRandomMessage = (messages: string[]) => messages[Math.floor(Math.random() * messages.length)]
-export const useRandomMessage = (messages: string[]) => useState(getRandomMessage(messages))[0]
+export const getRandomItem = <T>(items: T[]) => items[Math.floor(Math.random() * items.length)]
+export const useRandomItem = <T>(items: T[]) => useState(getRandomItem(items))[0]
 
 /** Returns a url to the authors profile as required by the API guidelines.
  *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
