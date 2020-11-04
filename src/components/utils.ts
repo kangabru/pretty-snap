@@ -15,18 +15,20 @@ export function GetUnsplashBacklink(image: UnsplashImage) {
 }
 
 export function GetUnsplashBatchDev(): UnsplashImage[] {
-    return [
-        GetResult1(1),
-        GetResult2(3),
-        GetResult1(2),
-        GetResult2(1),
-        GetResult1(4),
-        GetResult2(2),
-    ]
+    if (process.env.NODE_ENV == 'development')
+        return [
+            GetResult1(1),
+            GetResult2(3),
+            GetResult1(2),
+            GetResult2(1),
+            GetResult1(4),
+            GetResult2(2),
+        ]
+    return []
 }
 
 function GetResult1(divideHeight: number = 1): UnsplashImage {
-    return {
+    return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
         "width": 4000,
         "height": 6000 / divideHeight,
         "urls": {
@@ -53,7 +55,7 @@ function GetResult1(divideHeight: number = 1): UnsplashImage {
     }
 }
 function GetResult2(divideHeight: number = 1): UnsplashImage {
-    return {
+    return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
         "width": 3654,
         "height": 5473 / divideHeight,
         "description": "Looking up",

@@ -30,14 +30,12 @@ useUnsplashStore.getState().search()
 useUnsplashStore.subscribe(_ => useUnsplashStore.getState().search(), s => s.searchTerm)
 
 async function fetchImages(get: GetState<UnsplashState>, set: SetState<UnsplashState>, imagesToKeep?: UnsplashImage[]) {
-    const _fetch = process.env.NODE_ENV == 'production' ? GetResponseProd : GetResponseDev
-
     const { searchTerm, searchPage, canLoadMore } = get()
     const page = imagesToKeep ? searchPage : 1
 
     if (canLoadMore) try {
         set({ isSearching: true, images: imagesToKeep ?? [], searchPage: page })
-        const resp = await _fetch({ searchTerm, page })
+        const resp = await CallApi({ searchTerm, page })
         const newImages = [...(imagesToKeep ?? []), ...(resp?.results ?? [])]
         set({ isSearching: false, images: newImages, searchPage: page + 1, canLoadMore: searchPage < MAX_SEARCH_COUNT })
     } catch (error) {
@@ -47,18 +45,17 @@ async function fetchImages(get: GetState<UnsplashState>, set: SetState<UnsplashS
 
 type SearchInput = { searchTerm?: string, page: number }
 
-async function GetResponseProd(options: SearchInput): Promise<UnsplashResponse> {
+async function CallApi(options: SearchInput): Promise<UnsplashResponse> {
+    if (process.env.NODE_ENV == 'development')
+        return new Promise(accept => {
+            const randTime = 500 + Math.random() * 1000
+            setTimeout(() => accept({ results: GetUnsplashBatchDev() }), randTime)
+        })
+
     const params = new URLSearchParams()
     options.searchTerm && params.append('query', options.searchTerm)
     params.append('page', '' + options.page)
     return fetch(`${urls.apiUnsplash}?${params.toString()}`).then(x => x.json())
-}
-
-function GetResponseDev(_: SearchInput): Promise<UnsplashResponse> {
-    return new Promise(accept => {
-        const randTime = 500 + Math.random() * 1000
-        setTimeout(() => accept({ results: GetUnsplashBatchDev() }), randTime)
-    })
 }
 
 export default useUnsplashStore
