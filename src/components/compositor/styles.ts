@@ -1,8 +1,8 @@
 import { Ref } from 'preact';
 import useMeasure from 'react-use-measure';
-import { Position } from '../types';
-import { DataImage } from './hooks/upload';
-import useOptionsStore from './stores/options';
+import { Position } from '../../types';
+import { DataImage } from '../hooks/upload';
+import useOptionsStore from '../stores/options';
 
 export const CLASSES_OUTER = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_INNER = "rounded shadow-xl"

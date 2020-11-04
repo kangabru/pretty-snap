@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import srcPandaSnap from '../assets/pandasnap.jpg';
 import Compositor from './components/compositor';
-import MasonryGrid from './components/masonry';
+import ImageSelector from './components/images';
 import { urls } from './constants';
 import './index.css';
 
@@ -11,7 +11,7 @@ function App() {
     return <div class="col space-y-5 text-gray-800 bg-gray-100 font-open">
         <Header />
         <Compositor />
-        <MasonryGrid />
+        <ImageSelector />
         <Footer />
     </div>
 }
