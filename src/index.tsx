@@ -20,7 +20,7 @@ function Header() {
     return <header class="w-full max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 justify-center items-center text-md pt-5 px-3">
 
         <div class="row space-x-2 row-start-2 md:row-start-1">
-            <a class="hidden sm:inline-block w-12  h-12 sm:w-12 sm:h-12 outline-primary shadow hover:shadow-md rounded-md overflow-hidden" target="blank" href={urls.pandasnap}><img src={srcPandaSnap} alt="Panda Snap Logo" class="pointer-events-none" /></a>
+            <a class="hidden sm:inline-block w-12 h-12 sm:w-12 sm:h-12 outline-primary hover:shadow rounded-md overflow-hidden transition" target="blank" href={urls.pandasnap}><img src={srcPandaSnap} alt="Panda Snap Logo" class="pointer-events-none" /></a>
             <div class="col items-start whitespace-no-wrap">
                 <span>By <a target="blank" class="outline-link font-semibold" href={urls.kangabru}>@kanga_bru</a></span>
                 <span>for <a target="blank" class="outline-link font-semibold" href={urls.pandasnap}>pandasnap.io</a></span>

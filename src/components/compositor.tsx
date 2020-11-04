@@ -117,7 +117,7 @@ function PositionButton(props: { position: Position }) {
     }[position]
 
     return <button onClick={setPosition} title={title} class={join(
-        "flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition-all duration-150 rounded",
+        "flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition rounded",
         isSelected ? "bg-primary-base hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
         position == Position.Center && "rounded-l",
         position == Position.Right && "rounded-r",
