@@ -5,7 +5,7 @@ import { DataImage } from '../hooks/upload';
 import useOptionsStore from '../stores/options';
 
 export const CLASSES_OUTER = "bg-gray-200 bg-cover bg-center"
-export const CLASSES_INNER = "rounded shadow-xl"
+export const CLASSES_INNER = "rounded-lg shadow-xl"
 
 type CssStyles = { [_: string]: string | number }
 type CompStyle = { inner?: CssStyles, outer?: CssStyles }
