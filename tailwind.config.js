@@ -16,8 +16,9 @@ module.exports = {
         applyComplexClasses: true,
     },
     variants: {
-        opacity: ['responsive', 'group-hover', 'hover', 'disabled'],
-        textDecoration: ['responsive', 'hover', 'focus'],
+        backgroundColor: ({ after }) => after(['disabled']),
+        opacity: ({ after }) => after(['disabled']),
+        textDecoration: ({ after }) => after(['focus']),
     },
     theme: {
         extend: {
