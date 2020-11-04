@@ -30,7 +30,7 @@ function SearchInput() {
 }
 
 function QuickSearchButtons() {
-    return <div class="row flex-wrap">
+    return <div class="row flex-wrap justify-center">
         <QuickSearchButton {...quickSearches.nature} />
         <QuickSearchButton {...quickSearches.mountain} />
         <QuickSearchButton {...quickSearches.palm} />
