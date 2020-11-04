@@ -1,7 +1,6 @@
 import { Fragment, h, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { StateUpdater, useState } from 'preact/hooks';
-import { urls } from '../../constants';
 import { useCopy, useDownload } from '../hooks/canvas';
 import { DataImage, onInputChange, useImageDrop, useImagePaste } from '../hooks/upload';
 import useOptionsStore from '../stores/options';
