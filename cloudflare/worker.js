@@ -7,23 +7,30 @@
  * @see https://workers.cloudflare.com/
  */
 
-addEventListener('fetch', event => {
-    event.respondWith(handleRequest(event.request))
+const URL_BASE = "https://api.unsplash.com/search/photos"
+
+const routesGET = {
+    "/splash": unsplash,
+}
+
+addEventListener("fetch", event => {
+    const request = event.request
+
+    // Handle any route requests
+    const route = new URL(request.url).pathname
+    if (request.method === "GET" && routesGET[route])
+        return routesGET[route](event)
+
+    // Pass the request forward
+    return event.respondWith(fetch(request))
 })
 
-async function handleRequest(request) {
-    const url = request.url
-
-    // Look for valid params
-    if (url.search(/\?/) == -1)
-        return new Response('No params provided', { status: 400 })
-
-    // Pass query onwards
-    const params = url.match(/\?.*/)[0] // '?page=1&query=nature'
-    return fetch('https://api.unsplash.com/search/photos' + params, {
+function unsplash(event) {
+    const params = new URL(event.request.url).searchParams // query=mountains&page=1
+    return event.respondWith(fetch(`${URL_BASE}?${params}`, {
         headers: {
             'Accept-Version': 'v1',
             'Authorization': `Client-ID ${ACCESS_KEY}`
         }
-    })
+    }))
 }

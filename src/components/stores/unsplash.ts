@@ -51,7 +51,7 @@ async function GetResponseProd(options: SearchInput): Promise<UnsplashResponse> 
     const params = new URLSearchParams()
     options.searchTerm && params.append('query', options.searchTerm)
     params.append('page', '' + options.page)
-    return fetch(`${urls.api}?${params.toString()}`).then(x => x.json())
+    return fetch(`${urls.apiUnsplash}?${params.toString()}`).then(x => x.json())
 }
 
 function GetResponseDev(_: SearchInput): Promise<UnsplashResponse> {
