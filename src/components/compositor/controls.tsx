@@ -33,10 +33,18 @@ function PaddingSlider() {
     const maxInverse = PADDING_MAX - PADDING_MIN
     const minInverse = PADDING_MAX - PADDING_MAX
 
-    return <div class="inline-flex flex-row space-x-2 text-primary-base">
-        <svg class="w-6 h-6 transform scale-50" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+    return <div class="inline-flex flex-row space-x-2 text-gray-700">
+        <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+            <rect fill="currentColor" stroke="none" rx="2" x="8" y="8" width="8" height="8" />
+            <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+        </svg>
+
         <input class="slider" type="range" min={minInverse} max={maxInverse} value={valInverse} onChange={setPadding} />
-        <svg class="w-6 h-6" viewBox="2 2 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+
+        <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+            <rect fill="currentColor" stroke="none" rx="2" x="5" y="5" width="14" height="14" />
+            <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+        </svg>
     </div>
 }
 
