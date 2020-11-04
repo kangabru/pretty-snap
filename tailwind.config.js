@@ -19,6 +19,7 @@ module.exports = {
         backgroundColor: ({ after }) => after(['disabled']),
         opacity: ({ after }) => after(['disabled']),
         textDecoration: ({ after }) => after(['focus']),
+        borderColor: ({ after }) => after(['focus-within']),
     },
     theme: {
         extend: {
