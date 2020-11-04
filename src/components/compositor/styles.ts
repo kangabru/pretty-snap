@@ -37,7 +37,7 @@ function useStylesScreen(settings: InnerSettings): [Ref<HTMLElement>, CompStyle]
     const [contRefScreen, { width }] = useMeasure()
 
     const imageWidth = settings.dataImage?.width
-    const paddingScreen = padding * (imageWidth ? width / imageWidth : 1)
+    const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
 
     const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
 
