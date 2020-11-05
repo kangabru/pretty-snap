@@ -22,7 +22,7 @@ function Header() {
         <div class="row space-x-2 row-start-2 md:row-start-1">
             <a class="hidden sm:inline-block w-12 h-12 sm:w-12 sm:h-12 outline-primary hover:shadow rounded-md overflow-hidden transition" target="blank" href={urls.pandasnap}><img src={srcPandaSnap} alt="Panda Snap Logo" class="pointer-events-none" /></a>
             <div class="col items-start whitespace-no-wrap">
-                <span>By <a target="blank" class="outline-link font-semibold" href={urls.kangabru}>@kanga_bru</a></span>
+                <span>by &nbsp;<a target="blank" class="outline-link font-semibold" href={urls.kangabru}>kangabru</a></span>
                 <span>for <a target="blank" class="outline-link font-semibold" href={urls.pandasnap}>pandasnap.io</a></span>
             </div>
         </div>
@@ -48,8 +48,8 @@ function Header() {
 }
 
 function Footer() {
-    return <footer class="py-10 text-center space-y-3">
-        <p>Photos by <a href={urls.unsplash} target="blank" class="outline-link">Unsplash</a></p>
-        <p>Made with 🤙 by <a href={urls.kangabru} target="blank" class="outline-link">Kangabru</a></p>
+    return <footer class="py-10 text-center space-y-3 text-lg">
+        <p>Photos by <a href={urls.unsplash} target="blank" class="link font-semibold">Unsplash</a></p>
+        <p>Made with 🤙 by <a href={urls.kangabru} target="blank" class="link font-semibold">Kangabru</a></p>
     </footer>
 }

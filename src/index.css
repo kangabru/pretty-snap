@@ -19,8 +19,12 @@
     @apply p-2 rounded bg-gray-100 hover:bg-gray-200 outline-primary;
 }
 
+.link {
+    @apply text-primary-dark outline-link;
+}
+
 .outline-link {
-    @apply text-primary-dark outline-primary hover:underline px-1 rounded-sm;
+    @apply outline-primary hover:underline px-1 rounded-sm;
 }
 
 .outline-primary {
