@@ -1,11 +1,9 @@
-import domToImage, { Options } from 'dom-to-image';
+import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
-import { DataImage } from "./upload";
+import { Settings as SettingsAll } from '../../types';
+import { getSizeOuter } from '../compositor/styles';
 
-export type Settings = {
-    dataImage?: DataImage | undefined,
-    padding: number
-}
+export type Settings = Omit<SettingsAll, 'background'>
 
 export enum SaveState {
     disabled, // Default state until user selects image
@@ -31,19 +29,23 @@ export function useCopy<T extends HTMLElement>(settings: Settings, initRef?: Ref
     return [containerRef, canCopy, copy, copyState]
 }
 
-function useSaveImage({ dataImage, padding }: Settings, saveImage: (o: Options) => void): [() => Promise<void>, SaveState] {
+function useSaveImage(settings: Settings, saveImage: (o: Dom2ImgOptions) => void): [() => Promise<void>, SaveState] {
+    const { foreground } = settings
     const [saveState, setSaveState] = useState<SaveState>(SaveState.disabled)
 
     useEffect(() => { // Unclock when the user selects an image
-        saveState == SaveState.disabled && !!dataImage && setSaveState(SaveState.ready)
-    }, [dataImage])
+        saveState == SaveState.disabled && !!foreground && setSaveState(SaveState.ready)
+    }, [foreground])
 
     const action = async () => {
-        if (dataImage) {
+        if (foreground) {
             try {
                 setSaveState(SaveState.loading)
+                const [width, height] = getSizeOuter(settings)
+                console.log({ width, height, padding: settings.padding });
+
                 setTimeout(async () => {
-                    await saveImage({ width: dataImage.width + 2 * padding, height: dataImage.height + 2 * padding })
+                    await saveImage({ width, height })
                     setSaveState(SaveState.success)
                     setTimeout(() => setSaveState(SaveState.ready), 1000)
                 }, 500)

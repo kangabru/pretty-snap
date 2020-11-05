@@ -1,9 +1,9 @@
 import { Ref, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { Foreground } from '../../types';
 
-export type DataImage = { dataUrl: string, width: number, height: number }
-type SetDataImage = (_: DataImage) => void
+type SetForeground = (_: Foreground) => void
 
-export function useImagePaste(setDataUrl: SetDataImage) {
+export function useImagePaste(setDataUrl: SetForeground) {
     useEffect(() => {
         const onPaste = (e: LocalClipboardEvent) => loadImageOnPaste(e).then(setDataUrl)
         document.addEventListener('paste', onPaste)
@@ -11,7 +11,7 @@ export function useImagePaste(setDataUrl: SetDataImage) {
     }, [])
 }
 
-export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [Ref<T>, boolean, boolean] {
+export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): [Ref<T>, boolean, boolean] {
     const dropZone = useRef<T>()
     const [isDropping, setIsDropping] = useState(false)
     const [isError, setIsError] = useState(false)
@@ -54,7 +54,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetDataImage): [
     return [dropZone, isDropping, isError]
 }
 
-function loadImageFromFile(file: File | null | undefined): Promise<DataImage> {
+function loadImageFromFile(file: File | null | undefined): Promise<Foreground> {
     return new Promise((accept, reject) => {
         if (file?.type.match('image.*')) {
             var reader = new FileReader()
@@ -68,7 +68,7 @@ function loadImageFromFile(file: File | null | undefined): Promise<DataImage> {
     })
 }
 
-function loadImageFromDataUrl(dataUrl: string | undefined): Promise<DataImage> {
+function loadImageFromDataUrl(dataUrl: string | undefined): Promise<Foreground> {
     return new Promise((accept, reject) => {
         if (!dataUrl) return reject()
         const image = new Image()
@@ -76,17 +76,17 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<DataImage> {
         image.onload = _ => {
             const width = image.naturalWidth
             const height = image.naturalHeight
-            accept({ dataUrl, width, height })
+            accept({ src: dataUrl, width, height })
         }
         image.src = dataUrl
     })
 }
 
-export function onInputChange(setDataUrl: SetDataImage) {
+export function onInputChange(setDataUrl: SetForeground) {
     return (e: Event) => loadImageOnChange(e).then(setDataUrl)
 }
 
-function loadImageOnChange(e: Event): Promise<DataImage> {
+function loadImageOnChange(e: Event): Promise<Foreground> {
     return new Promise((accept, reject) => {
         var files = (e.target as HTMLInputElement)?.files
         if (files) loadImageFromFile(files[0]).then(accept).catch(reject)
@@ -99,7 +99,7 @@ type LocalClipboardEvent = ClipboardEvent & {
 }
 
 /** @see https://stackoverflow.com/a/15369753/3801481 */
-function loadImageOnPaste(e: LocalClipboardEvent): Promise<DataImage> {
+function loadImageOnPaste(e: LocalClipboardEvent): Promise<Foreground> {
     return new Promise((accept, reject) => {
         const clipboardData = e.clipboardData || e.originalEvent?.clipboardData
         if (!clipboardData) return reject("No clipboard data")
@@ -115,7 +115,7 @@ function loadImageOnPaste(e: LocalClipboardEvent): Promise<DataImage> {
 }
 
 /** @see https://stackoverflow.com/a/15369753/3801481 */
-function loadImageOnDrop(e: DragEvent): Promise<DataImage> {
+function loadImageOnDrop(e: DragEvent): Promise<Foreground> {
     return new Promise((accept, reject) => {
         var files = e.dataTransfer?.files
         if (files) loadImageFromFile(files[0]).then(accept).catch(reject)

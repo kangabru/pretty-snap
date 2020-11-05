@@ -1,5 +1,3 @@
-export enum Position { Center, Top, Left, Right, Bottom }
-
 export type UnsplashResponse = { results?: UnsplashImage[] }
 export type UnsplashImage = {
     width: number,
@@ -22,3 +20,16 @@ export type UnsplashImage = {
         },
     },
 }
+
+export type Background = { src: string }
+export type Foreground = { src: string, width: number, height: number }
+export enum Position { Center, Top, Left, Right, Bottom }
+
+export type Settings = {
+    foreground: Foreground | undefined,
+    background: Background,
+    padding: number,
+    position: Position,
+}
+
+export type SettingsStore = Omit<Settings, 'foreground'>

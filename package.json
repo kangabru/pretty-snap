@@ -21,6 +21,7 @@
     ],
     "devDependencies": {
         "@types/dom-to-image": "^2.6.2",
+        "@types/react": "^16.9.55",
         "autoprefixer": "^9.8.6",
         "parcel-bundler": "^1.12.4",
         "parcel-plugin-bundle-visualiser": "^1.2.0",

@@ -1,73 +1,71 @@
 import { Ref } from 'preact';
+import { CSSProperties } from 'react';
 import useMeasure from 'react-use-measure';
-import { Position } from '../../types';
-import { DataImage } from '../hooks/upload';
+import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
+import { srcToUrl } from '../utils';
 
 export const CLASSES_OUTER = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_INNER = "rounded-lg shadow-xl"
 
-type CssStyles = { [_: string]: string | number }
-type CompStyle = { inner?: CssStyles, outer?: CssStyles }
+type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
 
-type InnerSettings = {
-    backgroundImage: string,
-    dataImage: DataImage | undefined,
-    padding: number,
-    position: Position,
-}
-
-export default function useCompositionStyles(srcBg: string, dataImage: DataImage | undefined): [Ref<HTMLElement>, CompStyle, CompStyle] {
+export default function useCompositionStyles(foreground: Foreground | undefined): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+    const background = useOptionsStore(s => s.background)
     const padding = useOptionsStore(s => s.padding)
     const position = useOptionsStore(s => s.position)
 
-    const settings = {
-        backgroundImage: `url('${srcBg}')`,
-        padding, position, dataImage
-    }
-
+    const settings: Settings = { background, padding, position, foreground }
     const [contRefScreen, screen] = useStylesScreen(settings)
     const render = useStylesRender(settings)
 
     return [contRefScreen, screen, render]
 }
 
-function useStylesScreen(settings: InnerSettings): [Ref<HTMLElement>, CompStyle] {
-    const { padding, position, backgroundImage } = settings
+function useStylesScreen(settings: Settings): [Ref<HTMLElement>, CompositionStyles] {
+    const { padding, position, background, foreground } = settings
     const [contRefScreen, { width }] = useMeasure()
 
-    const imageWidth = settings.dataImage?.width
+    const imageWidth = foreground?.width
     const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
 
     const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
 
     return [contRefScreen, {
         inner: posStylesInner,
-        outer: { ...posStylesOuter, backgroundImage },
+        outer: { ...posStylesOuter, backgroundImage: srcToUrl(background.src) },
     }]
 }
 
-function useStylesRender(settings: InnerSettings): CompStyle {
-    const { padding, position, dataImage, backgroundImage } = settings
+function useStylesRender(settings: Settings): CompositionStyles {
+    const { padding, position, foreground, background } = settings
 
-    const width = dataImage?.width ?? 0
-    const height = dataImage?.height ?? 0
-
-    const shortX = position == Position.Left || position == Position.Right
-    const shortY = position == Position.Top || position == Position.Bottom
-
-    const widthPad = width + padding * (shortX ? 1 : 2)
-    const heightPad = height + padding * (shortY ? 1 : 2)
+    const [width, height] = getSizeInner(foreground)
+    const [widthPad, heightPad] = getSizeOuter(settings)
 
     const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position)
 
     return {
         inner: { ...posStylesInner, width, height },
-        outer: { ...posStylesOuter, backgroundImage, width: widthPad, height: heightPad },
+        outer: { ...posStylesOuter, width: widthPad, height: heightPad, backgroundImage: srcToUrl(background.src) },
     }
 }
 
-function getPositionStyles(padding: number, position: Position): [CssStyles, CssStyles] {
+export function getSizeInner(foreground: Foreground | undefined) {
+    return [foreground?.width ?? 0, foreground?.height ?? 0]
+}
+
+export function getSizeOuter(settings: Omit<Settings, 'background'>) {
+    const { padding, position, foreground } = settings
+
+    const [width, height] = getSizeInner(foreground)
+    const shortX = position == Position.Left || position == Position.Right
+    const shortY = position == Position.Top || position == Position.Bottom
+
+    return [width + padding * (shortX ? 1 : 2), height + padding * (shortY ? 1 : 2)]
+}
+
+function getPositionStyles(padding: number, position: Position): [CSSProperties, CSSProperties] {
     const paddingStr = `${padding}px`
 
     const stylesInner: Partial<CSSStyleDeclaration> = {}
@@ -99,5 +97,5 @@ function getPositionStyles(padding: number, position: Position): [CssStyles, Css
             break;
     }
 
-    return [stylesInner as CssStyles, stylesOuter as CssStyles]
+    return [stylesInner as CSSProperties, stylesOuter as CSSProperties]
 }

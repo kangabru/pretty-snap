@@ -2,7 +2,7 @@ import { Fragment, h } from 'preact';
 import { UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
-import { GetUnsplashBacklink, join } from '../utils';
+import { GetUnsplashBacklink, join, srcToUrl } from '../utils';
 
 export default function ImageRow() {
     const images = useUnsplashStore(s => s.images)
@@ -22,8 +22,8 @@ const commonImageStyles = "inline-block relative h-56 w-56 rounded"
 const center = "absolute transform left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
 
 function Image(img: UnsplashImage) {
-    const onClick = () => useOptionsStore.setState({ backgroundSrc: img.urls.regular })
-    return <div title={img.description} style={{ backgroundImage: `url('${img.urls.small}')` }}
+    const onClick = () => useOptionsStore.setState({ background: { src: img.urls.regular } })
+    return <div title={img.description} style={{ backgroundImage: srcToUrl(img.urls.small) }}
         class={join(commonImageStyles, "shadow space-y-2 overflow-hidden bg-no-repeat bg-cover bg-center animate-fade-in")}>
         <div class="grid grid-rows-2 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition-opacity duration-150">
 

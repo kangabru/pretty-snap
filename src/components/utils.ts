@@ -8,6 +8,8 @@ export const join = (...classes: ClassProp[]): string => classes.filter(x => !!x
 export const getRandomItem = <T>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 export const useRandomItem = <T>(items: T[]) => useState(getRandomItem(items))[0]
 
+export const srcToUrl = (src: string) => `url('${src}')`
+
 /** Returns a url to the authors profile as required by the API guidelines.
  *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
 export function GetUnsplashBacklink(image: UnsplashImage) {

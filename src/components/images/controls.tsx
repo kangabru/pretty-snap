@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { QuickSearch as QuickSearchButton, quickSearches } from '../../constants';
 import useUnsplashStore from '../stores/unsplash';
-import { join } from '../utils';
+import { join, srcToUrl } from '../utils';
 
 export default function Controls() {
     return <div class="col sm:flex-row sm:justify-between space-y-3 sm:space-y-0 sm:space-x-3">
@@ -44,5 +44,5 @@ function QuickSearchButtons() {
 
 function QuickSearchButton({ searchTerm, thumb: src }: QuickSearchButton) {
     const onClick = () => useUnsplashStore.setState({ searchTerm })
-    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: `url('${src}')` }} class="w-12 h-12 m-1 bg-cover rounded-full shadow-sm hover:shadow outline-primary" />
+    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(src) }} class="w-12 h-12 m-1 bg-cover rounded-full shadow-sm hover:shadow outline-primary" />
 }

@@ -1,18 +1,20 @@
 import { Fragment, h, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { StateUpdater, useState } from 'preact/hooks';
-import { useCopy, useDownload } from '../hooks/canvas';
-import { DataImage, onInputChange, useImageDrop, useImagePaste } from '../hooks/upload';
+import { Foreground } from '../../types';
+import { Settings, useCopy, useDownload } from '../hooks/canvas';
+import { onInputChange, useImageDrop, useImagePaste } from '../hooks/upload';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './styles';
 
 export default function Compositor() {
-    const [dataImage, setDataImage] = useState<DataImage | undefined>(undefined)
+    const [foreground, setForeground] = useState<Foreground | undefined>(undefined)
 
     const padding = useOptionsStore(s => s.padding)
-    const settings = { dataImage, padding }
+    const position = useOptionsStore(s => s.position)
+    const settings: Settings = { foreground, padding, position }
 
     const [_ref, download, downloadState] = useDownload(settings)
     const [ref, canCopy, copy, copyState] = useCopy(settings, _ref)
@@ -20,28 +22,27 @@ export default function Compositor() {
     const ViewerWrap = forwardRef<HTMLElement, ViewerProps>(Viewer)
 
     return <Fragment>
-        <ViewerWrap {...{ dataImage, setDataImage }} ref={ref} />
+        <ViewerWrap {...{ foreground, setForeground }} ref={ref} />
         <Controls {...{ canCopy, copy, copyState, download, downloadState }} />
     </Fragment>
 }
 
-type ViewerProps = { dataImage: DataImage | undefined, setDataImage: StateUpdater<DataImage | undefined> }
-function Viewer({ dataImage, setDataImage }: ViewerProps, ref: Ref<HTMLElement>) {
-    const dataUrl = dataImage?.dataUrl
+type ViewerProps = { foreground: Foreground | undefined, setForeground: StateUpdater<Foreground | undefined> }
+function Viewer({ foreground, setForeground }: ViewerProps, ref: Ref<HTMLElement>) {
+    const dataUrl = foreground?.src
 
-    useImagePaste(setDataImage)
-    const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setDataImage)
+    useImagePaste(setForeground)
+    const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)
 
-    const srcBg = useOptionsStore(s => s.backgroundSrc)
-    const [refScreenOuter, stylesScreen, stylesRender] = useCompositionStyles(srcBg, dataImage)
+    const [refScreenOuter, stylesScreen, stylesRender] = useCompositionStyles(foreground)
 
     return <Fragment>
-        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
+        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
-                    <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setDataImage)} />
-                    {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner} />
-                        : <div class={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner}>
+                    <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
+                    {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner as any} />
+                        : <div class={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner as any}>
                             <InfoSection {...{ isDropping, isError }} />
                         </div>}
                 </label>
@@ -49,9 +50,9 @@ function Viewer({ dataImage, setDataImage }: ViewerProps, ref: Ref<HTMLElement>)
         </section>
 
         {/* A hacky hidden element used to render consistent on different browsers. */}
-        {dataImage && <div class="hidden">
-            <section ref={ref} class={CLASSES_OUTER} style={stylesRender.outer}>
-                <img src={dataImage.dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesRender.inner} />
+        {foreground && <div class="hidden">
+            <section ref={ref} class={CLASSES_OUTER} style={stylesRender.outer as any}>
+                <img src={foreground.src} alt="Screenshot" class={CLASSES_INNER} style={stylesRender.inner as any} />
             </section>
         </div>}
     </Fragment>
