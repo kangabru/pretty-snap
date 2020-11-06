@@ -1,6 +1,7 @@
 import { Ref } from 'preact';
 import { CSSProperties } from 'react';
 import useMeasure from 'react-use-measure';
+import { MAX_SIZE } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
 import { srcToUrl } from '../utils';
@@ -26,7 +27,7 @@ function useStylesScreen(settings: Settings): [Ref<HTMLElement>, CompositionStyl
     const { padding, position, background, foreground } = settings
     const [contRefScreen, { width }] = useMeasure()
 
-    const imageWidth = foreground?.width
+    const [imageWidth,] = getSizeInner(foreground)
     const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
 
     const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
@@ -52,7 +53,12 @@ function useStylesRender(settings: Settings): CompositionStyles {
 }
 
 export function getSizeInner(foreground: Foreground | undefined) {
-    return [foreground?.width ?? 0, foreground?.height ?? 0]
+    if (!(foreground?.width && foreground?.height)) return [0, 0]
+
+    const { width, height } = foreground
+    const maxSize = Math.max(width, height)
+    const scale = Math.min(1, MAX_SIZE / maxSize) // Scale down large images
+    return [width * scale, height * scale]
 }
 
 export function getSizeOuter(settings: Omit<Settings, 'background'>) {

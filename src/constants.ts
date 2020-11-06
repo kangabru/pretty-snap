@@ -22,6 +22,8 @@ export const urls = {
     share: `http://twitter.com/intent/tweet?url=${referrer}&text=${tweetMessage}&original_referer=${referrer}`,
 }
 
+export const MAX_SIZE = 1920
+
 export const PADDING_MIN = 10
 export const PADDING_INIT = 60
 export const PADDING_MAX = 100
