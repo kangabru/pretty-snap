@@ -1,47 +1,37 @@
-import { Fragment, h, Ref } from 'preact';
-import { forwardRef } from 'preact/compat';
-import { StateUpdater, useState } from 'preact/hooks';
+import { Fragment, h } from 'preact';
+import mergeRefs from 'react-merge-refs';
 import { Foreground } from '../../types';
-import { Settings, useCopy, useDownload } from '../hooks/canvas';
+import { useCopy, useDownload } from '../hooks/canvas';
 import { onInputChange, useImageDrop, useImagePaste } from '../hooks/upload';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './styles';
 
+/** Renders the main image composition preview component. */
 export default function Compositor() {
-    const [foreground, setForeground] = useState<Foreground | undefined>(undefined)
+    // Get the ref used to export the final image
+    const [ref1, download, downloadState] = useDownload()
+    const [ref2, canCopy, copy, copyState] = useCopy()
+    const ref = mergeRefs([ref1, ref2])
 
-    const padding = useOptionsStore(s => s.padding)
-    const position = useOptionsStore(s => s.position)
-    const settings: Settings = { foreground, padding, position }
-
-    const [_ref, download, downloadState] = useDownload(settings)
-    const [ref, canCopy, copy, copyState] = useCopy(settings, _ref)
-
-    const ViewerWrap = forwardRef<HTMLElement, ViewerProps>(Viewer)
-
-    return <Fragment>
-        <ViewerWrap {...{ foreground, setForeground }} ref={ref} />
-        <Controls {...{ canCopy, copy, copyState, download, downloadState }} />
-    </Fragment>
-}
-
-type ViewerProps = { foreground: Foreground | undefined, setForeground: StateUpdater<Foreground | undefined> }
-function Viewer({ foreground, setForeground }: ViewerProps, ref: Ref<HTMLElement>) {
-    const dataUrl = foreground?.src
+    // Handle foreground inputs
+    const foreground = useOptionsStore(s => s.foreground)
+    const setForeground = (foreground: Foreground) => useOptionsStore.setState({ foreground })
 
     useImagePaste(setForeground)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)
 
-    const [refScreenOuter, stylesScreen, stylesRender] = useCompositionStyles(foreground)
+    // Get the styles for the preview and hidden render components
+    const [refPreviewContainer, stylesScreen, stylesRender] = useCompositionStyles()
 
     return <Fragment>
-        <section ref={refScreenOuter} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
+        {/* Renders the preview */}
+        <section ref={refPreviewContainer} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
                     <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
-                    {dataUrl ? <img src={dataUrl} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner as any} />
+                    {foreground?.src ? <img src={foreground?.src} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner as any} />
                         : <div class={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner as any}>
                             <InfoSection {...{ isDropping, isError }} />
                         </div>}
@@ -49,15 +39,19 @@ function Viewer({ foreground, setForeground }: ViewerProps, ref: Ref<HTMLElement
             </div>
         </section>
 
-        {/* A hacky hidden element used to render consistent on different browsers. */}
+        {/** A hacky hidden element used by dom-to-image to render the image.
+         * We do this so we can set the image size exactly and render consistently on different browsers. */}
         {foreground && <div class="hidden">
             <section ref={ref} class={CLASSES_OUTER} style={stylesRender.outer as any}>
                 <img src={foreground.src} alt="Screenshot" class={CLASSES_INNER} style={stylesRender.inner as any} />
             </section>
         </div>}
+
+        <Controls {...{ download, downloadState, canCopy, copy, copyState }} />
     </Fragment>
 }
 
+/** Renders the initial info section within the compositor before the user has selected an image. */
 function InfoSection({ isDropping, isError }: { isDropping: boolean, isError: boolean }) {
     return <Fragment>
         <h2 class="max-w-sm mx-auto space-x-1 text-xl sm:text-3xl text-center font-open font-semibold">

@@ -26,10 +26,9 @@ export type Foreground = { src: string, width: number, height: number }
 export enum Position { Center, Top, Left, Right, Bottom }
 
 export type Settings = {
-    foreground: Foreground | undefined,
+    foreground?: Foreground,
     background: Background,
     padding: number,
     position: Position,
 }
 
-export type SettingsStore = Omit<Settings, 'foreground'>

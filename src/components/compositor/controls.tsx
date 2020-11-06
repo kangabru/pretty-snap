@@ -5,30 +5,34 @@ import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import PositionButtonGroup from './controls-positions';
 
-export default function Controls(props: { canCopy: boolean, copy: () => void, copyState: SaveState, download: () => void, downloadState: SaveState, }) {
-    const { canCopy, copy, copyState, download, downloadState } = props
+export type CompositorControlProps = { canCopy: boolean, copy: () => void, copyState: SaveState, download: () => void, downloadState: SaveState }
+
+/** Renders the image compositional control component. */
+export default function Controls({ canCopy, copy, copyState, download, downloadState }: CompositorControlProps) {
     return <section class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
 
         <PositionButtonGroup />
         <PaddingSlider />
 
+        {/* Export buttons */}
         <div class="row space-x-3">
-            <ControlButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
+            <ExportButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"></path><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"></path></svg>
-            </ControlButton>
+            </ExportButton>
 
-            <ControlButton onClick={download} title="Download" status={downloadState}>
+            <ExportButton onClick={download} title="Download" status={downloadState}>
                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path></svg>
-            </ControlButton>
+            </ExportButton>
         </div>
     </section>
 }
 
 function PaddingSlider() {
     const setPadding = (padding: number) => useOptionsStore.setState({ padding })
-    // @ts-ignore
+    // @ts-ignore. We want the slider to go from small -> large image but internally we must reverse the padding calc
     const setPaddingSlider = (e: Event) => setPadding(PADDING_MAX - e.target.value)
 
+    // Get the slider min/max values based on the reverse calc we do internally
     const padding = useOptionsStore(s => s.padding)
     const valInverse = PADDING_MAX - padding
     const maxInverse = PADDING_MAX - PADDING_MIN
@@ -53,7 +57,7 @@ function PaddingSlider() {
     </div>
 }
 
-function ControlButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {
+function ExportButton(props: Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'class' | 'children'> & { status: SaveState, children: JSX.Element }) {
     const { status, disabled, ...buttonProps } = props
     const isDisabled = disabled || status == SaveState.disabled || status == SaveState.loading
     return <button {...buttonProps} class={join("button", isDisabled ? "pointer-events-none opacity-50 text-gray-500" : "text-primary-base")} disabled={isDisabled}>

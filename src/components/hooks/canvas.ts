@@ -1,9 +1,7 @@
 import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
-import { Settings as SettingsAll } from '../../types';
-import { getSizeOuter } from '../compositor/styles';
-
-export type Settings = Omit<SettingsAll, 'background'>
+import { getSizeBackground } from '../compositor/styles';
+import useOptionsStore from '../stores/options';
 
 export enum SaveState {
     disabled, // Default state until user selects image
@@ -13,24 +11,38 @@ export enum SaveState {
     error, // On error
 }
 
-export function useDownload<T extends HTMLElement>(settings: Settings, initRef?: Ref<T>): [Ref<T>, () => Promise<void>, SaveState] {
-    const containerRef = initRef ?? useRef<T>()
-    const [download, downloadState] = useSaveImage(settings, optns => domToImage.toPng(containerRef.current, optns).then(downloadImage))
+/** Allows download an element as an image.
+ * @returns containerRef: the ref to place on the element to export
+ * @returns download: a function to trigger the download
+ * @returns state: info about the progress of the download
+ */
+export function useDownload<T extends HTMLElement>(): [Ref<T>, () => Promise<void>, SaveState] {
+    const containerRef = useRef<T>()
+    const [download, downloadState] = useExportImage(optns => domToImage.toPng(containerRef.current, optns).then(downloadImage))
     return [containerRef, download, downloadState]
 }
 
-export function useCopy<T extends HTMLElement>(settings: Settings, initRef?: Ref<T>): [Ref<T>, boolean, () => Promise<void>, SaveState] {
-    const containerRef = initRef ?? useRef<T>()
-    const [copy, copyState] = useSaveImage(settings, optns => domToImage.toBlob(containerRef.current, optns).then(copyImage))
+/** Allows copying an element as an image to the clipboard.
+ * @returns containerRef: the ref to place on the element to export
+ * @returns download: a function to trigger the download
+ * @returns state: info about the availability/progress of the download
+ */
+export function useCopy<T extends HTMLElement>(): [Ref<T>, boolean, () => Promise<void>, SaveState] {
+    const containerRef = useRef<T>()
+    const [copy, copyState] = useExportImage(optns => domToImage.toBlob(containerRef.current, optns).then(copyImageToClipboard))
 
+    // Check if copying is supported on this browser
     const [canCopy, setCanCopy] = useState(false)
     useEffect(() => void canWriteToClipboard().then(setCanCopy), [])
 
     return [containerRef, canCopy, copy, copyState]
 }
 
-function useSaveImage(settings: Settings, saveImage: (o: Dom2ImgOptions) => void): [() => Promise<void>, SaveState] {
-    const { foreground } = settings
+/** A hook to provide common state management for exporting images.
+ * @param The callback to perform the image save when the returned action is run.
+ */
+function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [() => Promise<void>, SaveState] {
+    const foreground = useOptionsStore(s => s.foreground)
     const [saveState, setSaveState] = useState<SaveState>(SaveState.disabled)
 
     useEffect(() => { // Unclock when the user selects an image
@@ -41,7 +53,8 @@ function useSaveImage(settings: Settings, saveImage: (o: Dom2ImgOptions) => void
         if (foreground) {
             try {
                 setSaveState(SaveState.loading)
-                const [width, height] = getSizeOuter(settings)
+                const settings = useOptionsStore.getState()
+                const [width, height] = getSizeBackground(settings)
                 setTimeout(async () => {
                     await saveImage({ width, height })
                     setSaveState(SaveState.success)
@@ -68,12 +81,15 @@ function downloadImage(dataUrl: string) {
     plausible('download')
 }
 
-async function copyImage(blob: Blob) {
+async function copyImageToClipboard(blob: Blob) {
     // @ts-ignore
     await canWriteToClipboard() && navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
     plausible('copy')
 }
 
+/** Checks if copying an image to clipboard is supported by the browser.
+ *  @see https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API (clipboard-write permission)
+ */
 export async function canWriteToClipboard() {
     try {
         // @ts-ignore
@@ -82,11 +98,4 @@ export async function canWriteToClipboard() {
     } catch (error) {
         return false
     }
-}
-
-export const setToClipboard = async (blob: Blob) => {
-    // @ts-ignore
-    const data = [new ClipboardItem({ [blob.type]: blob })]
-    // @ts-ignore
-    await navigator.clipboard.write(data)
 }

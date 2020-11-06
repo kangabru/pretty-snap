@@ -6,6 +6,7 @@ import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
 import { GetUnsplashBacklink, join, srcToUrl } from '../utils';
 
+/** Renders the unsplash row of images that users can select from. */
 export default function ImageRow() {
     const images = useUnsplashStore(s => s.images)
     const isSearching = useUnsplashStore(s => s.isSearching)
@@ -16,6 +17,7 @@ export default function ImageRow() {
     const scrollLeft = () => scrollRef.current && scrollRef.current.scrollTo({ left: 0 })
     useEffect(() => useUnsplashStore.subscribe(scrollLeft, state => state.searchTerm), [])
 
+    // Center the load icon on first load otherwise use the row
     return isFirstSearch
         ? <div class="row justify-center w-fulls"><LoadMore /></div>
         : <div ref={scrollRef} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
@@ -28,6 +30,10 @@ export default function ImageRow() {
 const commonImageStyles = "inline-block relative h-56 w-48 sm:w-56 rounded"
 const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center sm:justify-center p-4 opacity-85 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150 focus:outline-none"
 
+/** Renders the image components in the image row.
+ * - Has a button to set the background images
+ * - Has a link to the unsplash author page as required by the API usage
+ */
 function Image(img: UnsplashImage) {
     const onClick = () => useOptionsStore.setState({ background: { src: img.urls.regular } })
     return <div title={img.description} style={{ backgroundImage: srcToUrl(img.urls.small) }}

@@ -3,6 +3,7 @@ import { Foreground } from '../../types';
 
 type SetForeground = (_: Foreground) => void
 
+/** Imports an image by pasting from clipboard */
 export function useImagePaste(setDataUrl: SetForeground) {
     useEffect(() => {
         const onPaste = (e: LocalClipboardEvent) => loadImageOnPaste(e).then(setDataUrl)
@@ -11,6 +12,7 @@ export function useImagePaste(setDataUrl: SetForeground) {
     }, [])
 }
 
+/** Imports an image by dragging and dropping from the file system. */
 export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): [Ref<T>, boolean, boolean] {
     const dropZone = useRef<T>()
     const [isDropping, setIsDropping] = useState(false)
@@ -54,6 +56,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
     return [dropZone, isDropping, isError]
 }
 
+/** Imports an image from a file input. */
 function loadImageFromFile(file: File | null | undefined): Promise<Foreground> {
     return new Promise((accept, reject) => {
         if (file?.type.match('image.*')) {
@@ -68,6 +71,7 @@ function loadImageFromFile(file: File | null | undefined): Promise<Foreground> {
     })
 }
 
+/** Loads an image data and dimensions */
 function loadImageFromDataUrl(dataUrl: string | undefined): Promise<Foreground> {
     return new Promise((accept, reject) => {
         if (!dataUrl) return reject()
@@ -82,6 +86,7 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<Foreground> 
     })
 }
 
+/** Wrapper for input 'onChange' events to load the image then perform a callback. */
 export function onInputChange(setDataUrl: SetForeground) {
     return (e: Event) => loadImageOnChange(e).then(setDataUrl)
 }
@@ -94,6 +99,7 @@ function loadImageOnChange(e: Event): Promise<Foreground> {
     })
 }
 
+// Chrome specific type
 type LocalClipboardEvent = ClipboardEvent & {
     originalEvent?: ClipboardEvent
 }

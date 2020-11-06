@@ -16,6 +16,7 @@ export function GetUnsplashBacklink(image: UnsplashImage) {
     return `${urls.unsplash}/@${image.user.username}?utm_source=pretty_snap&utm_medium=referral`
 }
 
+/** Gets local data for development. */
 export function GetUnsplashBatchDev(): UnsplashImage[] {
     if (process.env.NODE_ENV == 'development')
         return [

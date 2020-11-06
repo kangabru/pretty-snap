@@ -4,7 +4,6 @@ import { UnsplashImage, UnsplashResponse } from "../../types"
 import { GetUnsplashBatchDev } from "../utils"
 
 type UnsplashState = {
-    // Search
     images: UnsplashImage[],
     isSearching?: boolean,
     searchTerm?: string,
@@ -24,6 +23,7 @@ const useUnsplashStore = create<UnsplashState>((set, get) => ({
     loadMore: () => fetchImages(get, set, get().images),
 }))
 
+// Search on page load
 useUnsplashStore.getState().search()
 
 // Fetch on search term change
