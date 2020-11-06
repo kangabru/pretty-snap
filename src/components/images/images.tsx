@@ -18,23 +18,24 @@ export default function ImageRow() {
         </div>
 }
 
-const commonImageStyles = "inline-block relative h-56 w-56 rounded"
-const center = "absolute transform left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+const commonImageStyles = "inline-block relative h-56 w-48 sm:w-56 rounded"
+const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center sm:justify-center p-4 opacity-85 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150 focus:outline-none"
 
 function Image(img: UnsplashImage) {
     const onClick = () => useOptionsStore.setState({ background: { src: img.urls.regular } })
     return <div title={img.description} style={{ backgroundImage: srcToUrl(img.urls.small) }}
         class={join(commonImageStyles, "shadow space-y-2 overflow-hidden bg-no-repeat bg-cover bg-center animate-fade-in")}>
-        <div class="grid grid-rows-2 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition-opacity duration-150">
+        <div class="grid grid-rows-2 w-full h-full sm:bg-black sm:bg-opacity-25 sm:opacity-0 hover:opacity-100 transition-opacity duration-150">
 
-            <button onClick={onClick} class="w-full h-full opacity-85 hover:opacity-100 bg-black bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150 focus:outline-none">
+            <button onClick={onClick} class={join(commonImageButtonStyles, "items-start")}>
                 <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
             </button>
 
-            <a href={GetUnsplashBacklink(img)} target="blank"
-                class="row items-center justify-center space-x-2 w-full h-full opacity-85 hover:opacity-100 bg-black bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150  focus:outline-none">
-                <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
-                <span class="text-white">{img.user.name}</span>
+            <a href={GetUnsplashBacklink(img)} target="blank" class={join(commonImageButtonStyles, "items-end")}>
+                <div class="row space-x-2">
+                    <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
+                    <span class="text-white">{img.user.name}</span>
+                </div>
             </a>
         </div>
     </div>
@@ -45,6 +46,8 @@ function LoadMore() {
     const canLoadMore = useUnsplashStore(s => s.canLoadMore)
     return isSearching ? <ImagePlaceholder /> : canLoadMore ? <LoadMoreButton /> : <Fragment />
 }
+
+const center = "absolute transform left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
 
 function LoadMoreButton() {
     const loadMore = useUnsplashStore(s => s.loadMore)
