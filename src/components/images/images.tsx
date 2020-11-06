@@ -1,4 +1,6 @@
 import { Fragment, h } from 'preact';
+import { useRef } from 'preact/hooks';
+import { useEffect } from 'react';
 import { UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
@@ -9,9 +11,14 @@ export default function ImageRow() {
     const isSearching = useUnsplashStore(s => s.isSearching)
     const isFirstSearch = !images?.length && isSearching
 
+    // Scroll back to start on new searches
+    const scrollRef = useRef<HTMLDivElement>()
+    const scrollLeft = () => scrollRef.current && scrollRef.current.scrollTo({ left: 0 })
+    useEffect(() => useUnsplashStore.subscribe(scrollLeft, state => state.searchTerm), [])
+
     return isFirstSearch
         ? <div class="row justify-center w-fulls"><LoadMore /></div>
-        : <div class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
+        : <div ref={scrollRef} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
             {images?.map(img => <Image key={img.urls.thumb} {...img} />)}
             <LoadMore />
             <div class="inline-block w-2"></div> {/* Spacer because margins ain't workin */}
