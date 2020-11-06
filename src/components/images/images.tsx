@@ -38,10 +38,10 @@ function Image(img: UnsplashImage) {
                 <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
             </button>
 
-            <a href={GetUnsplashBacklink(img)} target="blank" class={join(commonImageButtonStyles, "items-end")}>
-                <div class="row space-x-2">
+            <a href={GetUnsplashBacklink(img)} target="blank" class={join(commonImageButtonStyles, "items-end overflow-hidden")}>
+                <div class="row space-x-2 overflow-hidden">
                     <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
-                    <span class="text-white">{img.user.name}</span>
+                    <span class="text-white truncate">{img.user.name}</span>
                 </div>
             </a>
         </div>
