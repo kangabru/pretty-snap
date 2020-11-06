@@ -14,3 +14,5 @@ declare module "*.jpg" {
     const value: any;
     export = value;
 }
+
+declare function plausible(event: string): void

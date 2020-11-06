@@ -42,8 +42,6 @@ function useSaveImage(settings: Settings, saveImage: (o: Dom2ImgOptions) => void
             try {
                 setSaveState(SaveState.loading)
                 const [width, height] = getSizeOuter(settings)
-                console.log({ width, height, padding: settings.padding });
-
                 setTimeout(async () => {
                     await saveImage({ width, height })
                     setSaveState(SaveState.success)
@@ -67,11 +65,13 @@ function downloadImage(dataUrl: string) {
     a.setAttribute("download", "test.png")
     a.click()
     a.remove()
+    plausible('download')
 }
 
 async function copyImage(blob: Blob) {
     // @ts-ignore
     await canWriteToClipboard() && navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+    plausible('copy')
 }
 
 export async function canWriteToClipboard() {
