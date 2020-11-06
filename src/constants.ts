@@ -6,7 +6,7 @@ import summer from '../assets/quick-searches/summer.jpg'
 import sun from '../assets/quick-searches/sun.jpg'
 import tree from '../assets/quick-searches/tree.jpg'
 import yosemite from '../assets/quick-searches/yosemite.jpg'
-import { getRandomItem } from './components/utils'
+import { getRandomItem, getQuickSearch as quicky, Orientation } from './components/utils'
 
 const referrer = "https://prettysnap.io"
 const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome! Thanks @kanga_bru%0A%0A"
@@ -28,22 +28,25 @@ export const PADDING_MIN = 10
 export const PADDING_INIT = 60
 export const PADDING_MAX = 100
 
-//https://docs.imgix.com/apis/rendering/rotation/orient
-const imgParams = "?w=1400&q=80"
-const imgParamsLeft = imgParams + "&orient=8"
-const imgParamsRight = imgParams + "&orient=6"
+// https://docs.imgix.com/apis/rendering/size
+// https://unsplash.com/documentation#dynamically-resizable-images
+export const paramsPreview = "?w=1080&q=80"
+export const paramsExport = `?w=${MAX_SIZE}&q=80`
 
-export type QuickSearch = { searchTerm: string, thumb: string, src: string }
-export const quickSearches = {
-    nature: <QuickSearch>{ searchTerm: 'nature', thumb: tree, src: "https://images.unsplash.com/photo-1480499484268-a85a2414da81" + imgParams },
-    mountain: <QuickSearch>{ searchTerm: 'mountains', thumb: mountain, src: "https://images.unsplash.com/photo-1504870712357-65ea720d6078" + imgParams },
-    palm: <QuickSearch>{ searchTerm: 'palms', thumb: palm, src: "https://images.unsplash.com/photo-1514125669375-59ee3985d08b" + imgParamsRight },
-    yosemite: <QuickSearch>{ searchTerm: 'yosemite', thumb: yosemite, src: "https://images.unsplash.com/photo-1527549993586-dff825b37782" + imgParams },
-    summer: <QuickSearch>{ searchTerm: 'summer', thumb: summer, src: "https://images.unsplash.com/photo-1515876879333-013aa5ea1472" + imgParamsLeft },
-    snow: <QuickSearch>{ searchTerm: 'snow', thumb: snow, src: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a" + imgParams },
-    sun: <QuickSearch>{ searchTerm: 'sun', thumb: sun, src: "https://images.unsplash.com/photo-1504386106331-3e4e71712b38" + imgParams },
-    abstract: <QuickSearch>{ searchTerm: 'abstract', thumb: abstract, src: "https://images.unsplash.com/photo-1557672172-298e090bd0f1" + imgParamsRight },
-}
+// https://docs.imgix.com/apis/rendering/rotation/orient
+export const paramsOrientLeft = "&orient=8"
+export const paramsOrientRight = "&orient=6"
+
+export const quickSearches = [
+    quicky('nature',    tree,     "https://images.unsplash.com/photo-1480499484268-a85a2414da81"),
+    quicky('mountains', mountain, "https://images.unsplash.com/photo-1504870712357-65ea720d6078"),
+    quicky('palms',     palm,     "https://images.unsplash.com/photo-1514125669375-59ee3985d08b", Orientation.Right),
+    quicky('yosemite',  yosemite, "https://images.unsplash.com/photo-1527549993586-dff825b37782"),
+    quicky('summer',    summer,   "https://images.unsplash.com/photo-1515876879333-013aa5ea1472", Orientation.Left),
+    quicky('snow',      snow,     "https://images.unsplash.com/photo-1517299321609-52687d1bc55a"),
+    quicky('sun',       sun,      "https://images.unsplash.com/photo-1504386106331-3e4e71712b38"),
+    quicky('abstract',  abstract, "https://images.unsplash.com/photo-1557672172-298e090bd0f1", Orientation.Right),
+]
 
 export const randomSearch = getRandomItem(Object.values(quickSearches))
 

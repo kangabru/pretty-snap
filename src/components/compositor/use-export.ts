@@ -1,6 +1,6 @@
 import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
-import { getSizeBackground } from '../compositor/styles';
+import { getSizeBackground } from './styles';
 import useOptionsStore from '../stores/options';
 
 export enum SaveState {

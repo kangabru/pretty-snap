@@ -1,7 +1,7 @@
 import create, { GetState, SetState } from "zustand"
 import { MAX_SEARCH_COUNT, randomSearch, urls } from "../../constants"
 import { UnsplashImage, UnsplashResponse } from "../../types"
-import { GetUnsplashBatchDev } from "../utils"
+import { getUnsplashBatchDev } from "../utils"
 
 type UnsplashState = {
     images: UnsplashImage[],
@@ -49,7 +49,7 @@ async function CallApi(options: SearchInput): Promise<UnsplashResponse> {
     if (process.env.NODE_ENV == 'development')
         return new Promise(accept => {
             const randTime = 500 + Math.random() * 1000
-            setTimeout(() => accept({ results: GetUnsplashBatchDev() }), randTime)
+            setTimeout(() => accept({ results: getUnsplashBatchDev() }), randTime)
         })
 
     const params = new URLSearchParams()

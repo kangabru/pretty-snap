@@ -1,6 +1,6 @@
 import { h, JSX } from 'preact';
 import { PADDING_MAX, PADDING_MIN } from '../../constants';
-import { SaveState } from '../hooks/canvas';
+import { SaveState } from './use-export';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import PositionButtonGroup from './controls-positions';

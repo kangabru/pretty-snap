@@ -1,12 +1,12 @@
 import { Fragment, h } from 'preact';
 import mergeRefs from 'react-merge-refs';
 import { Foreground } from '../../types';
-import { useCopy, useDownload } from '../hooks/canvas';
-import { onInputChange, useImageDrop, useImagePaste } from '../hooks/upload';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
 import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './styles';
+import { useCopy, useDownload } from './use-export';
+import { onInputChange, useImageDrop, useImagePaste } from './use-upload';
 
 /** Renders the main image composition preview component. */
 export default function Compositor() {

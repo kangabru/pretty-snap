@@ -21,7 +21,7 @@ export type UnsplashImage = {
     },
 }
 
-export type Background = { src: string }
+export type Background = { src: string, srcExport: string, }
 export type Foreground = { src: string, width: number, height: number }
 export enum Position { Center, Top, Left, Right, Bottom }
 
@@ -32,3 +32,4 @@ export type Settings = {
     position: Position,
 }
 
+export type QuickSearch = Background & { searchTerm: string, thumb: string }

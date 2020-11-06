@@ -1,8 +1,10 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { QuickSearch as QuickSearchButton, quickSearches } from '../../constants';
+import { quickSearches } from '../../constants';
+import { QuickSearch as QuickSearch } from '../../types';
+import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
-import { join, srcToUrl } from '../utils';
+import { getImagePreview, join, srcToUrl } from '../utils';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function Controls() {
@@ -30,7 +32,7 @@ function SearchInput() {
         isSearching && "bg-gray-100 opacity-50")}>
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
 
-        <input disabled={isSearching} onKeyUp={update} value={inputValue ?? ""} type="text" placeholder="Search unsplash.com"
+        <input disabled={isSearching} onKeyUp={update} value={inputValue ?? ""} type="text" placeholder="Search Unsplash"
             class="px-3 py-2 outline-none disabled:bg-transparent rounded transition" />
     </div>
 }
@@ -38,19 +40,15 @@ function SearchInput() {
 /** Renders the little image icons used to run common search queries */
 function QuickSearchButtons() {
     return <div class="row flex-wrap justify-center">
-        <QuickSearchButton {...quickSearches.nature} />
-        <QuickSearchButton {...quickSearches.mountain} />
-        <QuickSearchButton {...quickSearches.palm} />
-        <QuickSearchButton {...quickSearches.yosemite} />
-        <QuickSearchButton {...quickSearches.summer} />
-        <QuickSearchButton {...quickSearches.snow} />
-        <QuickSearchButton {...quickSearches.sun} />
-        <QuickSearchButton {...quickSearches.abstract} />
+        {quickSearches.map(qs => <QuickSearch {...qs} />)}
     </div>
 }
 
-function QuickSearchButton({ searchTerm, thumb: src }: QuickSearchButton) {
-    const onClick = () => useUnsplashStore.setState({ searchTerm })
-    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(src) }}
+function QuickSearch({ searchTerm, thumb, src, srcExport }: QuickSearch) {
+    const onClick = () => {
+        useUnsplashStore.setState({ searchTerm })
+        useOptionsStore.setState({ background: { src, srcExport } })
+    }
+    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }}
         class="w-12 h-12 m-1 bg-cover rounded-full shadow-sm hover:shadow transform hover:scale-105 outline-primary" />
 }
