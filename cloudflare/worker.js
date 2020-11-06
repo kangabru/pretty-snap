@@ -4,7 +4,8 @@
  * Requires the following environment variable:
  *      ACCESS_KEY - Your unsplash access key
  *
- * @see https://workers.cloudflare.com/
+ * @see https://workers.cloudflare.com
+ * @see https://www.youtube.com/watch?v=48NWaLkDcME
  */
 
 const URL_BASE = "https://api.unsplash.com/search/photos"
