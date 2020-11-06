@@ -11,7 +11,7 @@ import { getRandomItem } from './components/utils'
 const referrer = "https://prettysnap.io"
 const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome! Thanks @kanga_bru%0A%0A"
 
-const urlBase = process.env.URL_API
+const urlBase = process.env.URL_API ?? ""
 
 export const urls = {
     apiUnsplash: urlBase + "/splash",
