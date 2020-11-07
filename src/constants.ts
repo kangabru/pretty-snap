@@ -1,4 +1,5 @@
 import thumbAbstract from '../assets/quick-searches/abstract.jpg'
+import thumbColourful from '../assets/quick-searches/colourful.jpg'
 import thumbMountain from '../assets/quick-searches/mountain.jpg'
 import thumbPalm from '../assets/quick-searches/palm.jpg'
 import thumbSnow from '../assets/quick-searches/snow.jpg'
@@ -6,7 +7,7 @@ import thumbSummer from '../assets/quick-searches/summer.jpg'
 import thumbSun from '../assets/quick-searches/sun.jpg'
 import thumbTree from '../assets/quick-searches/tree.jpg'
 import thumbYosemite from '../assets/quick-searches/yosemite.jpg'
-import { dataAbstract, dataMountain, dataPalms, dataPineapple, dataSnow, dataSun, dataValley, dataValley2 as dataYosemite } from './components/data'
+import { dataAbstract, dataColourful, dataMountain, dataPalms, dataPineapple, dataSnow, dataSun, dataValley, dataValley2 as dataYosemite } from './components/data'
 import { getQuickSearch as quicky, getRandomItem, Orientation } from './components/utils'
 
 const referrer = "https://prettysnap.io"
@@ -54,6 +55,7 @@ export const quickSearches = [
     quicky('mountains', thumbMountain, dataMountain),
     quicky('palms', thumbPalm, dataPalms, Orientation.Right),
     quicky('yosemite', thumbYosemite, dataYosemite),
+    quicky('colourful', thumbColourful, dataColourful),
     quicky('summer', thumbSummer, dataPineapple, Orientation.Left),
     quicky('snow', thumbSnow, dataSnow),
     quicky('sun', thumbSun, dataSun),
