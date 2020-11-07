@@ -39,7 +39,7 @@ function SearchInput() {
 
 /** Renders the little image icons used to run common search queries */
 function QuickSearchButtons() {
-    return <div class="row flex-wrap justify-center">
+    return <div class="row flex-wrap justify-center pr-4">
         {quickSearches.map(qs => <QuickSearch {...qs} />)}
     </div>
 }
@@ -50,5 +50,5 @@ function QuickSearch({ searchTerm, thumb, ...background }: QuickSearch) {
         useOptionsStore.setState({ background })
     }
     return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }}
-        class="w-12 h-12 m-1 bg-cover rounded-full shadow-sm hover:shadow transform hover:scale-105 outline-primary" />
+        class="w-12 h-12 m-1 -mr-4 z-0 bg-cover rounded-full shadow hover:shadow-md border-white border-2 transform hover:scale-105 outline-primary" />
 }
