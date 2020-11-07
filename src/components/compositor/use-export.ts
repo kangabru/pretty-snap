@@ -62,7 +62,7 @@ function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [() => Promise<
                     setTimeout(() => setSaveState(SaveState.ready), 1000)
 
                     // Trigger 'download' call as required by the API guidelines
-                    fetch(urls.apiUnsplashUse, { body: settings.background.srcDownload }).catch(console.log)
+                    fetch(urls.apiUnsplashUse, { method: "POST", body: settings.background.srcDownload }).catch(console.log)
                 }, 500)
             } catch (error) {
                 console.error(error)
