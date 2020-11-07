@@ -55,6 +55,7 @@ async function CallApi(options: SearchInput): Promise<UnsplashResponse> {
     const params = new URLSearchParams()
     options.searchTerm && params.append('query', options.searchTerm)
     params.append('page', '' + options.page)
+    params.append('per_page', '20')
     return fetch(`${urls.apiUnsplashSearch}?${params.toString()}`).then(x => x.json())
 }
 
