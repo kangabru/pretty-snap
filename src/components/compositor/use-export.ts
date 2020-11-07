@@ -2,6 +2,7 @@ import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
 import { getSizeBackground } from './styles';
 import useOptionsStore from '../stores/options';
+import { urls } from '../../constants';
 
 export enum SaveState {
     disabled, // Default state until user selects image
@@ -59,6 +60,9 @@ function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [() => Promise<
                     await saveImage({ width, height })
                     setSaveState(SaveState.success)
                     setTimeout(() => setSaveState(SaveState.ready), 1000)
+
+                    // Trigger 'download' call as required by the API guidelines
+                    fetch(urls.apiUnsplashUse, { body: settings.background.srcDownload }).catch(console.log)
                 }, 500)
             } catch (error) {
                 console.error(error)

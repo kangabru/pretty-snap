@@ -1,20 +1,36 @@
-import abstract from '../assets/quick-searches/abstract.jpg'
-import mountain from '../assets/quick-searches/mountain.jpg'
-import palm from '../assets/quick-searches/palm.jpg'
-import snow from '../assets/quick-searches/snow.jpg'
-import summer from '../assets/quick-searches/summer.jpg'
-import sun from '../assets/quick-searches/sun.jpg'
-import tree from '../assets/quick-searches/tree.jpg'
-import yosemite from '../assets/quick-searches/yosemite.jpg'
-import { getRandomItem, getQuickSearch as quicky, Orientation } from './components/utils'
+import thumbAbstract from '../assets/quick-searches/abstract.jpg'
+import thumbMountain from '../assets/quick-searches/mountain.jpg'
+import thumbPalm from '../assets/quick-searches/palm.jpg'
+import thumbSnow from '../assets/quick-searches/snow.jpg'
+import thumbSummer from '../assets/quick-searches/summer.jpg'
+import thumbSun from '../assets/quick-searches/sun.jpg'
+import thumbTree from '../assets/quick-searches/tree.jpg'
+import thumbYosemite from '../assets/quick-searches/yosemite.jpg'
+import { dataAbstract, dataMountain, dataPalms, dataPineapple, dataSnow, dataSun, dataValley, dataValley2 as dataYosemite } from './components/data'
+import { getQuickSearch as quicky, getRandomItem, Orientation } from './components/utils'
 
 const referrer = "https://prettysnap.io"
 const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome! Thanks @kanga_bru%0A%0A"
 
-const urlBase = process.env.URL_API ?? ""
+// See cloudlfare/worker.js for the endpoint definitions
+const urlBase = (process.env.URL_API ?? "") + "/api"
 
 export const urls = {
-    apiUnsplash: urlBase + "/splash",
+
+    /** Use to proxy the unsplash search API.
+     * @access GET request with unsplash search params appended.
+     * @returns Unsplash JSON search response.
+     * @see https://unsplash.com/documentation#search-photos
+     */
+    apiUnsplashSearch: urlBase + "/search",
+
+    /** Use to trigger a download event as required by the API guidelines.
+     * @access POST request with the body as the download url in plain text.
+     * @returns 200 on success
+     * @see https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download
+     */
+    apiUnsplashUse: urlBase + "/use",
+
     unsplash: "https://unsplash.com", // Do not add slash
     kangabru: "https://twitter.com/kanga_bru",
     pandasnap: "https://pandasnap.io",
@@ -30,24 +46,20 @@ export const PADDING_MAX = 100
 
 // https://docs.imgix.com/apis/rendering/size
 // https://unsplash.com/documentation#dynamically-resizable-images
-export const paramsPreview = "?w=1080&q=80"
-export const paramsExport = `?w=${MAX_SIZE}&q=80`
-
-// https://docs.imgix.com/apis/rendering/rotation/orient
 export const paramsOrientLeft = "&orient=8"
 export const paramsOrientRight = "&orient=6"
 
 export const quickSearches = [
-    quicky('nature',    tree,     "https://images.unsplash.com/photo-1480499484268-a85a2414da81"),
-    quicky('mountains', mountain, "https://images.unsplash.com/photo-1504870712357-65ea720d6078"),
-    quicky('palms',     palm,     "https://images.unsplash.com/photo-1514125669375-59ee3985d08b", Orientation.Right),
-    quicky('yosemite',  yosemite, "https://images.unsplash.com/photo-1527549993586-dff825b37782"),
-    quicky('summer',    summer,   "https://images.unsplash.com/photo-1515876879333-013aa5ea1472", Orientation.Left),
-    quicky('snow',      snow,     "https://images.unsplash.com/photo-1517299321609-52687d1bc55a"),
-    quicky('sun',       sun,      "https://images.unsplash.com/photo-1504386106331-3e4e71712b38"),
-    quicky('abstract',  abstract, "https://images.unsplash.com/photo-1557672172-298e090bd0f1", Orientation.Right),
+    quicky('nature', thumbTree, dataValley),
+    quicky('mountains', thumbMountain, dataMountain),
+    quicky('palms', thumbPalm, dataPalms, Orientation.Right),
+    quicky('yosemite', thumbYosemite, dataYosemite),
+    quicky('summer', thumbSummer, dataPineapple, Orientation.Left),
+    quicky('snow', thumbSnow, dataSnow),
+    quicky('sun', thumbSun, dataSun),
+    quicky('abstract', thumbAbstract, dataAbstract, Orientation.Right),
 ]
 
-export const randomSearch = getRandomItem(Object.values(quickSearches))
+export const randomSearch = getRandomItem(quickSearches)
 
 export const MAX_SEARCH_COUNT = 5

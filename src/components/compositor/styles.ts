@@ -57,7 +57,7 @@ function useStylesRender(settings: Settings): CompositionStyles {
 
     return {
         inner: { ...posStylesInner, width, height },
-        outer: { ...posStylesOuter, width: widthBg, height: heightBg, backgroundImage: srcToUrl(background.srcExport) },
+        outer: { ...posStylesOuter, width: widthBg, height: heightBg, backgroundImage: srcToUrl(background.srcRender) },
     }
 }
 

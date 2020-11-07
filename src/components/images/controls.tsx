@@ -4,7 +4,7 @@ import { quickSearches } from '../../constants';
 import { QuickSearch as QuickSearch } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
-import { getImagePreview, join, srcToUrl } from '../utils';
+import { join, srcToUrl } from '../utils';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function Controls() {
@@ -44,10 +44,10 @@ function QuickSearchButtons() {
     </div>
 }
 
-function QuickSearch({ searchTerm, thumb, src, srcExport }: QuickSearch) {
+function QuickSearch({ searchTerm, thumb, ...background }: QuickSearch) {
     const onClick = () => {
         useUnsplashStore.setState({ searchTerm })
-        useOptionsStore.setState({ background: { src, srcExport } })
+        useOptionsStore.setState({ background })
     }
     return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }}
         class="w-12 h-12 m-1 bg-cover rounded-full shadow-sm hover:shadow transform hover:scale-105 outline-primary" />

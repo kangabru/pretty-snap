@@ -4,7 +4,7 @@ import { Position, Settings } from "../../types"
 
 /** zustand state for state management  */
 const useOptionsStore = create<Settings>(() => ({
-    background: { src: randomSearch.src, srcExport: randomSearch.srcExport },
+    background: randomSearch,
     padding: PADDING_INIT,
     position: Position.Center,
 }))
