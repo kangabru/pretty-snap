@@ -1,30 +1,36 @@
-import { h, JSX } from 'preact';
-import { PADDING_MAX, PADDING_MIN } from '../../constants';
-import { SaveState } from './use-export';
+import { Fragment, h, JSX } from 'preact';
+import { PADDING_MAX, PADDING_MIN, urls } from '../../constants';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import PositionButtonGroup from './controls-positions';
+import { SaveState } from './use-export';
 
 export type CompositorControlProps = { canCopy: boolean, copy: () => void, copyState: SaveState, download: () => void, downloadState: SaveState }
 
 /** Renders the image compositional control component. */
 export default function Controls({ canCopy, copy, copyState, download, downloadState }: CompositorControlProps) {
-    return <section class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
+    const hasError = copyState == SaveState.error || downloadState == SaveState.error
+    return <Fragment>
+        {hasError && <p class="max-w-md text-red-500 text-center">
+            Oops! Something broke which means your browser might not be supported 😬
+            Please try on Chrome, Firefox, or <a href={urls.github} class="underline">submit an issue on Github</a>. Sorry about that!
+        </p>}
+        <section class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
+            <PositionButtonGroup />
+            <PaddingSlider />
 
-        <PositionButtonGroup />
-        <PaddingSlider />
+            {/* Export buttons */}
+            <div class="row space-x-3">
+                <ExportButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"></path><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"></path></svg>
+                </ExportButton>
 
-        {/* Export buttons */}
-        <div class="row space-x-3">
-            <ExportButton onClick={copy} disabled={!canCopy} title={canCopy ? "Copy" : "This browser doesn't support image copy."} status={copyState}>
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"></path><path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"></path></svg>
-            </ExportButton>
-
-            <ExportButton onClick={download} title="Download" status={downloadState}>
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path></svg>
-            </ExportButton>
-        </div>
-    </section>
+                <ExportButton onClick={download} title="Download" status={downloadState}>
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path></svg>
+                </ExportButton>
+            </div>
+        </section>
+    </Fragment>
 }
 
 function PaddingSlider() {
