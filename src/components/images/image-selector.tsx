@@ -5,9 +5,17 @@ import { UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
 import { getBackgroundFromImage, getUnsplashBacklink, join, srcToUrl } from '../utils';
+import Controls from './image-controls';
+
+export default function ImageSelector() {
+    return <Fragment>
+        <Controls />
+        <ImageRow />
+    </Fragment>
+}
 
 /** Renders the unsplash row of images that users can select from. */
-export default function ImageRow() {
+function ImageRow() {
     const images = useUnsplashStore(s => s.images)
     const isSearching = useUnsplashStore(s => s.isSearching)
     const isFirstSearch = !images?.length && isSearching
