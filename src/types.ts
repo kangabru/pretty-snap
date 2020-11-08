@@ -15,15 +15,18 @@ export type UnsplashImage = {
     },
 }
 
-export type Background = { src: string, srcRender: string, srcDownload: string }
+export type BackgroundImage = { src: string, srcRender: string, srcDownload: string }
+export type BackgroundPattern = { src: string, classes: string }
 export type Foreground = { src: string, width: number, height: number }
+
 export enum Position { Center, Top, Left, Right, Bottom }
 
 export type Settings = {
     foreground?: Foreground,
-    background: Background,
+    backgroundImage?: BackgroundImage,
+    backgroundPattern?: BackgroundPattern,
     padding: number,
     position: Position,
 }
 
-export type QuickSearch = Background & { searchTerm: string, thumb: string }
+export type QuickSearch = BackgroundImage & { searchTerm: string, thumb: string }

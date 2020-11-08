@@ -4,7 +4,7 @@ import { Foreground } from '../../types';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
-import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER } from './styles';
+import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN } from './styles';
 import { useCopy, useDownload } from './use-export';
 import { onInputChange, useImageDrop, useImagePaste } from './use-upload';
 
@@ -16,6 +16,8 @@ export default function Compositor() {
     const ref = mergeRefs([ref1, ref2])
 
     // Handle foreground inputs
+    const backgroundImage = useOptionsStore(s => s.backgroundImage)
+    const backgroundPattern = useOptionsStore(s => s.backgroundPattern)
     const foreground = useOptionsStore(s => s.foreground)
     const setForeground = (foreground: Foreground) => useOptionsStore.setState({ foreground })
 
@@ -25,9 +27,11 @@ export default function Compositor() {
     // Get the styles for the preview and hidden render components
     const [refPreviewContainer, stylesScreen, stylesRender] = useCompositionStyles()
 
+    const backgroundClasses = backgroundImage ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, backgroundPattern?.classes)
+
     return <Fragment>
         {/* Renders the preview */}
-        <section ref={refPreviewContainer} class={join(CLASSES_OUTER, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
+        <section ref={refPreviewContainer} class={join(backgroundClasses, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
                     <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
@@ -42,7 +46,7 @@ export default function Compositor() {
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
         {foreground && <div class="hidden">
-            <section ref={ref} class={CLASSES_OUTER} style={stylesRender.outer as any}>
+            <section ref={ref} class={backgroundClasses} style={stylesRender.outer as any}>
                 <img src={foreground.src} alt="Screenshot" class={CLASSES_INNER} style={stylesRender.inner as any} />
             </section>
         </div>}

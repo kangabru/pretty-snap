@@ -20,6 +20,7 @@ module.exports = {
         opacity: ({ after }) => after(['disabled']),
         textDecoration: ({ after }) => after(['focus']),
         borderColor: ({ after }) => after(['focus-within']),
+        backgroundSize: ({ after }) => after(['focus']),
     },
     theme: {
         extend: {
@@ -43,6 +44,7 @@ module.exports = {
             opacity: {
                 85: '0.85',
             },
+            backgroundSize: (theme) => theme('spacing'),
         },
     },
     plugins: [],

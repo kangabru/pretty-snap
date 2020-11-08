@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks"
 import { paramsOrientLeft, paramsOrientRight, urls } from "../constants"
-import { Background, QuickSearch, UnsplashImage } from "../types"
+import { BackgroundImage, QuickSearch, UnsplashImage } from "../types"
 import { testData1, testData2 } from "./data"
 
 type ClassProp = string | boolean | undefined | null
@@ -18,7 +18,7 @@ export function getUnsplashBacklink(image: UnsplashImage) {
 }
 
 /** Return the src url to use for displaying an unsplash image */
-export const getBackgroundFromImage = (image: UnsplashImage, extraParams: string = ""): Background => ({
+export const getBackgroundFromImage = (image: UnsplashImage, extraParams: string = ""): BackgroundImage => ({
     src: image.urls.regular + extraParams,
     srcRender: image.urls.full + extraParams,
     srcDownload: image.links.download_location,

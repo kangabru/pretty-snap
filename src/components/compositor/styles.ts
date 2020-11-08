@@ -6,7 +6,8 @@ import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
 import { srcToUrl } from '../utils';
 
-export const CLASSES_OUTER = "bg-gray-200 bg-cover bg-center"
+export const CLASSES_OUTER_IMAGE = "bg-gray-200 bg-cover bg-center"
+export const CLASSES_OUTER_PATTERN = "bg-repeat"
 export const CLASSES_INNER = "rounded-lg shadow-xl"
 
 type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
@@ -29,7 +30,7 @@ export default function useCompositionStyles(): [Ref<HTMLElement>, CompositionSt
 
 /** Returns styles for the compositor visible on screen. */
 function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionStyles] {
-    const { padding, position, background, foreground } = settings
+    const { padding, position, backgroundImage, backgroundPattern, foreground } = settings
 
     // Uses can upload image larger than the screen size but the padding will look tiny when rendered.
     // Here we adjust the padding so the proportion is the same in the rendered image.
@@ -42,13 +43,13 @@ function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionSty
 
     return [refPreviewContainer, {
         inner: posStylesInner,
-        outer: { ...posStylesOuter, backgroundImage: srcToUrl(background.src) },
+        outer: { ...posStylesOuter, backgroundImage: srcToUrl(backgroundPattern?.src || backgroundImage?.src || "") },
     }]
 }
 
 /** Returns styles used to export the final image. */
 function useStylesRender(settings: Settings): CompositionStyles {
-    const { padding, position, foreground, background } = settings
+    const { padding, position, foreground, backgroundImage, backgroundPattern } = settings
 
     const [width, height] = getSizeForeground(foreground)
     const [widthBg, heightBg] = getSizeBackground(settings)
@@ -57,7 +58,10 @@ function useStylesRender(settings: Settings): CompositionStyles {
 
     return {
         inner: { ...posStylesInner, width, height },
-        outer: { ...posStylesOuter, width: widthBg, height: heightBg, backgroundImage: srcToUrl(background.srcRender) },
+        outer: {
+            ...posStylesOuter, width: widthBg, height: heightBg,
+            backgroundImage: srcToUrl(backgroundImage?.srcRender || backgroundPattern?.src || ""),
+        },
     }
 }
 

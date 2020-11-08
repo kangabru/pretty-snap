@@ -47,7 +47,7 @@ function QuickSearchButtons() {
 function QuickSearch({ searchTerm, thumb, ...background }: QuickSearch) {
     const onClick = () => {
         useUnsplashStore.setState({ searchTerm })
-        useOptionsStore.setState({ background })
+        useOptionsStore.getState().setImage(background)
     }
     return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }}
         class="w-12 h-12 m-1 -mr-4 z-0 bg-cover rounded-full shadow hover:shadow-md border-white border-2 transform hover:scale-105 outline-primary" />
