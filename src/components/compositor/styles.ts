@@ -4,11 +4,11 @@ import useMeasure from 'react-use-measure';
 import { MAX_SIZE } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
-import { srcToUrl } from '../utils';
+import { srcToUrl, srcToUrlSvg } from '../utils';
 
 export const CLASSES_OUTER_IMAGE = "bg-gray-200 bg-cover bg-center"
-export const CLASSES_OUTER_PATTERN = "bg-repeat"
-export const CLASSES_INNER = "rounded-lg shadow-xl"
+export const CLASSES_OUTER_PATTERN = "relative bg-repeat"
+export const CLASSES_INNER = "relative z-10 rounded-xl shadow-xl"
 
 type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
 
@@ -30,7 +30,7 @@ export default function useCompositionStyles(): [Ref<HTMLElement>, CompositionSt
 
 /** Returns styles for the compositor visible on screen. */
 function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionStyles] {
-    const { padding, position, backgroundImage, backgroundPattern, foreground } = settings
+    const { padding, position, foreground } = settings
 
     // Uses can upload image larger than the screen size but the padding will look tiny when rendered.
     // Here we adjust the padding so the proportion is the same in the rendered image.
@@ -39,29 +39,28 @@ function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionSty
     const [imageWidth,] = getSizeForeground(foreground)
     const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
 
+    const bgStylesOuter = getBackgroundStyles(settings)
     const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
 
     return [refPreviewContainer, {
         inner: posStylesInner,
-        outer: { ...posStylesOuter, backgroundImage: srcToUrl(backgroundPattern?.src || backgroundImage?.src || "") },
+        outer: { ...posStylesOuter, ...bgStylesOuter },
     }]
 }
 
 /** Returns styles used to export the final image. */
 function useStylesRender(settings: Settings): CompositionStyles {
-    const { padding, position, foreground, backgroundImage, backgroundPattern } = settings
+    const { padding, position, foreground } = settings
 
     const [width, height] = getSizeForeground(foreground)
     const [widthBg, heightBg] = getSizeBackground(settings)
 
+    const bgStylesOuter = getBackgroundStyles(settings)
     const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position)
 
     return {
         inner: { ...posStylesInner, width, height },
-        outer: {
-            ...posStylesOuter, width: widthBg, height: heightBg,
-            backgroundImage: srcToUrl(backgroundImage?.srcRender || backgroundPattern?.src || ""),
-        },
+        outer: { ...posStylesOuter, width: widthBg, height: heightBg, ...bgStylesOuter },
     }
 }
 
@@ -87,6 +86,12 @@ export function getSizeBackground(settings: Omit<Settings, 'background'>) {
     const shortY = position == Position.Top || position == Position.Bottom
 
     return [width + padding * (shortX ? 1 : 2), height + padding * (shortY ? 1 : 2)]
+}
+
+function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): CSSProperties {
+    const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : undefined
+    const pattern = backgroundPattern?.getSrc ? srcToUrlSvg(backgroundPattern?.getSrc(backgroundPattern)) : undefined
+    return { backgroundColor, backgroundImage: pattern ?? srcToUrl(backgroundImage?.src ?? "") }
 }
 
 /** Returns styles for fore and background images to position the foreground according to the user selected options. */

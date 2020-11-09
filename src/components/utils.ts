@@ -10,6 +10,7 @@ export const getRandomItem = <T>(items: T[]) => items[Math.floor(Math.random() *
 export const useRandomItem = <T>(items: T[]) => useState(getRandomItem(items))[0]
 
 export const srcToUrl = (src: string) => `url('${src}')`
+export const srcToUrlSvg = (src: string) => srcToUrl("data:image/svg+xml," + src)
 
 /** Returns a url to the authors profile as required by the API guidelines.
  *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */

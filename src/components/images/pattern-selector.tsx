@@ -1,66 +1,112 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import useOptionsStore from '../stores/options';
-import { join, srcToUrl } from '../utils';
+import { join, srcToUrlSvg } from '../utils';
+import * as colours from './pattern-colours';
 import * as patterns from './pattern-svgs';
 
 export default function PatternSelector() {
-    return <div class="grid grid-rows-2 grid-flow-col gap-2 overflow-x-scroll">
-        <Pattern svg={patterns.bubbles} />
-        <Colour className="bg-red-200" />
-        <Colour className="bg-teal-200" />
-        <Colour className="bg-red-400" />
-        <Colour className="bg-teal-400 bg-20" />
-        <Colour className="bg-red-600" />
-        <Colour className="bg-teal-600" />
-        <Colour className="bg-red-800" />
-        <Colour className="bg-teal-800" />
+    return <Fragment>
+        <PatternRow />
+        <ColorRow />
+    </Fragment>
+}
 
-        <Colour className="bg-orange-200" />
-        <Colour className="bg-blue-200" />
-        <Colour className="bg-orange-400" />
-        <Colour className="bg-blue-400" />
-        <Colour className="bg-orange-600" />
-        <Colour className="bg-blue-600" />
-        <Colour className="bg-orange-800" />
-        <Colour className="bg-blue-800" />
-
-        <Colour className="bg-yellow-200" />
-        <Colour className="bg-indigo-200" />
-        <Colour className="bg-yellow-400" />
-        <Colour className="bg-indigo-400" />
-        <Colour className="bg-yellow-600" />
-        <Colour className="bg-indigo-600" />
-        <Colour className="bg-yellow-800" />
-        <Colour className="bg-indigo-800" />
-
-        <Colour className="bg-green-200" />
-        <Colour className="bg-purple-200" />
-        <Colour className="bg-green-400" />
-        <Colour className="bg-purple-400" />
-        <Colour className="bg-green-600" />
-        <Colour className="bg-purple-600" />
-        <Colour className="bg-green-800" />
-        <Colour className="bg-purple-800" />
-
-        <Colour className="bg-pink-200" />
-        <Colour className="bg-gray-200" />
-        <Colour className="bg-pink-400" />
-        <Colour className="bg-gray-400" />
-        <Colour className="bg-pink-600" />
-        <Colour className="bg-gray-600" />
-        <Colour className="bg-pink-800" />
-        <Colour className="bg-gray-800" />
+function ColorRow() {
+    return <div class="grid grid-rows-2 grid-flow-col gap-2 py-2 overflow-x-scroll">
+        <Colour colour={colours.red200} />
+        <Colour colour={colours.teal200} />
+        <Colour colour={colours.red400} />
+        <Colour colour={colours.teal400} />
+        <Colour colour={colours.red600} />
+        <Colour colour={colours.teal600} />
+        <Colour colour={colours.red800} />
+        <Colour colour={colours.teal800} />
+        <Colour colour={colours.orange200} />
+        <Colour colour={colours.blue200} />
+        <Colour colour={colours.orange400} />
+        <Colour colour={colours.blue400} />
+        <Colour colour={colours.orange600} />
+        <Colour colour={colours.blue600} />
+        <Colour colour={colours.orange800} />
+        <Colour colour={colours.blue800} />
+        <Colour colour={colours.yellow200} />
+        <Colour colour={colours.indigo200} />
+        <Colour colour={colours.yellow400} />
+        <Colour colour={colours.indigo400} />
+        <Colour colour={colours.yellow600} />
+        <Colour colour={colours.indigo600} />
+        <Colour colour={colours.yellow800} />
+        <Colour colour={colours.indigo800} />
+        <Colour colour={colours.green200} />
+        <Colour colour={colours.purple200} />
+        <Colour colour={colours.green400} />
+        <Colour colour={colours.purple400} />
+        <Colour colour={colours.green600} />
+        <Colour colour={colours.purple600} />
+        <Colour colour={colours.green800} />
+        <Colour colour={colours.purple800} />
+        <Colour colour={colours.pink200} />
+        <Colour colour={colours.gray200} />
+        <Colour colour={colours.pink400} />
+        <Colour colour={colours.gray400} />
+        <Colour colour={colours.pink600} />
+        <Colour colour={colours.gray600} />
+        <Colour colour={colours.pink800} />
+        <Colour colour={colours.gray800} />
     </div>
 }
 
-function Colour({ className }: { className: string }) {
-    const onClick = () => useOptionsStore.getState().setColour(className)
-    return <button onClick={onClick} class={join("w-32 h-32 rounded text-white", className)} />
+function Colour({ colour }: { colour: string }) {
+    const onClick = () => useOptionsStore.getState().setColour(colour)
+    return <button onClick={onClick} class="w-32 h-32 rounded outline-primary" style={{ backgroundColor: colour }} />
 }
 
-function Pattern({ svg }: { svg: string }) {
+function PatternRow() {
+    return <div class="space-y-2">
+        <PatternColours />
+        <Patterns />
+    </div>
+}
+
+function Patterns() {
+    return <div class="row flex-wrap space-x-2">
+        <Pattern getSrc={patterns.bubbles} />
+        <Pattern getSrc={patterns.bubbles} />
+        <Pattern getSrc={patterns.bubbles} />
+        <Pattern getSrc={patterns.bubbles} />
+        <Pattern getSrc={patterns.bubbles} />
+    </div>
+}
+
+function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern)
-    const src = svg ?? ""
-    const onClick = () => useOptionsStore.getState().setPattern(src)
-    return <button onClick={onClick} class={join("w-32 h-32 rounded text-white", bg?.classes)} style={{ backgroundImage: srcToUrl(src) }} />
+    const onClick = () => useOptionsStore.getState().setPattern(getSrc)
+    return <button onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "" }}>
+        <PatternSvg getSrc={getSrc} />
+    </button>
+}
+
+function PatternColours() {
+    return <div class="row flex-wrap space-x-2">
+        <PatternColor colour={colours.white} opacity={0.5} />
+        <PatternColor colour={colours.white} opacity={0.75} />
+        <PatternColor colour={colours.white} opacity={1} />
+        <PatternColor colour={colours.black} opacity={0.5} />
+        <PatternColor colour={colours.black} opacity={0.75} />
+        <PatternColor colour={colours.black} opacity={1} />
+    </div>
+}
+
+function PatternColor({ colour, opacity }: { colour: string, opacity: number }) {
+    const onClick = () => useOptionsStore.getState().setPatternColour(colour, opacity)
+    const backgroundColor = useOptionsStore(s => s.backgroundPattern?.bgColour) ?? ""
+    return <button onClick={onClick} class='shadow rounded outline-primary' style={{ backgroundColor }}>
+        <div class="w-6 h-6 m-1 rounded-sm" style={{ backgroundColor: colour, opacity }}></div>
+    </button>
+}
+
+export function PatternSvg({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
+    const bg = useOptionsStore(s => s.backgroundPattern)
+    const backgroundImage = srcToUrlSvg(bg ? getSrc(bg) : "")
+    return <div class="absolute inset-0" style={{ backgroundImage }} />
 }

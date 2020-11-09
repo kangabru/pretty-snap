@@ -16,8 +16,8 @@ export default function Compositor() {
     const ref = mergeRefs([ref1, ref2])
 
     // Handle foreground inputs
-    const backgroundImage = useOptionsStore(s => s.backgroundImage)
-    const backgroundPattern = useOptionsStore(s => s.backgroundPattern)
+    const image = useOptionsStore(s => s.backgroundImage)
+    const pattern = useOptionsStore(s => s.backgroundPattern)
     const foreground = useOptionsStore(s => s.foreground)
     const setForeground = (foreground: Foreground) => useOptionsStore.setState({ foreground })
 
@@ -27,7 +27,7 @@ export default function Compositor() {
     // Get the styles for the preview and hidden render components
     const [refPreviewContainer, stylesScreen, stylesRender] = useCompositionStyles()
 
-    const backgroundClasses = backgroundImage ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, backgroundPattern?.classes)
+    const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
     return <Fragment>
         {/* Renders the preview */}

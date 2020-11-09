@@ -1,3 +1,5 @@
+import { SvgPatternCallback } from "./components/images/pattern-svgs"
+
 export type UnsplashResponse = { results?: UnsplashImage[] }
 
 // The response subset used with the app
@@ -16,7 +18,7 @@ export type UnsplashImage = {
 }
 
 export type BackgroundImage = { src: string, srcRender: string, srcDownload: string }
-export type BackgroundPattern = { src: string, classes: string }
+export type BackgroundPattern = { getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number }
 export type Foreground = { src: string, width: number, height: number }
 
 export enum Position { Center, Top, Left, Right, Bottom }
