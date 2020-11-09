@@ -71,10 +71,8 @@ function PatternRow() {
 function Patterns() {
     return <div class="row flex-wrap space-x-2">
         <Pattern getSrc={patterns.bubbles} />
-        <Pattern getSrc={patterns.bubbles} />
-        <Pattern getSrc={patterns.bubbles} />
-        <Pattern getSrc={patterns.bubbles} />
-        <Pattern getSrc={patterns.bubbles} />
+        <Pattern getSrc={patterns.circlesOverlap} />
+        <Pattern getSrc={patterns.polka} />
     </div>
 }
 
