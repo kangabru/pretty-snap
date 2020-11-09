@@ -69,17 +69,28 @@ function PatternRow() {
 }
 
 function Patterns() {
-    return <div class="row flex-wrap space-x-2">
+    return <div class="row flex-wrap">
         <Pattern getSrc={patterns.bubbles} />
         <Pattern getSrc={patterns.circlesOverlap} />
         <Pattern getSrc={patterns.polka} />
+        <Pattern getSrc={patterns.random} />
+        <Pattern getSrc={patterns.ticTacTeo} />
+        <Pattern getSrc={patterns.wiggle} />
+        <Pattern getSrc={patterns.yyy} />
+        <Pattern getSrc={patterns.anchors} />
+        <Pattern getSrc={patterns.circuit} />
+        <Pattern getSrc={patterns.stripes} />
+        <Pattern getSrc={patterns.triangles} />
+        <Pattern getSrc={patterns.floor} />
+        <Pattern getSrc={patterns.invitation} />
+        <Pattern getSrc={patterns.hideout} />
     </div>
 }
 
 function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern)
     const onClick = () => useOptionsStore.getState().setPattern(getSrc)
-    return <button onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "" }}>
+    return <button onClick={onClick} class="relative w-24 h-24 m-1 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "" }}>
         <PatternSvg getSrc={getSrc} />
     </button>
 }
