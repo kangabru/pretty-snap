@@ -1,5 +1,6 @@
 import { Ref } from 'preact';
 import { CSSProperties } from 'react';
+import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import { MAX_SIZE } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
@@ -8,7 +9,7 @@ import { srcToUrl, srcToUrlSvg } from '../utils';
 
 export const CLASSES_OUTER_IMAGE = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_OUTER_PATTERN = "relative bg-repeat"
-export const CLASSES_INNER = "relative z-10 rounded-xl shadow-xl"
+export const CLASSES_INNER = "relative z-10 shadow-xl transition"
 
 type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
 
@@ -21,11 +22,28 @@ type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
  *
  * These elements need similar but slightly different styles that that viewing and rendering behave as expected.
  */
-export default function useCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+export function useCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
     const settings = useOptionsStore() // Not this refreshes on every external option update
-    const [contRefScreen, screen] = useStylesPreview(settings)
-    const render = useStylesRender(settings)
-    return [contRefScreen, screen, render]
+    const [contRefScreen, stylesScreen] = useStylesPreview(settings)
+    const stylesRender = useStylesRender(settings)
+    return [contRefScreen, stylesScreen, stylesRender]
+}
+
+export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+    const [contRefScreen, stylesScreen, stylesRender] = useCompositionStyles()
+
+    const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesScreenInner } = stylesScreen.inner as CSSProperties
+    const animStylesScreenInner = useSpring({ borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius })
+
+    const { backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom, ...restStylesScreenOuter } = stylesScreen.outer as CSSProperties
+    const animStylesScreenOuter = useSpring({ backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom })
+
+    const stylesScreenAnim = {
+        inner: { ...animStylesScreenInner, ...restStylesScreenInner },
+        outer: { ...animStylesScreenOuter, ...restStylesScreenOuter },
+    }
+
+    return [contRefScreen, stylesScreenAnim, stylesRender]
 }
 
 /** Returns styles for the compositor visible on screen. */
@@ -89,7 +107,7 @@ export function getSizeBackground(settings: Omit<Settings, 'background'>) {
 }
 
 function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): CSSProperties {
-    const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : undefined
+    const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : 'white'
     const pattern = backgroundPattern?.getSrc ? srcToUrlSvg(backgroundPattern?.getSrc(backgroundPattern)) : undefined
     return {
         backgroundColor,
@@ -100,36 +118,37 @@ function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): 
 
 /** Returns styles for fore and background images to position the foreground according to the user selected options. */
 function getPositionStyles(padding: number, position: Position): [CSSProperties, CSSProperties] {
-    const paddingStr = `${padding}px`
-
-    const stylesForeground: Partial<CSSStyleDeclaration> = {}
-    const stylesBackground: Partial<CSSStyleDeclaration> = {
-        paddingLeft: paddingStr, paddingTop: paddingStr,
-        paddingRight: paddingStr, paddingBottom: paddingStr,
+    const stylesForeground: Partial<CSSProperties> = {
+        borderTopLeftRadius: 10, borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10, borderBottomRightRadius: 10,
+    }
+    const stylesBackground: Partial<CSSProperties> = {
+        paddingLeft: padding, paddingTop: padding,
+        paddingRight: padding, paddingBottom: padding,
     }
 
     switch (position) {
         case Position.Left:
-            stylesBackground.paddingLeft = '0'
-            stylesForeground.borderTopLeftRadius = '0'
-            stylesForeground.borderBottomLeftRadius = '0'
+            stylesBackground.paddingLeft = 0
+            stylesForeground.borderTopLeftRadius = 0
+            stylesForeground.borderBottomLeftRadius = 0
             break;
         case Position.Top:
-            stylesBackground.paddingTop = '0'
-            stylesForeground.borderTopLeftRadius = '0'
-            stylesForeground.borderTopRightRadius = '0'
+            stylesBackground.paddingTop = 0
+            stylesForeground.borderTopLeftRadius = 0
+            stylesForeground.borderTopRightRadius = 0
             break;
         case Position.Right:
-            stylesBackground.paddingRight = '0'
-            stylesForeground.borderTopRightRadius = '0'
-            stylesForeground.borderBottomRightRadius = '0'
+            stylesBackground.paddingRight = 0
+            stylesForeground.borderTopRightRadius = 0
+            stylesForeground.borderBottomRightRadius = 0
             break;
         case Position.Bottom:
-            stylesBackground.paddingBottom = '0'
-            stylesForeground.borderBottomLeftRadius = '0'
-            stylesForeground.borderBottomRightRadius = '0'
+            stylesBackground.paddingBottom = 0
+            stylesForeground.borderBottomLeftRadius = 0
+            stylesForeground.borderBottomRightRadius = 0
             break;
     }
 
-    return [stylesForeground as CSSProperties, stylesBackground as CSSProperties]
+    return [stylesForeground, stylesBackground]
 }

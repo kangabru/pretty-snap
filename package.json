@@ -32,6 +32,7 @@
         "dom-to-image": "^2.6.0",
         "preact": "^10.5.5",
         "react-merge-refs": "^1.1.0",
+        "react-spring": "^8.0.27",
         "react-use-measure": "^2.0.2",
         "zustand": "^3.1.3"
     }

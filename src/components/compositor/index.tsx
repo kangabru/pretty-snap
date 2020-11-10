@@ -1,11 +1,12 @@
 import { Fragment, h } from 'preact';
 import mergeRefs from 'react-merge-refs';
+import { animated } from 'react-spring';
 import { Foreground } from '../../types';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
-import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN } from './use-styles';
 import { useCopy, useDownload } from './use-export';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles } from './use-styles';
 import { onInputChange, useImageDrop, useImagePaste } from './use-upload';
 
 /** Renders the main image composition preview component. */
@@ -25,23 +26,23 @@ export default function Compositor() {
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)
 
     // Get the styles for the preview and hidden render components
-    const [refPreviewContainer, stylesScreen, stylesRender] = useCompositionStyles()
+    const [refPreviewContainer, stylesScreen, stylesRender] = useAnimatedCompositionStyles()
 
     const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
     return <Fragment>
         {/* Renders the preview */}
-        <section ref={refPreviewContainer} class={join(backgroundClasses, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer as any}>
+        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
                     <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
-                    {foreground?.src ? <img src={foreground?.src} alt="Screenshot" class={CLASSES_INNER} style={stylesScreen.inner as any} />
-                        : <div class={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner as any}>
+                    {foreground?.src ? <animated.img src={foreground?.src} alt="Screenshot" className={CLASSES_INNER} style={stylesScreen.inner} />
+                        : <animated.div className={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner}>
                             <InfoSection {...{ isDropping, isError }} />
-                        </div>}
+                        </animated.div>}
                 </label>
             </div>
-        </section>
+        </animated.section>
 
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
