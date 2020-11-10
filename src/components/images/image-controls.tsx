@@ -1,16 +1,17 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { quickSearches } from '../../constants';
-import { QuickSearch as QuickSearch } from '../../types';
+import { SearchPreset } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
 import { join, srcToUrl } from '../utils';
+import { QuickPreset, QuickPresets } from './quick-presets';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function Controls() {
     return <div class="col sm:flex-row sm:justify-between space-y-3 sm:space-y-0 sm:space-x-3">
         <SearchInput />
-        <QuickSearchButtons />
+        <QuickSearches />
     </div>
 }
 
@@ -37,18 +38,14 @@ function SearchInput() {
     </div>
 }
 
-/** Renders the little image icons used to run common search queries */
-function QuickSearchButtons() {
-    return <div class="row flex-wrap justify-center pr-4">
-        {quickSearches.map(qs => <QuickSearch {...qs} />)}
-    </div>
+function QuickSearches() {
+    return <QuickPresets>{quickSearches.map(qs => <QuickSearch {...qs} />)}</QuickPresets>
 }
 
-function QuickSearch({ searchTerm, thumb, ...background }: QuickSearch) {
+function QuickSearch({ searchTerm, thumb, ...background }: SearchPreset) {
     const onClick = () => {
         useUnsplashStore.setState({ searchTerm })
         useOptionsStore.getState().setImage(background)
     }
-    return <button onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }}
-        class="w-12 h-12 m-1 -mr-4 z-0 bg-cover rounded-full shadow hover:shadow-md border-white border-2 transform hover:scale-105 outline-primary" />
+    return <QuickPreset onClick={onClick} title={searchTerm} style={{ backgroundImage: srcToUrl(thumb) }} />
 }

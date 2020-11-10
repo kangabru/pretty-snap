@@ -1,6 +1,6 @@
 import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
 import { Ref, useEffect, useRef, useState } from "preact/hooks";
-import { getSizeBackground } from './styles';
+import { getSizeBackground } from './use-styles';
 import useOptionsStore from '../stores/options';
 import { urls } from '../../constants';
 

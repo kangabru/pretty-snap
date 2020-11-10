@@ -8,7 +8,9 @@ import thumbSun from '../assets/quick-searches/sun.jpg'
 import thumbTree from '../assets/quick-searches/tree.jpg'
 import thumbYosemite from '../assets/quick-searches/yosemite.jpg'
 import { dataAbstract, dataColourful, dataMountain, dataPalms, dataPineapple, dataSnow, dataSun, dataValley, dataValley2 as dataYosemite } from './components/data'
-import { getQuickSearch as quicky, getRandomItem, Orientation } from './components/utils'
+import { getQuickSearch, getQuickPattern, getRandomItem, Orientation } from './components/utils'
+import * as patterns from './components/images/pattern-svgs';
+import * as colours from './components/images/pattern-colours';
 
 const referrer = "https://prettysnap.io"
 const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome! Thanks @kanga_bru%0A%0A"
@@ -52,17 +54,28 @@ export const paramsOrientLeft = "&orient=8"
 export const paramsOrientRight = "&orient=6"
 
 export const quickSearches = [
-    quicky('nature', thumbTree, dataValley),
-    quicky('mountains', thumbMountain, dataMountain),
-    quicky('palms', thumbPalm, dataPalms, Orientation.Right),
-    quicky('yosemite', thumbYosemite, dataYosemite),
-    quicky('colourful', thumbColourful, dataColourful),
-    quicky('summer', thumbSummer, dataPineapple, Orientation.Left),
-    quicky('snow', thumbSnow, dataSnow),
-    quicky('sun', thumbSun, dataSun),
-    quicky('abstract', thumbAbstract, dataAbstract, Orientation.Right),
+    getQuickSearch('nature', thumbTree, dataValley),
+    getQuickSearch('mountains', thumbMountain, dataMountain),
+    getQuickSearch('palms', thumbPalm, dataPalms, Orientation.Right),
+    getQuickSearch('yosemite', thumbYosemite, dataYosemite),
+    getQuickSearch('colourful', thumbColourful, dataColourful),
+    getQuickSearch('summer', thumbSummer, dataPineapple, Orientation.Left),
+    getQuickSearch('snow', thumbSnow, dataSnow),
+    getQuickSearch('sun', thumbSun, dataSun),
+    getQuickSearch('abstract', thumbAbstract, dataAbstract, Orientation.Right),
 ]
 
 export const randomSearch = getRandomItem(quickSearches)
 
 export const MAX_SEARCH_COUNT = 5
+
+export const quickPatterns = [
+    getQuickPattern(patterns.bubbles, colours.red200, colours.white, 1, 3),
+    getQuickPattern(patterns.circuit, colours.gray600, colours.white, 0.5, 6),
+    getQuickPattern(patterns.yyy, colours.blue200, colours.white, 0.5, 1.5),
+    getQuickPattern(patterns.anchors, colours.yellow400, colours.white, 1, 2.5),
+    getQuickPattern(patterns.stripes, colours.purple200, colours.white, 0.5, 0.75),
+    getQuickPattern(patterns.polka, colours.red400, colours.white, 0.75, 0.75),
+    getQuickPattern(patterns.random, colours.teal400, colours.white, 0.5, 2.5),
+    getQuickPattern(patterns.crosses, colours.yellow200, colours.black, 0.25, 1.5),
+]

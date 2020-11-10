@@ -5,9 +5,10 @@ import { black, red200 } from "../images/pattern-colours"
 import { bubbles, SvgPatternCallback } from "../images/pattern-svgs"
 
 type OptionsStore = Settings & {
-    setImage: (background: BackgroundImage) => void
+    setImage: (image: BackgroundImage) => void
+    setPattern: (pattern: BackgroundPattern) => void
     setColour: (colour: string) => void
-    setPattern: (getSrc: SvgPatternCallback) => void
+    setPatternSrc: (getSrc: SvgPatternCallback) => void
     setPatternColour: (colour: string, opacity: number) => void
 }
 
@@ -18,8 +19,9 @@ const useOptionsStore = create<OptionsStore>((set, get) => ({
     position: Position.Center,
 
     setImage: (backgroundImage: BackgroundImage) => set({ backgroundPattern: undefined, backgroundImage }),
+    setPattern: (backgroundPattern: BackgroundPattern) => updatePattern(set, get, backgroundPattern),
     setColour: (bgColour: string) => updatePattern(set, get, { bgColour }),
-    setPattern: (getSrc: SvgPatternCallback) => updatePattern(set, get, { getSrc }),
+    setPatternSrc: (getSrc: SvgPatternCallback) => updatePattern(set, get, { getSrc }),
     setPatternColour: (svgColour: string, svgOpacity: number) => updatePattern(set, get, { svgColour, svgOpacity }),
 }))
 

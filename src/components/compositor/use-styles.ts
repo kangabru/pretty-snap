@@ -91,7 +91,11 @@ export function getSizeBackground(settings: Omit<Settings, 'background'>) {
 function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): CSSProperties {
     const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : undefined
     const pattern = backgroundPattern?.getSrc ? srcToUrlSvg(backgroundPattern?.getSrc(backgroundPattern)) : undefined
-    return { backgroundColor, backgroundImage: pattern ?? srcToUrl(backgroundImage?.src ?? "") }
+    return {
+        backgroundColor,
+        backgroundImage: pattern ?? srcToUrl(backgroundImage?.src ?? ""),
+        backgroundPosition: pattern ? "center" : undefined,
+    }
 }
 
 /** Returns styles for fore and background images to position the foreground according to the user selected options. */

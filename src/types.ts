@@ -31,4 +31,5 @@ export type Settings = {
     position: Position,
 }
 
-export type QuickSearch = BackgroundImage & { searchTerm: string, thumb: string }
+export type SearchPreset = BackgroundImage & { searchTerm: string, thumb: string }
+export type PatternPreset = BackgroundPattern & { sizeRem: number }

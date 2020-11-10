@@ -1,8 +1,11 @@
 import { Fragment, h } from 'preact';
+import { quickPatterns } from '../../constants';
+import { PatternPreset } from '../../types';
 import useOptionsStore from '../stores/options';
-import { join, srcToUrlSvg } from '../utils';
+import { srcToUrlSvg } from '../utils';
 import * as colours from './pattern-colours';
 import * as patterns from './pattern-svgs';
+import { QuickPreset, QuickPresets } from './quick-presets';
 
 export default function PatternSelector() {
     return <Fragment>
@@ -63,6 +66,7 @@ function Colour({ colour }: { colour: string }) {
 
 function PatternRow() {
     return <div class="space-y-2">
+        <QuickPatterns />
         <PatternColours />
         <Patterns />
     </div>
@@ -81,15 +85,15 @@ function Patterns() {
         <Pattern getSrc={patterns.circuit} />
         <Pattern getSrc={patterns.stripes} />
         <Pattern getSrc={patterns.triangles} />
-        <Pattern getSrc={patterns.floor} />
-        <Pattern getSrc={patterns.invitation} />
-        <Pattern getSrc={patterns.hideout} />
+        <Pattern getSrc={patterns.squares} />
+        <Pattern getSrc={patterns.waves} />
+        <Pattern getSrc={patterns.crosses} />
     </div>
 }
 
 function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern)
-    const onClick = () => useOptionsStore.getState().setPattern(getSrc)
+    const onClick = () => useOptionsStore.getState().setPatternSrc(getSrc)
     return <button onClick={onClick} class="relative w-24 h-24 m-1 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "" }}>
         <PatternSvg getSrc={getSrc} />
     </button>
@@ -100,9 +104,9 @@ function PatternColours() {
         <PatternColor colour={colours.white} opacity={0.5} />
         <PatternColor colour={colours.white} opacity={0.75} />
         <PatternColor colour={colours.white} opacity={1} />
+        <PatternColor colour={colours.black} opacity={0.25} />
         <PatternColor colour={colours.black} opacity={0.5} />
         <PatternColor colour={colours.black} opacity={0.75} />
-        <PatternColor colour={colours.black} opacity={1} />
     </div>
 }
 
@@ -114,8 +118,23 @@ function PatternColor({ colour, opacity }: { colour: string, opacity: number }) 
     </button>
 }
 
-export function PatternSvg({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
+function PatternSvg({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern)
     const backgroundImage = srcToUrlSvg(bg ? getSrc(bg) : "")
     return <div class="absolute inset-0" style={{ backgroundImage }} />
+}
+
+function QuickPatterns() {
+    return <QuickPresets>{quickPatterns.map(qs => <QuickPattern {...qs} />)}</QuickPresets>
+}
+
+function QuickPattern(pattern: PatternPreset) {
+    const { getSrc, bgColour, svgColour, svgOpacity } = pattern
+    const onClick = () => useOptionsStore.getState().setPattern(pattern)
+    return <QuickPreset onClick={onClick} style={{
+        backgroundColor: bgColour,
+        backgroundPosition: "center",
+        backgroundSize: `${pattern.sizeRem}rem`,
+        backgroundImage: srcToUrlSvg(getSrc({ svgColour, svgOpacity })),
+    }} />
 }

@@ -4,7 +4,7 @@ import { Foreground } from '../../types';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
-import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN } from './styles';
+import useCompositionStyles, { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN } from './use-styles';
 import { useCopy, useDownload } from './use-export';
 import { onInputChange, useImageDrop, useImagePaste } from './use-upload';
 

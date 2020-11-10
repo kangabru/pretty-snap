@@ -1,7 +1,8 @@
 import { useState } from "preact/hooks"
 import { paramsOrientLeft, paramsOrientRight, urls } from "../constants"
-import { BackgroundImage, QuickSearch, UnsplashImage } from "../types"
+import { BackgroundImage, PatternPreset, SearchPreset, UnsplashImage } from "../types"
 import { testData1, testData2 } from "./data"
+import { SvgPatternCallback } from "./images/pattern-svgs"
 
 type ClassProp = string | boolean | undefined | null
 export const join = (...classes: ClassProp[]): string => classes.filter(x => !!x).join(" ")
@@ -41,7 +42,11 @@ export function getUnsplashBatchDev(): UnsplashImage[] {
 
 export enum Orientation { Left, Right }
 
-export function getQuickSearch(searchTerm: string, thumb: string, image: UnsplashImage, orient?: Orientation): QuickSearch {
+export function getQuickSearch(searchTerm: string, thumb: string, image: UnsplashImage, orient?: Orientation): SearchPreset {
     const rotateParams = orient == Orientation.Left ? paramsOrientLeft : orient == Orientation.Right ? paramsOrientRight : ""
     return { searchTerm, thumb, ...getBackgroundFromImage(image, rotateParams) }
+}
+
+export function getQuickPattern(getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number, sizeRem: number): PatternPreset {
+    return { getSrc, bgColour, svgColour, svgOpacity, sizeRem }
 }
