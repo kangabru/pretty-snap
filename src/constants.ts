@@ -54,15 +54,15 @@ export const paramsOrientLeft = "&orient=8"
 export const paramsOrientRight = "&orient=6"
 
 export const quickSearches = [
-    getQuickSearch('nature', thumbTree, dataValley),
-    getQuickSearch('mountains', thumbMountain, dataMountain),
-    getQuickSearch('palms', thumbPalm, dataPalms, Orientation.Right),
-    getQuickSearch('yosemite', thumbYosemite, dataYosemite),
+    getQuickSearch('nature',    thumbTree,      dataValley),
+    getQuickSearch('mountains', thumbMountain,  dataMountain),
+    getQuickSearch('palms',     thumbPalm,      dataPalms, Orientation.Right),
+    getQuickSearch('yosemite',  thumbYosemite,  dataYosemite),
     getQuickSearch('colourful', thumbColourful, dataColourful),
-    getQuickSearch('summer', thumbSummer, dataPineapple, Orientation.Left),
-    getQuickSearch('snow', thumbSnow, dataSnow),
-    getQuickSearch('sun', thumbSun, dataSun),
-    getQuickSearch('abstract', thumbAbstract, dataAbstract, Orientation.Right),
+    getQuickSearch('summer',    thumbSummer,    dataPineapple, Orientation.Left),
+    getQuickSearch('snow',      thumbSnow,      dataSnow),
+    getQuickSearch('sun',       thumbSun,       dataSun),
+    getQuickSearch('abstract',  thumbAbstract,  dataAbstract, Orientation.Right),
 ]
 
 export const randomSearch = getRandomItem(quickSearches)
@@ -70,12 +70,14 @@ export const randomSearch = getRandomItem(quickSearches)
 export const MAX_SEARCH_COUNT = 5
 
 export const quickPatterns = [
-    getQuickPattern(patterns.bubbles, colours.red200, colours.white, 1, 3),
-    getQuickPattern(patterns.circuit, colours.gray600, colours.white, 0.5, 6),
-    getQuickPattern(patterns.yyy, colours.blue200, colours.white, 0.5, 1.5),
-    getQuickPattern(patterns.anchors, colours.yellow400, colours.white, 1, 2.5),
-    getQuickPattern(patterns.stripes, colours.purple200, colours.white, 0.5, 0.75),
-    getQuickPattern(patterns.polka, colours.red400, colours.white, 0.75, 0.75),
-    getQuickPattern(patterns.random, colours.teal400, colours.white, 0.5, 2.5),
-    getQuickPattern(patterns.crosses, colours.yellow200, colours.black, 0.25, 1.5),
+    getQuickPattern(patterns.bubbles,   colours.red200,     colours.white, 1.0,  3),
+    getQuickPattern(patterns.circuit,   colours.gray600,    colours.white, 0.5,  6),
+    getQuickPattern(patterns.yyy,       colours.blue200,    colours.white, 0.5,  1.5),
+    getQuickPattern(patterns.anchors,   colours.yellow400,  colours.white, 1.0,  2.5),
+    getQuickPattern(patterns.stripes,   colours.purple200,  colours.white, 0.5,  0.75),
+    getQuickPattern(patterns.polka,     colours.red400,     colours.white, 0.75, 0.75),
+    getQuickPattern(patterns.random,    colours.teal400,    colours.white, 0.5,  2.5),
+    getQuickPattern(patterns.crosses,   colours.yellow200,  colours.black, 0.25, 1.5),
 ]
+
+export const randomPattern = getRandomItem(quickPatterns)
