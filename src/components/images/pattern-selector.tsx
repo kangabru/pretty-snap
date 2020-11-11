@@ -19,13 +19,20 @@ export default function PatternSelector() {
 }
 
 function QuickPatterns() {
-    return <QuickPresets>{quickPatterns.map(qs => <QuickPattern {...qs} />)}</QuickPresets>
+    const pattern = useOptionsStore(s => s.backgroundPattern)
+    return <QuickPresets focusArgs={[pattern]}>
+        {quickPatterns.map(qs => <QuickPattern {...qs} />)}
+    </QuickPresets>
 }
 
 function QuickPattern(pattern: PatternPreset) {
     const { getSrc, bgColour, svgColour, svgOpacity } = pattern
     const onClick = () => useOptionsStore.getState().setPattern(pattern)
-    return <QuickPreset onClick={onClick} style={{
+
+    const c = useOptionsStore(s => s.backgroundPattern)
+    const isTarget = c?.getSrc == getSrc && c?.bgColour == bgColour && c.svgColour == svgColour && c.svgOpacity == svgOpacity
+
+    return <QuickPreset onClick={onClick} target={isTarget} style={{
         backgroundColor: bgColour,
         backgroundPosition: "center",
         backgroundSize: `${pattern.sizeRem}rem`,
@@ -34,7 +41,10 @@ function QuickPattern(pattern: PatternPreset) {
 }
 
 function PatternColours() {
-    const ref = useChildNavigate<HTMLDivElement>()
+    const colour = useOptionsStore(s => s.backgroundPattern?.svgColour)
+    const opacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
+    const ref = useChildNavigate<HTMLDivElement>([colour, opacity])
+
     return <div ref={ref} class="row flex-wrap space-x-2">
         <PatternColor colour={colours.white} opacity={0.5} />
         <PatternColor colour={colours.white} opacity={0.75} />
@@ -46,15 +56,20 @@ function PatternColours() {
 }
 
 function PatternColor({ colour, opacity }: { colour: string, opacity: number }) {
+    const _colour = useOptionsStore(s => s.backgroundPattern?.svgColour)
+    const _opacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
     const onClick = () => useOptionsStore.getState().setPatternColour(colour, opacity)
     const backgroundColor = useOptionsStore(s => s.backgroundPattern?.bgColour) ?? ""
-    return <button onClick={onClick} class='shadow rounded outline-primary' style={{ backgroundColor }}>
+    return <button onClick={onClick} class='shadow rounded outline-primary' style={{ backgroundColor }}
+        data-target={colour == _colour && opacity == _opacity}>
         <div class="w-10 h-10 m-1 rounded-sm" style={{ backgroundColor: colour, opacity }}></div>
     </button>
 }
 
 function Patterns() {
-    const ref = useChildNavigate<HTMLDivElement>()
+    const getSrc = useOptionsStore(s => s.backgroundPattern?.getSrc)
+    const ref = useChildNavigate<HTMLDivElement>([getSrc])
+
     return <div ref={ref} class="grid grid-rows-1 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
         <Pattern getSrc={patterns.bubbles} />
         <Pattern getSrc={patterns.circlesOverlap} />
@@ -77,13 +92,19 @@ function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern) ?? { svgColour: colours.black, svgOpacity: 0.25, bgColour: colours.orange200 }
     const onClick = () => useOptionsStore.getState().setPatternSrc(getSrc)
     const backgroundImage = bg ? srcToUrlSvg(getSrc(bg)) : ""
-    return <button onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "black" }}>
+
+    const currentGetSrc = useOptionsStore(s => s.backgroundPattern?.getSrc)
+    const isTarget = getSrc == currentGetSrc
+
+    return <button data-target={isTarget} onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "black" }}>
         <div class="absolute inset-0 bg-repeat" style={{ backgroundImage }} />
     </button>
 }
 
 function ColorRow() {
-    const ref = useChildNavigate<HTMLDivElement>()
+    const bgColour = useOptionsStore(s => s.backgroundPattern?.bgColour)
+    const ref = useChildNavigate<HTMLDivElement>([bgColour])
+
     return <div ref={ref} class="grid grid-rows-2 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
         <Colour colour={colours.red200} />
         <Colour colour={colours.teal200} />
@@ -130,5 +151,9 @@ function ColorRow() {
 
 function Colour({ colour }: { colour: string }) {
     const onClick = () => useOptionsStore.getState().setColour(colour)
-    return <button onClick={onClick} class="w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }} />
+
+    const bgColour = useOptionsStore(s => s.backgroundPattern?.bgColour)
+    const isTarget = bgColour == colour
+
+    return <button data-target={isTarget} onClick={onClick} class="w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }} />
 }
