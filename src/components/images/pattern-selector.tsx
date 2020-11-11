@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { quickPatterns } from '../../constants';
 import { PatternPreset } from '../../types';
 import useOptionsStore from '../stores/options';
-import { srcToUrlSvg } from '../utils';
+import { srcToUrlSvg, useChildNavigate } from '../utils';
 import * as colours from './pattern-colours';
 import * as patterns from './pattern-svgs';
 import { QuickPreset, QuickPresets } from './quick-presets';
@@ -34,7 +34,8 @@ function QuickPattern(pattern: PatternPreset) {
 }
 
 function PatternColours() {
-    return <div class="row flex-wrap space-x-2">
+    const ref = useChildNavigate<HTMLDivElement>()
+    return <div ref={ref} class="row flex-wrap space-x-2">
         <PatternColor colour={colours.white} opacity={0.5} />
         <PatternColor colour={colours.white} opacity={0.75} />
         <PatternColor colour={colours.white} opacity={1} />
@@ -53,7 +54,8 @@ function PatternColor({ colour, opacity }: { colour: string, opacity: number }) 
 }
 
 function Patterns() {
-    return <div class="grid grid-rows-1 grid-flow-col gap-2 py-2 overflow-x-scroll">
+    const ref = useChildNavigate<HTMLDivElement>()
+    return <div ref={ref} class="grid grid-rows-1 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
         <Pattern getSrc={patterns.bubbles} />
         <Pattern getSrc={patterns.circlesOverlap} />
         <Pattern getSrc={patterns.polka} />
@@ -81,7 +83,8 @@ function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
 }
 
 function ColorRow() {
-    return <div class="grid grid-rows-2 grid-flow-col gap-2 py-2 overflow-x-scroll">
+    const ref = useChildNavigate<HTMLDivElement>()
+    return <div ref={ref} class="grid grid-rows-2 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
         <Colour colour={colours.red200} />
         <Colour colour={colours.teal200} />
         <Colour colour={colours.red400} />

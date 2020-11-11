@@ -1,10 +1,11 @@
 import { h } from 'preact';
 import { CSSProperties } from 'react';
-import { join } from '../utils';
+import { join, useChildNavigate } from '../utils';
 
 /** Renders the little icons used to set predefined backgrounds */
 export function QuickPresets(props: { children: JSX.Element | JSX.Element[] }) {
-    return <div class="row flex-wrap justify-center pr-4">{props.children}</div>
+    const ref = useChildNavigate<HTMLDivElement>()
+    return <div ref={ref} class="row flex-wrap justify-center pr-4">{props.children}</div>
 }
 
 export function QuickPreset(props: { title?: string, onClick: () => void, classes?: string, style?: CSSProperties }) {

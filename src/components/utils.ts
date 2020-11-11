@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks"
+import { useEffect, useRef, useState } from "preact/hooks"
 import { paramsOrientLeft, paramsOrientRight, urls } from "../constants"
 import { BackgroundImage, PatternPreset, SearchPreset, UnsplashImage } from "../types"
 import { testData1, testData2 } from "./data"
@@ -49,4 +49,54 @@ export function getQuickSearch(searchTerm: string, thumb: string, image: Unsplas
 
 export function getQuickPattern(getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number, sizeRem: number): PatternPreset {
     return { getSrc, bgColour, svgColour, svgOpacity, sizeRem }
+}
+
+/** Enables keyboard navigation of a group of elements using left and right arrows.
+ * The returned ref is for the container of the focusable element.
+ * Only one element is focusable at any time allows for quick group navigation via the keyboard.
+ */
+export function useChildNavigate<T extends HTMLElement>() {
+    const continerRef = useRef<T>()
+
+    const [hasSetup, setHasSetup] = useState(false)
+
+    function getResetChildren(): HTMLElement[] {
+        if (!continerRef.current) return []
+        const children = [...continerRef.current.childNodes.values()] as HTMLElement[]
+        children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
+        return children
+    }
+
+    useEffect(() => {
+        const current = continerRef.current
+        if (!current) return
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            const children = getResetChildren()
+            if (!children.length) return
+
+            const focusIndex = children.findIndex(x => x === document.activeElement)
+            const focusIndexNew = e.key == 'ArrowRight' ? Math.min(focusIndex + 1, children.length - 1) :
+                e.key == 'ArrowLeft' ? Math.max(focusIndex - 1, 0) :
+                    focusIndex
+
+            const target = children[focusIndexNew]
+            target.tabIndex = 0 // Make target focusable
+            target.focus()
+            target?.click()
+        }
+
+        current.addEventListener('keydown', onKeyDown)
+        return () => current.removeEventListener('keydown', onKeyDown)
+    }, [continerRef.current])
+
+
+    useEffect(() => {
+        if (hasSetup || !continerRef.current) return
+        const children = getResetChildren()
+        if (children.length) children[0].tabIndex = 0
+        setHasSetup(true)
+    }, [continerRef.current])
+
+    return continerRef
 }
