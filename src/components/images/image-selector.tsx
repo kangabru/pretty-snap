@@ -5,9 +5,17 @@ import { UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
 import { getBackgroundFromImage, getUnsplashBacklink, join, srcToUrl } from '../utils';
+import Controls from './image-controls';
+
+export default function ImageSelector() {
+    return <Fragment>
+        <Controls />
+        <ImageRow />
+    </Fragment>
+}
 
 /** Renders the unsplash row of images that users can select from. */
-export default function ImageRow() {
+function ImageRow() {
     const images = useUnsplashStore(s => s.images)
     const isSearching = useUnsplashStore(s => s.isSearching)
     const isFirstSearch = !images?.length && isSearching
@@ -35,7 +43,7 @@ const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center
  * - Has a link to the unsplash author page as required by the API usage
  */
 function Image(img: UnsplashImage) {
-    const onClick = () => useOptionsStore.setState({ background: getBackgroundFromImage(img) })
+    const onClick = () => useOptionsStore.getState().setImage(getBackgroundFromImage(img))
     return <div title={img.description ?? ""} style={{ backgroundImage: srcToUrl(img.urls.small) }}
         class={join(commonImageStyles, "shadow space-y-2 overflow-hidden bg-no-repeat bg-cover bg-center animate-fade-in")}>
         <div class="grid grid-rows-2 w-full h-full sm:bg-black sm:bg-opacity-25 sm:opacity-0 hover:opacity-100 transition-opacity duration-150">

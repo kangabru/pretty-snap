@@ -5,14 +5,8 @@ declare var process: {
     }
 }
 
-declare module "*.png" {
-    const value: any;
-    export = value;
-}
-
-declare module "*.jpg" {
-    const value: any;
-    export = value;
-}
+declare module "*.png" { const value: any; export = value; }
+declare module "*.jpg" { const value: any; export = value; }
+declare module "*.svg" { const value: any; export = value; }
 
 declare function plausible(event: string): void
