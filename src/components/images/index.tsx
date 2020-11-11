@@ -11,7 +11,7 @@ export default function BackgroundSelector() {
     const [screen, setScreen] = useState(Screen.Pattern)
     const switchScreen = (screen: Screen) => () => setScreen(screen)
 
-    const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:outline-none transition"
+    const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:underline focus:outline-none transition"
     return <section class="w-full max-w-screen-lg bg-white shadow-md p-5 space-y-3 rounded-lg">
 
         <div class="grid grid-cols-2">

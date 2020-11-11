@@ -9,9 +9,9 @@ import { QuickPreset, QuickPresets } from './quick-presets';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function Controls() {
-    return <div class="col sm:flex-row sm:justify-between space-y-3 sm:space-y-0 sm:space-x-3">
-        <SearchInput />
+    return <div class="col sm:flex-row-reverse sm:justify-between space-y-3 sm:space-y-0 sm:space-x-3">
         <QuickSearches />
+        <SearchInput />
     </div>
 }
 
