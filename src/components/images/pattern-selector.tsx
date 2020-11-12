@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { quickPatterns } from '../../constants';
 import { BackgroundPattern, PatternPreset } from '../../types';
 import useOptionsStore from '../stores/options';
-import { getRandomItem, srcToUrlSvg, useChildNavigate } from '../utils';
+import { getRandomItem, join, srcToUrlSvg, useChildNavigate } from '../utils';
 import colours from './pattern-colours';
 import patterns, { SvgPatternCallback } from './pattern-svgs';
 import { QuickPreset, QuickPresets, RandButton } from './quick-presets';
@@ -72,9 +72,15 @@ function PatternColor({ colour, opacity }: { colour: string, opacity: number }) 
     const _opacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
     const onClick = () => useOptionsStore.getState().setPatternColour(colour, opacity)
     const backgroundColor = useOptionsStore(s => s.backgroundPattern?.bgColour) ?? ""
-    return <button onClick={onClick} class='shadow rounded outline-primary' style={{ backgroundColor }}
+
+    const svgColour = useOptionsStore(s => s.backgroundPattern?.svgColour)
+    const svgOpacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
+    const isTarget = svgColour == colour && svgOpacity == opacity
+
+    return <button onClick={onClick} class='relative shadow rounded outline-primary' style={{ backgroundColor }}
         data-target={colour == _colour && opacity == _opacity}>
         <div class="w-10 h-10 m-1 rounded-sm" style={{ backgroundColor: colour, opacity }}></div>
+        {isTarget && <TargetIndicator marginClass="m-2" colourClass={svgColour == colours.black ? "bg-white" : undefined} />}
     </button>
 }
 
@@ -110,6 +116,7 @@ function Pattern({ getSrc }: { getSrc: SvgPatternCallback }) {
 
     return <button data-target={isTarget} onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: bg?.bgColour ?? "black" }}>
         <div class="absolute inset-0 bg-repeat" style={{ backgroundImage }} />
+        {isTarget && <TargetIndicator isLarge useOutline />}
     </button>
 }
 
@@ -167,5 +174,17 @@ function Colour({ colour }: { colour: string }) {
     const bgColour = useOptionsStore(s => s.backgroundPattern?.bgColour)
     const isTarget = bgColour == colour
 
-    return <button data-target={isTarget} onClick={onClick} class="w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }} />
+    return <button data-target={isTarget} onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }}>
+        {isTarget && <TargetIndicator isLarge />}
+    </button>
+}
+
+function TargetIndicator(props: { isLarge?: boolean, colourClass?: string, marginClass?: string, useOutline?: boolean }) {
+    return <div class={join(
+        "absolute left-0 top-0 rounded-full",
+        props.isLarge ? "w-3 h-3" : "w-2 h-2",
+        props.useOutline && "border-2 border-white box-content",
+        props.colourClass ?? "bg-gray-700",
+        props.marginClass ?? "m-1",
+    )}></div>
 }
