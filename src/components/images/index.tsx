@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useUnsplashStore from '../stores/unsplash';
 import { join } from '../utils';
 import ImageSelector from './image-selector';
 import PatternSelector from './pattern-selector';
@@ -10,6 +11,16 @@ enum Screen { Pattern, Image }
 export default function BackgroundSelector() {
     const [screen, setScreen] = useState(Screen.Pattern)
     const switchScreen = (screen: Screen) => () => setScreen(screen)
+
+    // Search on page load
+    const [isFirstSearch, setIsFirstSearch] = useState(true)
+    useEffect(() => {
+        if (isFirstSearch && screen == Screen.Image) {
+            useUnsplashStore.getState().search()
+            setIsFirstSearch(false)
+        }
+    }, [screen])
+
 
     const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:underline focus:outline-none transition"
     return <section class="w-full max-w-screen-lg bg-white shadow-md p-5 space-y-3 rounded-lg">
