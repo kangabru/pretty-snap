@@ -54,31 +54,33 @@ export function getQuickPattern(getSrc: SvgPatternCallback, bgColour: string, sv
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
  * Child elements can set the 'data-target' property to set the initial focus element.
- * @param refocusInputs - An array of props to check into order to refresh the inital focused element
+ * @param refocusInputs - An array of props to check. If these change then the inital focused element will refresh
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
 export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[]) {
-    const continerRef = useRef<T>()
+    const containerRef = useRef<T>()
 
     function getResetChildren(): HTMLElement[] {
-        if (!continerRef.current) return []
-        const children = [...continerRef.current.childNodes.values()] as HTMLElement[]
+        if (!containerRef.current) return []
+        const children = [...containerRef.current.childNodes.values()] as HTMLElement[]
         children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
         return children
     }
 
     useEffect(() => {
-        const current = continerRef.current
+        const current = containerRef.current
         if (!current) return
 
         const onKeyDown = (e: KeyboardEvent) => {
             const children = getResetChildren()
             if (!children.length) return
 
+            const isLeft = e.key == "ArrowLeft" || e.key == "Left"
+            const isRight = e.key == "ArrowRight" || e.key == "Right"
+            if (!(isLeft || isRight)) return
+
             const focusIndex = children.findIndex(x => x === document.activeElement)
-            const focusIndexNew = e.key == 'ArrowRight' ? Math.min(focusIndex + 1, children.length - 1) :
-                e.key == 'ArrowLeft' ? Math.max(focusIndex - 1, 0) :
-                    focusIndex
+            const focusIndexNew = isLeft ? Math.max(focusIndex - 1, 0) : isRight ? Math.min(focusIndex + 1, children.length - 1) : focusIndex
 
             const target = children[focusIndexNew]
             target.tabIndex = 0 // Make target focusable
@@ -88,17 +90,22 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[]) {
 
         current.addEventListener('keydown', onKeyDown)
         return () => current.removeEventListener('keydown', onKeyDown)
-    }, [continerRef.current])
+    }, [containerRef.current])
 
 
     useEffect(() => {
-        if (!continerRef.current) return
+        if (!containerRef.current) return
         const children = getResetChildren()
-
         const initIndex = Math.max(0, children.findIndex(x => x.dataset['target'] == 'true'))
-
         children[initIndex].tabIndex = 0
-    }, [continerRef.current, ...refocusInputs ?? []])
 
-    return continerRef
+        // Scroll the target to the center of the scrollable container
+        const rectCont = containerRef.current.getBoundingClientRect()
+        const rectElem = children[initIndex].getBoundingClientRect()
+        const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
+        containerRef.current.scrollTo({ left, behavior: 'smooth' })
+
+    }, [containerRef.current, ...refocusInputs ?? []])
+
+    return containerRef
 }
