@@ -1,8 +1,8 @@
 import create, { GetState, SetState } from "zustand"
 import { PADDING_INIT, randomPattern } from "../../constants"
 import { BackgroundImage, BackgroundPattern, Position, Settings } from "../../types"
-import { black, red200 } from "../images/pattern-colours"
-import { bubbles, SvgPatternCallback } from "../images/pattern-svgs"
+import colours from "../images/pattern-colours"
+import patterns, { SvgPatternCallback } from "../images/pattern-svgs"
 
 type OptionsStore = Settings & {
     setImage: (image: BackgroundImage) => void
@@ -28,7 +28,7 @@ const useOptionsStore = create<OptionsStore>((set, get) => ({
 }))
 
 function updatePattern(set: SetState<OptionsStore>, get: GetState<OptionsStore>, updates: Partial<BackgroundPattern>) {
-    const current = get().backgroundPattern ?? { getSrc: bubbles, bgColour: red200, svgColour: black, svgOpacity: 1 }
+    const current = get().backgroundPattern ?? { getSrc: patterns.bubbles, bgColour: colours.red200, svgColour: colours.black, svgOpacity: 1 }
     set({ backgroundImage: undefined, backgroundPattern: { ...current, ...updates } })
 }
 

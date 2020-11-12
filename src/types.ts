@@ -1,6 +1,7 @@
 import { SvgPatternCallback } from "./components/images/pattern-svgs"
 
-export type UnsplashResponse = { results?: UnsplashImage[] }
+export type UnsplashSearchResponse = { results?: UnsplashImage[] }
+export type UnsplashRandomResponse = UnsplashImage
 
 // The response subset used with the app
 export type UnsplashImage = {

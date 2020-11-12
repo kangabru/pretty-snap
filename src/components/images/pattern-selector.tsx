@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { quickPatterns } from '../../constants';
-import { PatternPreset } from '../../types';
+import { BackgroundPattern, PatternPreset } from '../../types';
 import useOptionsStore from '../stores/options';
-import { srcToUrlSvg, useChildNavigate } from '../utils';
-import * as colours from './pattern-colours';
-import * as patterns from './pattern-svgs';
-import { QuickPreset, QuickPresets } from './quick-presets';
+import { getRandomItem, srcToUrlSvg, useChildNavigate } from '../utils';
+import colours from './pattern-colours';
+import patterns, { SvgPatternCallback } from './pattern-svgs';
+import { QuickPreset, QuickPresets, RandButton } from './quick-presets';
 
 export default function PatternSelector() {
     return <div class="space-y-2">
@@ -18,10 +18,22 @@ export default function PatternSelector() {
     </div>
 }
 
+function getRandomPattern(): BackgroundPattern {
+    const getSrc = getRandomItem(Object.values(patterns))
+
+    const { white, black, ..._colours } = colours
+    const bgColour = getRandomItem(Object.values(_colours))
+    const svgColour = getRandomItem([white, black])
+    const svgOpacity = getRandomItem(svgColour == white ? [0.5, 0.75, 1] : [0.25, 0.5, 0.75])
+    return { getSrc, bgColour, svgColour, svgOpacity }
+}
+
 function QuickPatterns() {
+    const random = () => useOptionsStore.getState().setPattern(getRandomPattern())
     const pattern = useOptionsStore(s => s.backgroundPattern)
     return <QuickPresets focusArgs={[pattern]}>
-        {quickPatterns.map(qs => <QuickPattern {...qs} />)}
+        {...quickPatterns.map(qs => <QuickPattern {...qs} />)}
+        <RandButton onClick={random} />
     </QuickPresets>
 }
 
@@ -88,7 +100,7 @@ function Patterns() {
     </div>
 }
 
-function Pattern({ getSrc }: { getSrc: patterns.SvgPatternCallback }) {
+function Pattern({ getSrc }: { getSrc: SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern) ?? { svgColour: colours.black, svgOpacity: 0.25, bgColour: colours.orange200 }
     const onClick = () => useOptionsStore.getState().setPatternSrc(getSrc)
     const backgroundImage = bg ? srcToUrlSvg(getSrc(bg)) : ""

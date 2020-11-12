@@ -11,7 +11,8 @@
  */
 
 const URL_API_ROOT = "/api"
-const URL_UNSPLASH = "https://api.unsplash.com/search/photos"
+const URL_SEARCH = "https://api.unsplash.com/search/photos"
+const URL_RANDOM = "https://api.unsplash.com/photos/random"
 
 const unsplashHeaders = {
     'Accept-Version': 'v1',
@@ -20,6 +21,7 @@ const unsplashHeaders = {
 
 const routesGET = {
     "/search": unsplashSearch,
+    "/random": unsplashRandom,
 }
 
 const routesPOST = {
@@ -52,7 +54,16 @@ addEventListener("fetch", event => {
  */
 function unsplashSearch(event) {
     const params = new URL(event.request.url).searchParams // query=mountains&page=1
-    return fetch(`${URL_UNSPLASH}?${params}`, { headers: unsplashHeaders })
+    return fetch(`${URL_SEARCH}?${params}`, { headers: unsplashHeaders })
+}
+
+/** Returns a random Unsplash image.
+ * @access GET request with no params.
+ * @returns Unsplash JSON image response.
+ * @see https://unsplash.com/documentation#get-a-random-photo
+ */
+function unsplashRandom(event) {
+    return fetch(URL_RANDOM, { headers: unsplashHeaders })
 }
 
 /** Use to trigger a download event as required by the API guidelines.

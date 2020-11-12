@@ -5,7 +5,7 @@ import { SearchPreset } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
 import { join, srcToUrl } from '../utils';
-import { QuickPreset, QuickPresets } from './quick-presets';
+import { QuickPreset, QuickPresets, RandButton } from './quick-presets';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function Controls() {
@@ -39,7 +39,11 @@ function SearchInput() {
 }
 
 function QuickSearches() {
-    return <QuickPresets>{quickSearches.map(qs => <QuickSearch {...qs} />)}</QuickPresets>
+    const random = () => useUnsplashStore.getState().random()
+    return <QuickPresets>
+        {...quickSearches.map(qs => <QuickSearch {...qs} />)}
+        <RandButton onClick={random} />
+    </QuickPresets>
 }
 
 function QuickSearch({ searchTerm, thumb, ...background }: SearchPreset) {
