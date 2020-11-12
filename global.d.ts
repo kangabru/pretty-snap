@@ -2,6 +2,7 @@ declare var process: {
     env: {
         NODE_ENV: 'development' | 'production',
         URL_API: string,
+        DEV_USE_API: boolean | undefined
     }
 }
 

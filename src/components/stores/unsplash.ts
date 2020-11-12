@@ -46,7 +46,7 @@ async function fetchImages(get: GetState<UnsplashState>, set: SetState<UnsplashS
 type SearchInput = { searchTerm?: string, page: number }
 
 async function CallApi(options: SearchInput): Promise<UnsplashResponse> {
-    if (process.env.NODE_ENV == 'development')
+    if (process.env.NODE_ENV == 'development' && !process.env.DEV_USE_API)
         return new Promise(accept => {
             const randTime = 500 + Math.random() * 1000
             setTimeout(() => accept({ results: getUnsplashBatchDev() }), randTime)
