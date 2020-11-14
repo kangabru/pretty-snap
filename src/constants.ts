@@ -36,6 +36,7 @@ export const urls = {
     apiUnsplashUse: urlBase + "/use",
 
     unsplash: "https://unsplash.com", // Do not add slash
+    patterns: "http://www.heropatterns.com",
     kangabru: "https://twitter.com/kanga_bru",
     pandasnap: "https://pandasnap.io",
     github: "https://github.com/kangabru/pretty-snap",

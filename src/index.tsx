@@ -49,7 +49,6 @@ function Header() {
 
 function Footer() {
     return <footer class="py-10 text-center space-y-3 text-lg">
-        <p>Photos by <a href={urls.unsplash} target="blank" class="link font-semibold">Unsplash</a></p>
         <p>Made with 🤙 by <a href={urls.kangabru} target="blank" class="link font-semibold">Kangabru</a></p>
     </footer>
 }

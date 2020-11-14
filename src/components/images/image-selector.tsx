@@ -1,6 +1,7 @@
 import { Fragment, h } from 'preact';
 import { useRef } from 'preact/hooks';
 import { useEffect } from 'react';
+import { urls } from '../../constants';
 import { UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
@@ -11,6 +12,7 @@ export default function ImageSelector() {
     return <Fragment>
         <Controls />
         <ImageRow />
+        <p class="text-gray-800 text-center pt-3">Photos by <a class="link" href={urls.unsplash} target="blank">Unsplash</a></p>
     </Fragment>
 }
 

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { quickPatterns } from '../../constants';
+import { quickPatterns, urls } from '../../constants';
 import { BackgroundPattern, PatternPreset } from '../../types';
 import useOptionsStore from '../stores/options';
 import { getRandomItem, join, srcToUrlSvg, useChildNavigate } from '../utils';
@@ -15,6 +15,7 @@ export default function PatternSelector() {
         </div>
         <Patterns />
         <ColorRow />
+        <p class="text-gray-800 text-center pt-3">Patterns by <a class="link" href={urls.patterns} target="blank">Hero Patterns</a></p>
     </div>
 }
 
