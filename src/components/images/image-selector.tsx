@@ -54,14 +54,18 @@ function Image(img: UnsplashImage) {
                 <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
             </button>
 
-            <a href={getUnsplashBacklink(img)} target="blank" class={join(commonImageButtonStyles, "items-end overflow-hidden")}>
-                <div class="row space-x-2 overflow-hidden">
-                    <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
-                    <span class="text-white truncate">{img.user.name}</span>
-                </div>
-            </a>
+            <UserImageLink img={img} className={join(commonImageButtonStyles, "items-end overflow-hidden text-white")} />
         </div>
     </div>
+}
+
+export function UserImageLink({ img, className }: { img: BackgroundImage, className?: string }) {
+    return <a href={getUnsplashBacklink(img)} target="blank" class={className}>
+        <div class="row space-x-2 overflow-hidden">
+            <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
+            <span class="truncate">{img.user.name}</span>
+        </div>
+    </a>
 }
 
 function LoadMore() {

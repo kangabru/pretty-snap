@@ -2,6 +2,7 @@ import { Fragment, h } from 'preact';
 import mergeRefs from 'react-merge-refs';
 import { animated } from 'react-spring';
 import { Foreground } from '../../types';
+import { UserImageLink } from '../images/image-selector';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import Controls from './controls';
@@ -31,6 +32,8 @@ export default function Compositor() {
     const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
     return <Fragment>
+        {image && <UserImageLink img={image} />}
+
         {/* Renders the preview */}
         <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
