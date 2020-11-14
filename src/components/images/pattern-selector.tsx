@@ -175,8 +175,8 @@ function Colour({ colour }: { colour: string }) {
     const bgColour = useOptionsStore(s => s.backgroundPattern?.bgColour)
     const isTarget = bgColour == colour
 
-    return <button data-target={isTarget} onClick={onClick} class="relative w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }}>
-        {isTarget && <TargetIndicator isLarge />}
+    return <button data-target={isTarget} onClick={onClick} class="relative in w-24 h-24 rounded outline-primary" style={{ backgroundColor: colour }}>
+        {isTarget && <TargetIndicator isLarge useOutline />}
     </button>
 }
 

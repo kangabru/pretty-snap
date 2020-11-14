@@ -75,11 +75,11 @@ export const quickPatterns = [
     getQuickPattern(patterns.bubbles, colours.red200, colours.white, 1.0, 3),
     getQuickPattern(patterns.circuit, colours.gray600, colours.white, 0.5, 6),
     getQuickPattern(patterns.yyy, colours.blue200, colours.white, 0.5, 1.5),
-    getQuickPattern(patterns.anchors, colours.yellow400, colours.white, 1.0, 2.5),
+    getQuickPattern(patterns.anchors, colours.yellow200, colours.black, 0.25, 2.5),
     getQuickPattern(patterns.stripes, colours.purple200, colours.white, 0.5, 0.75),
     getQuickPattern(patterns.polka, colours.red400, colours.white, 0.75, 0.75),
     getQuickPattern(patterns.random, colours.teal400, colours.white, 0.5, 2.5),
-    getQuickPattern(patterns.crosses, colours.yellow200, colours.black, 0.25, 1.5),
+    getQuickPattern(patterns.crosses, colours.orange400, colours.black, 0.25, 1.5),
     getQuickPattern(patterns.triangles, colours.pink200, colours.black, 0.25, 1),
 ]
 

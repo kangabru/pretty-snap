@@ -1,3 +1,4 @@
+// Tailwind colors https://tailwindcss.com/docs/customizing-colors#default-color-palette
 const colours = {
     white: "white",
     black: "black",
