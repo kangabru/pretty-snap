@@ -72,12 +72,12 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[]) {
         if (!current) return
 
         const onKeyDown = (e: KeyboardEvent) => {
-            const children = getResetChildren()
-            if (!children.length) return
-
             const isLeft = e.key == "ArrowLeft" || e.key == "Left"
             const isRight = e.key == "ArrowRight" || e.key == "Right"
             if (!(isLeft || isRight)) return
+
+            const children = getResetChildren()
+            if (!children.length) return
 
             const focusIndex = children.findIndex(x => x === document.activeElement)
             const focusIndexNew = isLeft ? Math.max(focusIndex - 1, 0) : isRight ? Math.min(focusIndex + 1, children.length - 1) : focusIndex
