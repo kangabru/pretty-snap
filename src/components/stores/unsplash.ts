@@ -1,7 +1,7 @@
 import create, { GetState, SetState } from "zustand"
 import { MAX_SEARCH_COUNT, randomSearch, urls } from "../../constants"
 import { UnsplashImage, UnsplashRandomResponse, UnsplashSearchResponse } from "../../types"
-import { getBackgroundFromImage, getUnsplashBatchDev } from "../utils"
+import { getUnsplashBatchDev } from "../utils"
 import useOptionsStore from "./options"
 
 type UnsplashState = {
@@ -72,7 +72,7 @@ async function fetchRandom(set: SetState<UnsplashState>) {
 
     const result = await promise
     set({ isSearching: false })
-    useOptionsStore.getState().setImage(getBackgroundFromImage(result))
+    useOptionsStore.getState().setImage(result)
 }
 
 export default useUnsplashStore

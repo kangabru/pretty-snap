@@ -5,7 +5,8 @@ import { testData1, testData2 } from "./data"
 import { SvgPatternCallback } from "./images/pattern-svgs"
 
 type ClassProp = string | boolean | undefined | null
-export const join = (...classes: ClassProp[]): string => classes.filter(x => !!x).join(" ")
+export const join = (...classes: ClassProp[]): string => joinRaw(classes, " ")
+const joinRaw = (classes: ClassProp[], separator: string): string => classes.filter(x => !!x).join(separator)
 
 export const getRandomItem = <T>(items: T[]) => items[Math.floor(Math.random() * items.length)]
 export const useRandomItem = <T>(items: T[]) => useState(getRandomItem(items))[0]
@@ -20,11 +21,10 @@ export function getUnsplashBacklink(image: UnsplashImage) {
 }
 
 /** Return the src url to use for displaying an unsplash image */
-export const getBackgroundFromImage = (image: UnsplashImage, extraParams: string = ""): BackgroundImage => ({
-    src: image.urls.regular + extraParams,
-    srcRender: image.urls.full + extraParams,
-    srcDownload: image.links.download_location,
-})
+const joinUrls = (...parts: ClassProp[]) => joinRaw(parts, "")
+export const getImageSrc = (image?: BackgroundImage): string => joinUrls(image?.urls.regular, image?.extraParams)
+export const getImageSrcRender = (image?: BackgroundImage): string => joinUrls(image?.urls.full, image?.extraParams)
+export const getImageSrcDownload = (image?: BackgroundImage): string => image?.links.download_location ?? ""
 
 /** Gets local data for development. */
 export function getUnsplashBatchDev(): UnsplashImage[] {
@@ -43,8 +43,8 @@ export function getUnsplashBatchDev(): UnsplashImage[] {
 export enum Orientation { Left, Right }
 
 export function getQuickSearch(searchTerm: string, thumb: string, image: UnsplashImage, orient?: Orientation): SearchPreset {
-    const rotateParams = orient == Orientation.Left ? paramsOrientLeft : orient == Orientation.Right ? paramsOrientRight : ""
-    return { searchTerm, thumb, ...getBackgroundFromImage(image, rotateParams) }
+    const extraParams = orient == Orientation.Left ? paramsOrientLeft : orient == Orientation.Right ? paramsOrientRight : ""
+    return { searchTerm, thumb, extraParams, ...image }
 }
 
 export function getQuickPattern(getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number, sizeRem: number): PatternPreset {

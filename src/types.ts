@@ -18,7 +18,7 @@ export type UnsplashImage = {
     },
 }
 
-export type BackgroundImage = { src: string, srcRender: string, srcDownload: string }
+export type BackgroundImage = UnsplashImage & { extraParams?: string }
 export type BackgroundPattern = { getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number }
 export type Foreground = { src: string, width: number, height: number }
 

@@ -5,7 +5,7 @@ import useMeasure from 'react-use-measure';
 import { MAX_SIZE } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
-import { srcToUrl, srcToUrlSvg } from '../utils';
+import { getImageSrc, srcToUrl, srcToUrlSvg } from '../utils';
 
 export const CLASSES_OUTER_IMAGE = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_OUTER_PATTERN = "relative bg-repeat"
@@ -111,7 +111,7 @@ function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): 
     const pattern = backgroundPattern?.getSrc ? srcToUrlSvg(backgroundPattern?.getSrc(backgroundPattern)) : undefined
     return {
         backgroundColor,
-        backgroundImage: pattern ?? srcToUrl(backgroundImage?.src ?? ""),
+        backgroundImage: pattern ?? srcToUrl(getImageSrc(backgroundImage)),
         backgroundPosition: pattern ? "center" : undefined,
     }
 }
