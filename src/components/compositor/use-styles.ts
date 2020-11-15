@@ -2,7 +2,7 @@ import { Ref } from 'preact';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
-import { MAX_SIZE } from '../../constants';
+import { PADDING_MULT_INIT } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
 import { getImageSrc, srcToUrl, srcToUrlSvg } from '../utils';
@@ -48,14 +48,17 @@ export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionSt
 
 /** Returns styles for the compositor visible on screen. */
 function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionStyles] {
-    const { padding, position, foreground } = settings
+    const { paddingPerc, position, foreground } = settings
 
     // Uses can upload image larger than the screen size but the padding will look tiny when rendered.
     // Here we adjust the padding so the proportion is the same in the rendered image.
     // We must measure the container width to achieve this.
-    const [refPreviewContainer, { width }] = useMeasure()
-    const [imageWidth,] = getSizeForeground(foreground)
-    const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
+    const [refPreviewContainer, { width: widthWindow }] = useMeasure()
+    const [width,] = getSizeForeground(foreground)
+
+    const padding = getPaddingFromPerc(paddingPerc, foreground)
+    const screenAdj = width ? widthWindow / (width + padding) : 1
+    const paddingScreen = padding * screenAdj
 
     const bgStylesOuter = getBackgroundStyles(settings)
     const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
@@ -68,8 +71,9 @@ function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionSty
 
 /** Returns styles used to export the final image. */
 function useStylesRender(settings: Settings): CompositionStyles {
-    const { padding, position, foreground } = settings
+    const { paddingPerc, position, foreground } = settings
 
+    const padding = getPaddingFromPerc(paddingPerc, foreground)
     const [width, height] = getSizeForeground(foreground)
     const [widthBg, heightBg] = getSizeBackground(settings)
 
@@ -82,22 +86,24 @@ function useStylesRender(settings: Settings): CompositionStyles {
     }
 }
 
+function getPaddingFromPerc(paddingPerc: number, foreground: Foreground | undefined) {
+    const [width, height] = getSizeForeground(foreground)
+    return !width || !height
+        ? paddingPerc * PADDING_MULT_INIT
+        : Math.min(width, height) * paddingPerc / 100
+}
+
 /** Returns the size of the foreground image.
  * @returns [width, height] of the foreground image ofr [0, 0] if no foreground is selected. */
-export function getSizeForeground(foreground: Foreground | undefined) {
-    if (!(foreground?.width && foreground?.height)) return [0, 0]
-
-    // Scale down large images
-    const { width, height } = foreground
-    const maxSize = Math.max(width, height)
-    const scale = Math.min(1, MAX_SIZE / maxSize)
-    return [width * scale, height * scale]
+function getSizeForeground(foreground: Foreground | undefined) {
+    return [foreground?.width ?? 0, foreground?.height ?? 0]
 }
 
 /** Returns the size of the background image accounting for positional padding.
  * @returns [width, height] of the background image. */
 export function getSizeBackground(settings: Omit<Settings, 'background'>) {
-    const { padding, position, foreground } = settings
+    const { paddingPerc, position, foreground } = settings
+    const padding = getPaddingFromPerc(paddingPerc, foreground)
 
     const [width, height] = getSizeForeground(foreground)
     const shortX = position == Position.Left || position == Position.Right

@@ -46,9 +46,13 @@ export const urls = {
 
 export const MAX_SIZE = 1920
 
-export const PADDING_MIN = 10
-export const PADDING_INIT = 60
-export const PADDING_MAX = 100
+// As percentage of the foreground image size
+export const PADDING_PERC_MIN = 5
+export const PADDING_PERC_INIT = 12.5
+export const PADDING_PERC_MAX = 20
+
+/** Used to convert the paddingPerc value to pixels before a foreground has been selected. */
+export const PADDING_MULT_INIT = 3
 
 // https://docs.imgix.com/apis/rendering/size
 // https://unsplash.com/documentation#dynamically-resizable-images
