@@ -2,6 +2,7 @@ import { UnsplashImage } from "../types"
 
 export function testData1(divideHeight: number = 1): UnsplashImage | {} {
     return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
+        "id": "test_1",
         "width": 4000,
         "height": 6000 / divideHeight,
         "urls": {
@@ -28,6 +29,7 @@ export function testData1(divideHeight: number = 1): UnsplashImage | {} {
 
 export function testData2(divideHeight: number = 1): UnsplashImage | {} {
     return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
+        "id": "test_2",
         "width": 3654,
         "height": 5473 / divideHeight,
         "description": "Looking up",

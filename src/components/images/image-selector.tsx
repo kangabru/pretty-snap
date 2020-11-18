@@ -1,11 +1,11 @@
 import { Fragment, h } from 'preact';
 import { useRef } from 'preact/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { urls } from '../../constants';
 import { BackgroundImage, UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
-import { getUnsplashBacklink, join, srcToUrl } from '../utils';
+import { getUnsplashBacklink, join, srcToUrl, useChildNavigate } from '../utils';
 import Controls from './image-controls';
 
 export default function ImageSelector() {
@@ -27,10 +27,13 @@ function ImageRow() {
     const scrollLeft = () => scrollRef.current && scrollRef.current.scrollTo({ left: 0 })
     useEffect(() => useUnsplashStore.subscribe(scrollLeft, state => state.searchTerm), [])
 
+    const imgCurrent = useOptionsStore(s => s.backgroundImage)
+    const ref = useChildNavigate<HTMLDivElement>([...images, imgCurrent?.id], scrollRef)
+
     // Center the load icon on first load otherwise use the row
     return isFirstSearch
-        ? <div class="row justify-center w-fulls"><LoadMore /></div>
-        : <div ref={scrollRef} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
+        ? <div tabIndex={-1} class="row justify-center w-full"><LoadMore /></div>
+        : <div tabIndex={-1} ref={ref} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
             {images?.map(img => <Image key={img.urls.thumb} {...img} />)}
             <LoadMore />
             <div class="inline-block w-2"></div> {/* Spacer because margins ain't workin */}
@@ -38,7 +41,7 @@ function ImageRow() {
 }
 
 const commonImageStyles = "inline-block relative h-56 w-48 sm:w-56 rounded"
-const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center sm:justify-center p-4 opacity-85 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 transition-opacity duration-150 focus:outline-none"
+const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center sm:justify-center p-4 opacity-85 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 focus:bg-opacity-25 focus:underline transition-opacity duration-150"
 
 /** Renders the image components in the image row.
  * - Has a button to set the background images
@@ -46,21 +49,27 @@ const commonImageButtonStyles = "w-full h-full row justify-start sm:items-center
  */
 function Image(img: UnsplashImage) {
     const onClick = () => useOptionsStore.getState().setImage(img)
-    return <div title={img.description ?? ""} style={{ backgroundImage: srcToUrl(img.urls.small) }}
-        class={join(commonImageStyles, "shadow space-y-2 overflow-hidden bg-no-repeat bg-cover bg-center animate-fade-in")}>
-        <div class="grid grid-rows-2 w-full h-full sm:bg-black sm:bg-opacity-25 sm:opacity-0 hover:opacity-100 transition-opacity duration-150">
 
-            <button onClick={onClick} class={join(commonImageButtonStyles, "items-start")}>
+    const isTarget = useOptionsStore(s => s.backgroundImage?.id) == img.id
+    const [isFocused, setIsFocused] = useState(false)
+    const funcs = { onFocus: () => setIsFocused(true), onBlur: () => setIsFocused(false) }
+
+    return <div {...funcs} title={img.description ?? ""} style={{ backgroundImage: srcToUrl(img.urls.small) }} data-target={isTarget}
+        class={join(commonImageStyles, "group shadow space-y-2 overflow-hidden bg-no-repeat bg-cover bg-center animate-fade-in outline-primary")}>
+        <div class={join(!isFocused && "sm:opacity-0", "grid grid-rows-2 w-full h-full sm:bg-black sm:bg-opacity-25 hover:opacity-100 transition-opacity duration-150")}>
+
+            <button {...funcs} onClick={onClick} class={join(commonImageButtonStyles, "items-start")} tabIndex={isFocused ? 0 : -1}>
                 <span class="bg-white py-2 px-3 rounded shadow">Use image</span>
             </button>
 
-            <UserImageLink img={img} className={join(commonImageButtonStyles, "items-end overflow-hidden text-white")} />
+            <UserImageLink img={img} tabIndex={isFocused ? 0 : -1} {...funcs}
+                className={join(commonImageButtonStyles, "items-end overflow-hidden text-white")} />
         </div>
     </div>
 }
 
-export function UserImageLink({ img, className }: { img: BackgroundImage, className?: string }) {
-    return <a href={getUnsplashBacklink(img)} target="blank" class={className}>
+export function UserImageLink({ img, ...props }: h.JSX.HTMLAttributes<HTMLAnchorElement> & { img: BackgroundImage }) {
+    return <a {...props} href={getUnsplashBacklink(img)} target="blank">
         <div class="row space-x-2">
             <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
             <span class="truncate">{img.user.name}</span>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks"
+import { Ref, useEffect, useRef, useState } from "preact/hooks"
 import { paramsOrientLeft, paramsOrientRight, urls } from "../constants"
 import { BackgroundImage, PatternPreset, SearchPreset, UnsplashImage } from "../types"
 import { testData1, testData2 } from "./data"
@@ -57,8 +57,8 @@ export function getQuickPattern(getSrc: SvgPatternCallback, bgColour: string, sv
  * @param refocusInputs - An array of props to check. If these change then the inital focused element will refresh
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
-export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[]) {
-    const containerRef = useRef<T>()
+export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>) {
+    const containerRef = ref || useRef<T>()
 
     function getResetChildren(): HTMLElement[] {
         if (!containerRef.current) return []
@@ -96,7 +96,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[]) {
     useEffect(() => {
         if (!containerRef.current) return
         const children = getResetChildren()
-        const initIndex = Math.max(0, children.findIndex(x => x.dataset['target'] == 'true'))
+        const initIndex = Math.max(0, children.findIndex(x => x.dataset && x.dataset['target'] == 'true'))
         children[initIndex].tabIndex = 0
 
         // Scroll the target to the center of the scrollable container
