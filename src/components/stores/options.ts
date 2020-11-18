@@ -1,5 +1,5 @@
 import create, { GetState, SetState } from "zustand"
-import { PADDING_INIT, randomPattern } from "../../constants"
+import { PADDING_PERC_INIT, randomPattern } from "../../constants"
 import { BackgroundImage, BackgroundPattern, Position, Settings } from "../../types"
 import colours from "../images/pattern-colours"
 import patterns, { SvgPatternCallback } from "../images/pattern-svgs"
@@ -14,7 +14,7 @@ type OptionsStore = Settings & {
 
 /** zustand state for state management  */
 const useOptionsStore = create<OptionsStore>((set, get) => ({
-    padding: PADDING_INIT,
+    paddingPerc: PADDING_PERC_INIT,
     position: Position.Center,
 
     // backgroundImage: randomSearch,

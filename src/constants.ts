@@ -44,11 +44,17 @@ export const urls = {
     share: `http://twitter.com/intent/tweet?url=${referrer}&text=${tweetMessage}&original_referer=${referrer}`,
 }
 
-export const MAX_SIZE = 1920
+// As percentage of the foreground image size
+export const PADDING_PERC_MIN = 5
+export const PADDING_PERC_INIT = 12.5
+export const PADDING_PERC_MAX = 20
 
-export const PADDING_MIN = 10
-export const PADDING_INIT = 60
-export const PADDING_MAX = 100
+/** Used to convert the paddingPerc value to pixels before a foreground has been selected. */
+export const PADDING_MULT_INIT = 3
+
+/** Border radius in pixels for the inner image */
+export const BORDER_RADIUS = 10
+
 
 // https://docs.imgix.com/apis/rendering/size
 // https://unsplash.com/documentation#dynamically-resizable-images
@@ -79,7 +85,7 @@ export const quickPatterns = [
     getQuickPattern(patterns.stripes, colours.purple200, colours.white, 0.5, 0.75),
     getQuickPattern(patterns.polka, colours.red400, colours.white, 0.75, 0.75),
     getQuickPattern(patterns.random, colours.teal400, colours.white, 0.5, 2.5),
-    getQuickPattern(patterns.crosses, colours.orange400, colours.black, 0.25, 1.5),
+    getQuickPattern(patterns.leaf, colours.green400, colours.black, 0.25, 1.5),
     getQuickPattern(patterns.triangles, colours.pink200, colours.black, 0.25, 1),
 ]
 

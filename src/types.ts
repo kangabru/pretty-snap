@@ -28,7 +28,7 @@ export type Settings = {
     foreground?: Foreground,
     backgroundImage?: BackgroundImage,
     backgroundPattern?: BackgroundPattern,
-    padding: number,
+    paddingPerc: number,
     position: Position,
 }
 

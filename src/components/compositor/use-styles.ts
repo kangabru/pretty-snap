@@ -2,7 +2,7 @@ import { Ref } from 'preact';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
-import { MAX_SIZE } from '../../constants';
+import { BORDER_RADIUS } from '../../constants';
 import { Foreground, Position, Settings } from '../../types';
 import useOptionsStore from '../stores/options';
 import { getImageSrc, srcToUrl, srcToUrlSvg } from '../utils';
@@ -24,11 +24,13 @@ type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
  */
 export function useCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
     const settings = useOptionsStore() // Not this refreshes on every external option update
-    const [contRefScreen, stylesScreen] = useStylesPreview(settings)
-    const stylesRender = useStylesRender(settings)
+    const [contRefScreen, { width }] = useMeasure()
+    const stylesScreen = useStylesPreview(settings, width)
+    const stylesRender = useStylesRender(settings, width)
     return [contRefScreen, stylesScreen, stylesRender]
 }
 
+/** Like useCompositionStyles but all properties are animated using react-spring. Must be rendered with animated components. */
 export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
     const [contRefScreen, stylesScreen, stylesRender] = useCompositionStyles()
 
@@ -46,81 +48,102 @@ export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionSt
     return [contRefScreen, stylesScreenAnim, stylesRender]
 }
 
-/** Returns styles for the compositor visible on screen. */
-function useStylesPreview(settings: Settings): [Ref<HTMLElement>, CompositionStyles] {
-    const { padding, position, foreground } = settings
+/** Returns styles for the compositor visible on screen.
+ * These styles are made to render the iamge on screen as it would look when rendered.
+ */
+function useStylesPreview(settings: Settings, windowWidth: number): CompositionStyles {
+    const { paddingPerc, position, foreground } = settings
 
-    // Uses can upload image larger than the screen size but the padding will look tiny when rendered.
-    // Here we adjust the padding so the proportion is the same in the rendered image.
-    // We must measure the container width to achieve this.
-    const [refPreviewContainer, { width }] = useMeasure()
-    const [imageWidth,] = getSizeForeground(foreground)
-    const paddingScreen = padding * Math.min(1, imageWidth ? width / imageWidth : 1)
+    const paddingRaw = getPadding(paddingPerc, foreground)
+    const [width,] = getForegroundImgSize(foreground)
 
-    const bgStylesOuter = getBackgroundStyles(settings)
-    const [posStylesInner, posStylesOuter] = getPositionStyles(paddingScreen, position)
+    // Padding is a function of image size which is scaled down when viewed on screen so here we scale down the padding too.
+    const scaleDown = width ? windowWidth / (width + 2 * paddingRaw) : 1
+    const padding = width
+        ? scaleDown * paddingRaw // paddingRaw accounts for both width and height of the actual image
+        : windowWidth / (2 + 100 / paddingPerc) // just use the screen width until an image is chosen
 
-    return [refPreviewContainer, {
+    const bgStylesOuter = getBackgroundStyles(settings, 1) // Don't scale patterns
+    const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position, 1) // Don't scale border radius
+
+    return {
         inner: posStylesInner,
         outer: { ...posStylesOuter, ...bgStylesOuter },
-    }]
+    }
 }
 
-/** Returns styles used to export the final image. */
-function useStylesRender(settings: Settings): CompositionStyles {
-    const { padding, position, foreground } = settings
+/** Returns styles used to export the final image.
+ * This is done by defining styles on a hidden image that the dom-to-image library renders.
+ */
+function useStylesRender(settings: Settings, windowWidth: number): CompositionStyles {
+    const { paddingPerc, position, foreground } = settings
 
-    const [width, height] = getSizeForeground(foreground)
+    const padding = getPadding(paddingPerc, foreground)
+    const [width, height] = getForegroundImgSize(foreground)
     const [widthBg, heightBg] = getSizeBackground(settings)
 
-    const bgStylesOuter = getBackgroundStyles(settings)
-    const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position)
+    // Scale some values up so they render as they appear on screen (border radius and SVG pattern size)
+    const scaleUp = (width + 2 * padding) / windowWidth
 
+    const bgStylesOuter = getBackgroundStyles(settings, scaleUp)
+    const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position, scaleUp)
+
+    // Explicitly set width and height so the html to image libary renders correctly
     return {
         inner: { ...posStylesInner, width, height },
         outer: { ...posStylesOuter, width: widthBg, height: heightBg, ...bgStylesOuter },
     }
 }
 
-/** Returns the size of the foreground image.
- * @returns [width, height] of the foreground image ofr [0, 0] if no foreground is selected. */
-export function getSizeForeground(foreground: Foreground | undefined) {
-    if (!(foreground?.width && foreground?.height)) return [0, 0]
+/** Returns the padding as a function of the image size.
+ * @param paddingPerc - The whole number percentage of the image width and height used to calculate the padding.
+ */
+function getPadding(paddingPerc: number, foreground: Foreground | undefined) {
+    const [width, height] = getForegroundImgSize(foreground)
+    return Math.min(width, height) * paddingPerc / 100
+}
 
-    // Scale down large images
-    const { width, height } = foreground
-    const maxSize = Math.max(width, height)
-    const scale = Math.min(1, MAX_SIZE / maxSize)
-    return [width * scale, height * scale]
+/** Returns the size of the foreground image.
+ * @returns [width, height] of the foreground image for [0, 0] if no foreground is selected. */
+function getForegroundImgSize(foreground: Foreground | undefined) {
+    return [foreground?.width ?? 0, foreground?.height ?? 0]
 }
 
 /** Returns the size of the background image accounting for positional padding.
  * @returns [width, height] of the background image. */
 export function getSizeBackground(settings: Omit<Settings, 'background'>) {
-    const { padding, position, foreground } = settings
+    const { paddingPerc, position, foreground } = settings
+    const padding = getPadding(paddingPerc, foreground)
 
-    const [width, height] = getSizeForeground(foreground)
+    const [width, height] = getForegroundImgSize(foreground)
     const shortX = position == Position.Left || position == Position.Right
     const shortY = position == Position.Top || position == Position.Bottom
 
     return [width + padding * (shortX ? 1 : 2), height + padding * (shortY ? 1 : 2)]
 }
 
-function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings): CSSProperties {
+/** Returns styles for the background properties.
+ * @param bgSizeScale - Scales the background svg pattern if a pattern is selected.
+ */
+function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings, bgSizeScale: number): CSSProperties {
     const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : 'white'
-    const pattern = backgroundPattern?.getSrc ? srcToUrlSvg(backgroundPattern?.getSrc(backgroundPattern)) : undefined
+    const pattern = backgroundPattern?.getSrc && backgroundPattern?.getSrc(backgroundPattern)
     return {
         backgroundColor,
-        backgroundImage: pattern ?? srcToUrl(getImageSrc(backgroundImage)),
-        backgroundPosition: pattern ? "center" : undefined,
+        backgroundSize: pattern && `${pattern.w * bgSizeScale}px ${pattern.h * bgSizeScale}px`,
+        backgroundPosition: "center",
+        backgroundImage: pattern ? srcToUrlSvg(pattern.url) : srcToUrl(getImageSrc(backgroundImage)),
     }
 }
 
-/** Returns styles for fore and background images to position the foreground according to the user selected options. */
-function getPositionStyles(padding: number, position: Position): [CSSProperties, CSSProperties] {
+/** Returns styles for fore and background images to position the foreground according to the user selected options.
+ * @param scale - Scales the border radius of the inner image
+ */
+function getPositionStyles(padding: number, position: Position, scale: number): [CSSProperties, CSSProperties] {
+    const rad = BORDER_RADIUS * scale
     const stylesForeground: Partial<CSSProperties> = {
-        borderTopLeftRadius: 10, borderTopRightRadius: 10,
-        borderBottomLeftRadius: 10, borderBottomRightRadius: 10,
+        borderTopLeftRadius: rad, borderTopRightRadius: rad,
+        borderBottomLeftRadius: rad, borderBottomRightRadius: rad,
     }
     const stylesBackground: Partial<CSSProperties> = {
         paddingLeft: padding, paddingTop: padding,

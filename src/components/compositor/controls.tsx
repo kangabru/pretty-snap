@@ -1,5 +1,5 @@
 import { Fragment, h, JSX } from 'preact';
-import { PADDING_MAX, PADDING_MIN, urls } from '../../constants';
+import { PADDING_PERC_MAX, PADDING_PERC_MIN, urls } from '../../constants';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import PositionButtonGroup from './controls-positions';
@@ -34,18 +34,18 @@ export default function Controls({ canCopy, copy, copyState, download, downloadS
 }
 
 function PaddingSlider() {
-    const setPadding = (padding: number) => useOptionsStore.setState({ padding })
+    const setPadding = (padding: number) => useOptionsStore.setState({ paddingPerc: padding })
     // @ts-ignore. We want the slider to go from small -> large image but internally we must reverse the padding calc
-    const setPaddingSlider = (e: Event) => setPadding(PADDING_MAX - e.target.value)
+    const setPaddingSlider = (e: Event) => setPadding(PADDING_PERC_MAX - e.target.value)
 
     // Get the slider min/max values based on the reverse calc we do internally
-    const padding = useOptionsStore(s => s.padding)
-    const valInverse = PADDING_MAX - padding
-    const maxInverse = PADDING_MAX - PADDING_MIN
-    const minInverse = PADDING_MAX - PADDING_MAX
+    const padding = useOptionsStore(s => s.paddingPerc)
+    const valInverse = PADDING_PERC_MAX - padding
+    const maxInverse = PADDING_PERC_MAX - PADDING_PERC_MIN
+    const minInverse = PADDING_PERC_MAX - PADDING_PERC_MAX
 
     return <div class="inline-flex flex-row space-x-2 text-gray-700">
-        <button title="Set maximum padding" onClick={_ => setPadding(PADDING_MAX)} class="outline-primary rounded">
+        <button title="Set maximum padding" onClick={_ => setPadding(PADDING_PERC_MAX)} class="outline-primary rounded">
             <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
                 <rect fill="currentColor" stroke="none" rx="2" x="8" y="8" width="8" height="8" />
                 <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
@@ -54,7 +54,7 @@ function PaddingSlider() {
 
         <input title="Adjust padding" class="slider" type="range" min={minInverse} max={maxInverse} value={valInverse} onChange={setPaddingSlider} />
 
-        <button title="Set minimum padding" onClick={_ => setPadding(PADDING_MIN)} class="outline-primary rounded">
+        <button title="Set minimum padding" onClick={_ => setPadding(PADDING_PERC_MIN)} class="outline-primary rounded">
             <svg class="w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
                 <rect fill="currentColor" stroke="none" rx="2" x="5" y="5" width="14" height="14" />
                 <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
