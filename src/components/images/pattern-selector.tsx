@@ -50,7 +50,7 @@ function QuickPattern(pattern: PatternPreset) {
         backgroundColor: bgColour,
         backgroundPosition: "center",
         backgroundSize: `${pattern.sizeRem}rem`,
-        backgroundImage: srcToUrlSvg(getSrc({ svgColour, svgOpacity })),
+        backgroundImage: srcToUrlSvg(getSrc({ svgColour, svgOpacity }).url),
     }} />
 }
 
@@ -120,7 +120,7 @@ function Patterns() {
 function Pattern({ getSrc }: { getSrc: SvgPatternCallback }) {
     const bg = useOptionsStore(s => s.backgroundPattern) ?? { svgColour: colours.black, svgOpacity: 0.25, bgColour: colours.orange200 }
     const onClick = () => useOptionsStore.getState().setPatternSrc(getSrc)
-    const backgroundImage = bg ? srcToUrlSvg(getSrc(bg)) : ""
+    const backgroundImage = bg ? srcToUrlSvg(getSrc(bg).url) : ""
 
     const currentGetSrc = useOptionsStore(s => s.backgroundPattern?.getSrc)
     const isTarget = getSrc == currentGetSrc

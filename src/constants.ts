@@ -44,8 +44,6 @@ export const urls = {
     share: `http://twitter.com/intent/tweet?url=${referrer}&text=${tweetMessage}&original_referer=${referrer}`,
 }
 
-export const MAX_SIZE = 1920
-
 // As percentage of the foreground image size
 export const PADDING_PERC_MIN = 5
 export const PADDING_PERC_INIT = 12.5
@@ -53,6 +51,10 @@ export const PADDING_PERC_MAX = 20
 
 /** Used to convert the paddingPerc value to pixels before a foreground has been selected. */
 export const PADDING_MULT_INIT = 3
+
+/** Border radius in pixels for the inner image */
+export const BORDER_RADIUS = 10
+
 
 // https://docs.imgix.com/apis/rendering/size
 // https://unsplash.com/documentation#dynamically-resizable-images
