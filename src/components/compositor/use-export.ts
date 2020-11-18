@@ -77,10 +77,13 @@ function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [() => Promise<
 }
 
 function downloadImage(dataUrl: string) {
+    const t = new Date()
+    const filename = `pretty_snap_${t.getFullYear()}_${t.getMonth()}_${t.getDate()}_${t.getHours()}_${t.getMinutes()}.png`
+
     const a = document.createElement('a')
     a.setAttribute('hidden', '1')
     a.setAttribute("href", dataUrl)
-    a.setAttribute("download", "test.png")
+    a.setAttribute("download", filename)
     a.click()
     a.remove()
     plausible('download')
