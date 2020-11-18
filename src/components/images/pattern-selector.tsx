@@ -59,7 +59,7 @@ function PatternColours() {
     const opacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
     const ref = useChildNavigate<HTMLDivElement>([colour, opacity])
 
-    return <div ref={ref} class="row flex-wrap space-x-2">
+    return <div ref={ref} class="row flex-wrap justify-center">
         <PatternColor colour={colours.white} opacity={0.5} />
         <PatternColor colour={colours.white} opacity={0.75} />
         <PatternColor colour={colours.white} opacity={1} />
@@ -79,7 +79,7 @@ function PatternColor({ colour, opacity }: { colour: string, opacity: number }) 
     const svgOpacity = useOptionsStore(s => s.backgroundPattern?.svgOpacity)
     const isTarget = svgColour == colour && svgOpacity == opacity
 
-    return <button onClick={onClick} class='relative shadow rounded outline-primary' style={{ backgroundColor }}
+    return <button onClick={onClick} class='relative shadow rounded outline-primary m-1' style={{ backgroundColor }}
         data-target={colour == _colour && opacity == _opacity}>
         <div class="w-10 h-10 m-1 rounded-sm" style={{ backgroundColor: colour, opacity }}></div>
         {isTarget && <TargetIndicator marginClass="m-2" colourClass={svgColour == colours.black ? "bg-white" : undefined} />}
