@@ -95,7 +95,7 @@ function Patterns() {
         <Pattern getSrc={patterns.circlesOverlap} />
         <Pattern getSrc={patterns.polka} />
         <Pattern getSrc={patterns.random} />
-        <Pattern getSrc={patterns.ticTacTeo} />
+        <Pattern getSrc={patterns.ticTacToe} />
         <Pattern getSrc={patterns.wiggle} />
         <Pattern getSrc={patterns.yyy} />
         <Pattern getSrc={patterns.anchors} />
@@ -105,6 +105,15 @@ function Patterns() {
         <Pattern getSrc={patterns.squares} />
         <Pattern getSrc={patterns.waves} />
         <Pattern getSrc={patterns.crosses} />
+        <Pattern getSrc={patterns.hexagons} />
+        <Pattern getSrc={patterns.squarish} />
+        <Pattern getSrc={patterns.diamonds} />
+        <Pattern getSrc={patterns.leaf} />
+        <Pattern getSrc={patterns.squaresInSquares} />
+        <Pattern getSrc={patterns.aztec} />
+        <Pattern getSrc={patterns.waves2} />
+        <Pattern getSrc={patterns.squaresCircles} />
+        <Pattern getSrc={patterns.endlessClouds} />
     </div>
 }
 
