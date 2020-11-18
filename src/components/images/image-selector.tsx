@@ -61,7 +61,7 @@ function Image(img: UnsplashImage) {
 
 export function UserImageLink({ img, className }: { img: BackgroundImage, className?: string }) {
     return <a href={getUnsplashBacklink(img)} target="blank" class={className}>
-        <div class="row space-x-2 overflow-hidden">
+        <div class="row space-x-2">
             <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
             <span class="truncate">{img.user.name}</span>
         </div>
