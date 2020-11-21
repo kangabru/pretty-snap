@@ -3,11 +3,9 @@
 ![Preview video](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/demo.gif)
 <br/>
 
-# Pretty Snap
+# [Pretty Snap](https://prettysnap.app)
 
-Make your screenshot 🔥 with a pretty background.
-
-[Play with it here](https://prettysnap.app)!
+Make your screenshot 🔥 with a pretty background
 
 </div>
 
@@ -96,7 +94,7 @@ Pretty Snap should still render when visiting `some-domain.com` but XHR requests
 
 <div align="center">
 
-![Panda Snap logo](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/panda.jpg)
+[![Panda Snap logo](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/panda.jpg)](https://pandasnap.io/)
 
 Design faster by 'snapping' images to create a personal design collection.
 
