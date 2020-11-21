@@ -6,9 +6,10 @@
     "scripts": {
         "start": "npm run dev",
         "dev": "npm run typecheck && npm run parcel:watch",
-        "build": "npm run typecheck && npm run parcel:build",
+        "build": "npm run typecheck && npm run parcel:build && npm run static-assets",
         "parcel:watch": "parcel ./src/index.html",
         "parcel:build": "parcel build ./src/index.html --no-source-maps",
+        "static-assets": "node copy.js",
         "typecheck": "tsc --noEmit"
     },
     "alias": {
@@ -23,6 +24,7 @@
         "@types/dom-to-image": "^2.6.2",
         "@types/react": "^16.9.55",
         "autoprefixer": "^9.8.6",
+        "fs-extra": "^9.0.1",
         "parcel-bundler": "^1.12.4",
         "parcel-plugin-bundle-visualiser": "^1.2.0",
         "tailwindcss": "^1.9.5",
