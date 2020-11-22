@@ -47,5 +47,7 @@ module.exports = {
             backgroundSize: (theme) => theme('spacing'),
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/typography'),
+    ],
 }

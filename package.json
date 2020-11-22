@@ -31,6 +31,7 @@
         "typescript": "^4.0.3"
     },
     "dependencies": {
+        "@tailwindcss/typography": "^0.3.1",
         "dom-to-image": "^2.6.0",
         "preact": "^10.5.5",
         "react-merge-refs": "^1.1.0",

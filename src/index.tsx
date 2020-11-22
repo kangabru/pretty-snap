@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
 import srcPandaSnap from '../assets/pandasnap.jpg';
+import srcPreview from '../assets/preview.jpg';
 import Compositor from './components/compositor';
 import BackgroundSelector from './components/images';
 import { urls } from './constants';
@@ -8,10 +9,11 @@ import './index.css';
 render(<App />, document.getElementById('root') as HTMLElement)
 
 function App() {
-    return <div class="col space-y-5 text-gray-800 bg-gray-100 font-open">
+    return <div class="col space-y-6 text-gray-800 bg-gray-100 font-open">
         <Header />
         <Compositor />
         <BackgroundSelector />
+        <Info />
         <Footer />
     </div>
 }
@@ -45,6 +47,22 @@ function Header() {
             </a>
         </div>
     </header>
+}
+
+function Info() {
+    return <section class="pt-5 grid md:grid-cols-2 gap-5 px-5">
+        <div class="prose">
+            <h2>What is this for?</h2>
+            <p>To make boring screenshots awesome! Use them for:</p>
+            <ul>
+                <li>Product screenshots on landing pages</li>
+                <li>Eye catching website <a href="https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary" target="blank" class="link">summary cards</a></li>
+                <li>Better screenshot posts on social media</li>
+            </ul>
+            <p>Found an issue or have a suggestion? <a href="https://github.com/kangabru/pretty-snap/issues/new" target="blank" class="link">Let me know here!</a></p>
+        </div>
+        <img class="rounded-lg shadow w-full max-w-md" src={srcPreview} alt="Example output" />
+    </section>
 }
 
 function Footer() {

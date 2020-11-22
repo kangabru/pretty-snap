@@ -19,14 +19,14 @@ Make your screenshots pop with beautiful backgrounds. Use them for:
 ---
 
 ## 🍕 Develop
-Get started as follows and access on [localhost:1234](http://localhost:1234/). Note: This doesn't use external APIs.
+Get started without external APIs. Access on [localhost:1234](http://localhost:1234/).
 
 ```sh
 npm install
 npm start
 ```
 
-### 🌐 Unsplash API (Optional)
+### Unsplash API (Optional)
 
 Pretty Snap uses the [Unsplash API](https://unsplash.com/developers) to get images and [Cloudflare Workers](https://workers.cloudflare.com/) to proxy API requests signed with an Unsplash access key.
 
@@ -71,9 +71,9 @@ Pretty Snap is deployed statically and uses the Cloudflare worker as an API.
 1. Deploy statically via a provider like [Netlify](https://www.netlify.com/).
 1. Set the build command to `npm run build` and output directory to `dist`
 1. Set the environment variable `URL_API` to the Cloudflare work base url
-    1. The `DEV_USE_API` variable can be ignored
+    - The `DEV_USE_API` variable can be ignored
 
-**Use the API on the same domain**
+### Use the API on the same domain (Optional)
 
 Cloudflare allows workers to run on the same domain even when hosted on an external server.
 1. Open the Cloudflare `DNS` tab and configure DNS as follows:

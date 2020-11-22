@@ -12,8 +12,8 @@ import { getQuickSearch, getQuickPattern, getRandomItem, Orientation } from './c
 import patterns from './components/images/pattern-svgs';
 import colours from './components/images/pattern-colours';
 
-const referrer = "https://prettysnap.io"
-const tweetMessage = "Check out Pretty Snap and make your snapshots look awesome! Thanks @kanga_bru%0A%0A"
+const referrer = "https://prettysnap.app"
+const tweetMessage = "Check out Pretty Snap and make your snapshots look 🔥! Thanks @kanga_bru%0A%0A"
 
 // See cloudlfare/worker.js for the endpoint definitions
 const urlBase = (process.env.URL_API ?? "") + "/api"
