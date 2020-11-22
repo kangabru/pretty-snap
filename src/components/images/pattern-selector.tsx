@@ -90,7 +90,7 @@ function Patterns() {
     const getSrc = useOptionsStore(s => s.backgroundPattern?.getSrc)
     const ref = useChildNavigate<HTMLDivElement>([getSrc])
 
-    return <div ref={ref} class="grid grid-rows-1 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
+    return <div ref={ref} class="grid grid-rows-1 grid-flow-col gap-2 p-2 overflow-x-scroll" tabIndex={-1}>
         <Pattern getSrc={patterns.none} />
         <Pattern getSrc={patterns.bubbles} />
         <Pattern getSrc={patterns.circlesOverlap} />
@@ -138,7 +138,7 @@ function ColorRow() {
 
     const hexs = useMemo(() => Object.values(colours).filter(c => !(c == colours.white || c == colours.black)), [])
 
-    return <div ref={ref} class="grid grid-rows-2 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
+    return <div ref={ref} class="grid grid-rows-2 grid-flow-col gap-2 p-2 overflow-x-scroll" tabIndex={-1}>
         {hexs.map(hex => <Colour colour={hex} />)}
     </div>
 }
