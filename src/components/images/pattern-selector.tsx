@@ -91,6 +91,7 @@ function Patterns() {
     const ref = useChildNavigate<HTMLDivElement>([getSrc])
 
     return <div ref={ref} class="grid grid-rows-1 grid-flow-col gap-2 py-2 overflow-x-scroll" tabIndex={-1}>
+        <Pattern getSrc={patterns.none} />
         <Pattern getSrc={patterns.bubbles} />
         <Pattern getSrc={patterns.circlesOverlap} />
         <Pattern getSrc={patterns.polka} />
