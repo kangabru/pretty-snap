@@ -35,9 +35,10 @@ module.exports = {
                     dark: 'hsl(27, 84%, 57%)',
                 },
             },
-            inset: {
+            inset: (theme) => ({
+                ...theme('spacing'),
                 '1/2': '50%',
-            },
+            }),
             boxShadow: {
                 outline: '0 0 0 4px hsla(27, 90%, 50%, 0.4)',
             },
