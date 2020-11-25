@@ -12,7 +12,7 @@ export default function ImageSelector() {
     return <Fragment>
         <Controls />
         <ImageRow />
-        <p class="text-gray-800 text-center pt-3">Photos by <a class="link" href={urls.unsplash} target="blank">Unsplash</a></p>
+        <p class="text-gray-800 text-center pt-3">Photos by <a class="link" href={urls.unsplash}>Unsplash</a></p>
     </Fragment>
 }
 
@@ -69,7 +69,7 @@ function Image(img: UnsplashImage) {
 }
 
 export function UserImageLink({ img, ...props }: h.JSX.HTMLAttributes<HTMLAnchorElement> & { img: BackgroundImage }) {
-    return <a {...props} href={getUnsplashBacklink(img)} target="blank">
+    return <a {...props} href={getUnsplashBacklink(img)} target="_blank">
         <div class="row space-x-2">
             <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
             <span class="truncate">{img.user.name}</span>

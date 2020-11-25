@@ -16,7 +16,7 @@ export default function PatternSelector() {
         </div>
         <Patterns />
         <ColorRow />
-        <p class="text-gray-800 text-center pt-3">Patterns by <a class="link" href={urls.patterns} target="blank">Hero Patterns</a></p>
+        <p class="text-gray-800 text-center pt-3">Patterns by <a class="link" href={urls.patterns}>Hero Patterns</a></p>
     </div>
 }
 
