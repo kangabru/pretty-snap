@@ -1,7 +1,9 @@
 {
     "version": "1.0.0",
     "name": "boilerplate-preact",
-    "description": "",
+    "description": "Make boring screenshots look awesome with a pretty background.",
+    "repository": "https://github.com/kangabru/pretty-snap",
+    "license": "MIT",
     "main": "index.js",
     "scripts": {
         "preinstall": "npx npm-force-resolutions",
