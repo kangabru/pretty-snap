@@ -26,7 +26,10 @@ npm install
 npm start
 ```
 
-### Unsplash API (Optional)
+### (Optional) Unsplash API
+
+<details>
+  <summary>Click to expand</summary>
 
 Pretty Snap uses the [Unsplash API](https://unsplash.com/developers) to get images and [Cloudflare Workers](https://workers.cloudflare.com/) to proxy API requests signed with an Unsplash access key.
 
@@ -62,6 +65,8 @@ Both service provide a generous free tier which you can use for development and 
 1. Delete the Parcel generated `.cache` folder
 1. Rebuild the app
 
+</details>
+
 ---
 
 ## 🌍 Deploy
@@ -73,7 +78,10 @@ Pretty Snap is deployed statically and uses the Cloudflare worker as an API.
 1. Set the environment variable `URL_API` to the Cloudflare work base url
     - The `DEV_USE_API` variable can be ignored
 
-### Use the API on the same domain (Optional)
+### (Optional) Use the API on the same domain
+
+<details>
+  <summary>Click to expand</summary>
 
 Cloudflare allows workers to run on the same domain even when hosted on an external server.
 1. Open the Cloudflare `DNS` tab and configure DNS as follows:
@@ -87,6 +95,8 @@ Cloudflare allows workers to run on the same domain even when hosted on an exter
     |`*some-domain.com/api*`|`<select your worker>`|
 
 Pretty Snap should still render when visiting `some-domain.com` but XHR requests to `some-domain.com/api` will now hit the worker. You now have a server and API running on the same domain but hosted in 2 locations 🤯
+
+</details>
 
 ---
 
