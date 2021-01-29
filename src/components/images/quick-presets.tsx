@@ -18,7 +18,7 @@ export function QuickPreset(props: { title?: string, onClick: () => void, classe
 export function RandButton(props: { onClick: () => void }) {
     const [isDown, setIsDown] = useState(false)
     const setDown = () => setIsDown(true), setUp = () => setIsDown(false)
-    const { angle } = useSpring({ angle: isDown ? 360 : 0, config: { tension: 60, friction: 8 } })
+    const { angle } = useSpring({ angle: isDown ? 270 : 0, config: { tension: 40, friction: 8 } })
 
     const onEnter = () => { setDown(); setTimeout(setUp, 250) }
     const onHover = () => { setDown(); setTimeout(setUp, 20) }
