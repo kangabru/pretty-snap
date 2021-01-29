@@ -33,7 +33,7 @@ function ImageRow() {
     // Center the load icon on first load otherwise use the row
     return isFirstSearch
         ? <div tabIndex={-1} class="row justify-center w-full"><LoadMore /></div>
-        : <div tabIndex={-1} ref={ref} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-no-wrap">
+        : <div tabIndex={-1} ref={ref} class="max-w-screen-lg overscroll-y-none overflow-x-auto p-2 space-x-3 rounded whitespace-nowrap">
             {images?.map(img => <Image key={img.urls.thumb} {...img} />)}
             <LoadMore />
             <div class="inline-block w-2"></div> {/* Spacer because margins ain't workin */}

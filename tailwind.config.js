@@ -4,6 +4,8 @@
 * Def: https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
 */
 
+const colours = require('tailwindcss/colors')
+
 module.exports = {
     purge: [
         "./src/**/*.html",
@@ -12,15 +14,14 @@ module.exports = {
         "./src/**/*.ts",
         "./src/**/*.tsx",
     ],
-    experimental: {
-        applyComplexClasses: true,
-    },
     variants: {
-        backgroundColor: ({ after }) => after(['disabled']),
-        opacity: ({ after }) => after(['disabled']),
-        textDecoration: ({ after }) => after(['focus']),
-        borderColor: ({ after }) => after(['focus-within']),
-        backgroundSize: ({ after }) => after(['focus']),
+        extend: {
+            backgroundColor: ['disabled'],
+            opacity: ['disabled'],
+            textDecoration: ['focus'],
+            borderColor: ['focus-within'],
+            backgroundSize: ['focus'],
+        }
     },
     theme: {
         extend: {
@@ -29,11 +30,12 @@ module.exports = {
                 cursive: ["'Pacifico'", 'cursive'],
             },
             colors: {
-                'primary': {
+                primary: {
                     light: 'hsl(38, 93%, 77%)',
                     base: 'hsl(33, 90%, 65%)',
                     dark: 'hsl(27, 84%, 57%)',
                 },
+                orange: colours.orange,
             },
             inset: (theme) => ({
                 ...theme('spacing'),

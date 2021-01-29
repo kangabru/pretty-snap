@@ -1,61 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Pacifico&display=swap");
 
 @tailwind base;
 @tailwind components;
+@tailwind utilities;
 
-.row {
-    @apply flex flex-row items-center;
+@layer utilities {
+    .row {
+        @apply flex flex-row items-center;
+    }
+
+    .col {
+        @apply flex flex-col items-center;
+    }
+
+    .transition {
+        @apply transition-all duration-150;
+    }
 }
 
-.col {
-    @apply flex flex-col items-center;
+@layer components {
+    .button-blank {
+        @apply p-2 rounded hover:bg-gray-200 outline-primary;
+    }
+
+    .button {
+        @apply p-2 rounded bg-gray-100 hover:bg-gray-200 outline-primary;
+    }
+
+    .link {
+        @apply text-primary-dark outline-link;
+    }
+
+    .outline-link {
+        @apply outline-primary hover:underline px-1 rounded-sm;
+    }
+
+    .outline-primary {
+        @apply focus:shadow-outline outline-none focus:outline-none transition;
+    }
+
+    .animate-fade-in {
+        animation: fade-in 500ms ease-in-out;
+    }
 }
 
-.button-blank {
-    @apply p-2 rounded hover:bg-gray-200 outline-primary;
+.slider {
+    @apply appearance-none outline-none;
 }
 
-.button {
-    @apply p-2 rounded bg-gray-100 hover:bg-gray-200 outline-primary;
+.slider::-moz-range-track {
+    @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
+}
+.slider::-webkit-slider-runnable-track {
+    @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
 }
 
-.link {
-    @apply text-primary-dark outline-link;
+.slider::-moz-range-thumb {
+    @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent;
+}
+.slider::-webkit-slider-thumb {
+    @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent;
 }
 
-.outline-link {
-    @apply outline-primary hover:underline px-1 rounded-sm;
+.slider:hover::-moz-range-thumb {
+    @apply bg-primary-dark;
+}
+.slider:hover::-webkit-slider-thumb {
+    @apply bg-primary-dark;
 }
 
-.outline-primary {
-    @apply focus:shadow-outline outline-none focus:outline-none transition;
+.slider:focus::-moz-range-thumb {
+    @apply ring;
 }
-
-.transition {
-    @apply transition-all duration-150;
-}
-
-.slider { @apply appearance-none outline-none; }
-
-.slider::-moz-range-track { @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent; }
-.slider::-webkit-slider-runnable-track { @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent; }
-
-.slider::-moz-range-thumb { @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent; }
-.slider::-webkit-slider-thumb { @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent; }
-
-.slider:hover::-moz-range-thumb { @apply bg-primary-dark; }
-.slider:hover::-webkit-slider-thumb { @apply bg-primary-dark; }
-
-.slider:focus::-moz-range-thumb { @apply shadow-outline; }
-.slider:focus::-webkit-slider-thumb { @apply shadow-outline; }
-
-.animate-fade-in {
-    animation: fade-in 500ms ease-in-out;
+.slider:focus::-webkit-slider-thumb {
+    @apply ring;
 }
 
 @keyframes fade-in {
-    0% { opacity: 0;}
-    100% {opacity: 1;}
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
-
-@tailwind utilities;
