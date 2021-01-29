@@ -5,14 +5,22 @@ import { urls } from '../../constants';
 import { BackgroundImage, UnsplashImage } from '../../types';
 import useOptionsStore from '../stores/options';
 import useUnsplashStore from '../stores/unsplash';
-import { getUnsplashBacklink, join, srcToUrl, useChildNavigate } from '../utils';
+import { getUnsplashBacklinkImage, getUnsplashBacklinkUser, join, srcToUrl, useChildNavigate } from '../utils';
 import Controls from './image-controls';
 
 export default function ImageSelector() {
+    const image = useOptionsStore(s => s.backgroundImage)
+
     return <>
         <Controls />
         <ImageRow />
-        <p class="text-gray-800 text-center pt-3">Photos by <a class="link" href={urls.unsplash}>Unsplash</a></p>
+        <div class="flex flex-wrap items-center justify-center sm:justify-around sm:pt-3">
+            {image && <>
+                <CurrentImageLink img={image} class="hover:underline m-2 sm:m-0" />
+                <UserImageLink img={image} class="hover:underline m-2 sm:m-0" />
+            </>}
+            <p class="inline-block text-gray-800 text-center m-2 sm:m-0">Photos by <a class="link" href={urls.unsplash}>Unsplash</a></p>
+        </div>
     </>
 }
 
@@ -69,10 +77,19 @@ function Image(img: UnsplashImage) {
 }
 
 export function UserImageLink({ img, ...props }: h.JSX.HTMLAttributes<HTMLAnchorElement> & { img: BackgroundImage }) {
-    return <a {...props} href={getUnsplashBacklink(img)} target="_blank">
+    return <a {...props} href={getUnsplashBacklinkUser(img)} target="_blank">
         <div class="row space-x-2">
             <img src={img.user.profile_image.medium} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
             <span class="truncate">{img.user.name}</span>
+        </div>
+    </a>
+}
+
+export function CurrentImageLink({ img, ...props }: h.JSX.HTMLAttributes<HTMLAnchorElement> & { img: BackgroundImage }) {
+    return <a {...props} href={getUnsplashBacklinkImage(img)} target="_blank">
+        <div class="row space-x-2">
+            <img src={img.urls.thumb} alt="Avatar" class="rounded-full shadow w-8 h-8 pointer-events-none" />
+            <span class="truncate">Selected</span>
         </div>
     </a>
 }

@@ -16,8 +16,14 @@ export const srcToUrlSvg = (src: string) => srcToUrl("data:image/svg+xml," + src
 
 /** Returns a url to the authors profile as required by the API guidelines.
  *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
-export function getUnsplashBacklink(image: UnsplashImage) {
+export function getUnsplashBacklinkUser(image: UnsplashImage) {
     return `${urls.unsplash}/@${image.user.username}?utm_source=pretty_snap&utm_medium=referral`
+}
+
+/** Returns a url to the authors profile as required by the API guidelines.
+ *  @see https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines */
+export function getUnsplashBacklinkImage(image: UnsplashImage) {
+    return `${image.urls.full}?utm_source=pretty_snap&utm_medium=referral`
 }
 
 /** Return the src url to use for displaying an unsplash image */
