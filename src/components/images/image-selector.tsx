@@ -9,11 +9,11 @@ import { getUnsplashBacklink, join, srcToUrl, useChildNavigate } from '../utils'
 import Controls from './image-controls';
 
 export default function ImageSelector() {
-    return <Fragment>
+    return <>
         <Controls />
         <ImageRow />
         <p class="text-gray-800 text-center pt-3">Photos by <a class="link" href={urls.unsplash}>Unsplash</a></p>
-    </Fragment>
+    </>
 }
 
 /** Renders the unsplash row of images that users can select from. */

@@ -10,7 +10,7 @@ export type CompositorControlProps = { canCopy: boolean, copy: () => void, copyS
 /** Renders the image compositional control component. */
 export default function Controls({ canCopy, copy, copyState, download, downloadState }: CompositorControlProps) {
     const hasError = copyState == SaveState.error || downloadState == SaveState.error
-    return <Fragment>
+    return <>
         {hasError && <p class="max-w-md text-red-500 text-center">
             Oops! Something broke which means your browser might not be supported 😬
             Please try on Chrome, Firefox, or <a href={urls.github} class="underline">submit an issue on Github</a>. Sorry about that!
@@ -30,7 +30,7 @@ export default function Controls({ canCopy, copy, copyState, download, downloadS
                 </ExportButton>
             </div>
         </section>
-    </Fragment>
+    </>
 }
 
 function PaddingSlider() {
