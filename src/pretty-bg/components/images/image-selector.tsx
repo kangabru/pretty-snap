@@ -49,7 +49,7 @@ function ImageRow() {
 }
 
 const commonImageStyles = "inline-block relative h-56 w-48 sm:w-56 rounded"
-const commonImageButtonStyles = "w-full h-full row justify-center p-4 opacity-85 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 focus:bg-opacity-25 focus:underline transition-opacity duration-150"
+const commonImageButtonStyles = "w-full h-full row justify-center p-4 opacity-80 hover:opacity-100 bg-transparent sm:bg-black sm:bg-opacity-0 bg-opacity-0 hover:bg-opacity-25 focus:bg-opacity-25 focus:underline transition-opacity duration-150"
 
 /** Renders the image components in the image row.
  * - Has a button to set the background images

@@ -17,10 +17,11 @@ module.exports = {
     variants: {
         extend: {
             backgroundColor: ['disabled'],
-            opacity: ['disabled'],
-            textDecoration: ['focus'],
-            borderColor: ['focus-within'],
             backgroundSize: ['focus'],
+            borderColor: ['focus-within'],
+            opacity: ['disabled'],
+            ringWidth: ['group-hover', 'group-focus'],
+            textDecoration: ['focus'],
         }
     },
     theme: {
@@ -41,12 +42,6 @@ module.exports = {
                 ...theme('spacing'),
                 '1/2': '50%',
             }),
-            boxShadow: {
-                outline: '0 0 0 4px hsla(27, 90%, 50%, 0.4)',
-            },
-            opacity: {
-                85: '0.85',
-            },
             backgroundSize: (theme) => theme('spacing'),
         },
     },

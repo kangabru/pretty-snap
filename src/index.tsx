@@ -22,8 +22,8 @@ function PrettySnap() {
 
 function PageSelector() {
     return <div class="flex-1 flex justify-center items-center">
-        <a href={routes.background} class="col w-full max-w-md space-y-3 group">
-            <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow group-hover:ring-4" />
+        <a href={routes.background} class="col w-full max-w-md space-y-3 group focus:outline-none">
+            <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
             <span class="group-hover:underline font-cursive text-4xl">Background</span>
         </a>
     </div>
@@ -40,12 +40,14 @@ function Header() {
             </div>
         </div>
 
-        <a href={routes.home} class="outline-primary col-span-2 w-full space-y-3 text-center">
-            <h1 class="text-4xl font-cursive pr-5">
-                <svg class="inline w-12 h-12 mr-1 -mt-3 text-orange-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
-                Pretty Snap
-            </h1>
-        </a>
+        <div class="col-span-2 w-full text-center row justify-center">
+            <a href={routes.home} class="outline-primary rounded">
+                <h1 class="text-4xl font-cursive pr-5">
+                    <svg class="inline w-12 h-12 mr-1 -mt-3 text-orange-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
+                    Pretty Snap
+                </h1>
+            </a>
+        </div>
 
         <div class="flex flex-col sm:flex-row items-end sm:items-center sm:justify-end font-semibold">
             <a href={urls.share} class="row space-x-2 button-blank">
