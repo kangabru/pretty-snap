@@ -36,7 +36,9 @@
     "dependencies": {
         "@tailwindcss/typography": "^0.3.1",
         "dom-to-image": "^2.6.0",
+        "history": "^5.0.0",
         "preact": "^10.5.5",
+        "preact-router": "^3.2.1",
         "react-merge-refs": "^1.1.0",
         "react-spring": "^8.0.27",
         "react-use-measure": "^2.0.2",

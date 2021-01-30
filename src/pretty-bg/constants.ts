@@ -12,11 +12,8 @@ import { getQuickSearch, getQuickPattern, getRandomItem, Orientation } from './c
 import patterns from './components/images/pattern-svgs';
 import colours from './components/images/pattern-colours';
 
-const referrer = "https://prettysnap.app"
-const tweetMessage = "Check out Pretty Snap and make your snapshots look 🔥! Thanks @kanga_bru%0A%0A"
-
 // See cloudlfare/worker.js for the endpoint definitions
-const urlBase = (process.env.URL_API ?? "") + "/api"
+const apiBase = (process.env.URL_API ?? "") + "/api"
 
 export const urls = {
 
@@ -25,23 +22,18 @@ export const urls = {
      * @returns Unsplash JSON search response.
      * @see https://unsplash.com/documentation#search-photos
      */
-    apiUnsplashSearch: urlBase + "/search",
-    apiUnsplashRandom: urlBase + "/random",
+    apiUnsplashSearch: apiBase + "/search",
+    apiUnsplashRandom: apiBase + "/random",
 
     /** Use to trigger a download event as required by the API guidelines.
      * @access POST request with the body as the download url in plain text.
      * @returns 200 on success
      * @see https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download
      */
-    apiUnsplashUse: urlBase + "/use",
+    apiUnsplashUse: apiBase + "/use",
 
     unsplash: "https://unsplash.com", // Do not add slash
     patterns: "http://www.heropatterns.com",
-    kangabru: "https://twitter.com/kanga_bru",
-    pandasnap: "https://pandasnap.io",
-    github: "https://github.com/kangabru/pretty-snap",
-    githubIssue: "https://github.com/kangabru/pretty-snap/issues/new",
-    share: `http://twitter.com/intent/tweet?url=${referrer}&text=${tweetMessage}&original_referer=${referrer}`,
 }
 
 // As percentage of the foreground image size

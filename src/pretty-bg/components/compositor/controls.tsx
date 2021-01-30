@@ -1,5 +1,6 @@
 import { Fragment, h, JSX } from 'preact';
-import { PADDING_PERC_MAX, PADDING_PERC_MIN, urls } from '../../constants';
+import { urls } from '../../../constants';
+import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../constants';
 import useOptionsStore from '../stores/options';
 import { join } from '../utils';
 import PositionButtonGroup from './controls-positions';
