@@ -1,0 +1,36 @@
+import { SvgPatternCallback } from "../data/patterns"
+import { ForegroundImage } from "../../common/misc/types"
+
+export type UnsplashSearchResponse = { results?: UnsplashImage[] }
+export type UnsplashRandomResponse = UnsplashImage
+
+// The response subset used with the app
+export type UnsplashImage = {
+    id: string,
+    width: number,
+    height: number,
+    description?: string | null,
+    urls: { raw: string, full: string, regular: string, small: string, thumb: string },
+    links: { download_location: string },
+    user: {
+        name: string,
+        username: string,
+        profile_image: { small: string, medium: string, large: string },
+    },
+}
+
+export type BackgroundImage = UnsplashImage & { extraParams?: string }
+export type BackgroundPattern = { getSrc: SvgPatternCallback, bgColour: string, svgColour: string, svgOpacity: number }
+
+export enum Position { Center, Top, Left, Right, Bottom }
+
+export type Settings = {
+    foreground?: ForegroundImage,
+    backgroundImage?: BackgroundImage,
+    backgroundPattern?: BackgroundPattern,
+    paddingPerc: number,
+    position: Position,
+}
+
+export type SearchPreset = BackgroundImage & { searchTerm: string, thumb: string }
+export type PatternPreset = BackgroundPattern & { sizeRem: number }

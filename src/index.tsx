@@ -3,9 +3,10 @@ import { h, render } from 'preact';
 import { Route, Router } from 'preact-router';
 import backgroundApp from '../assets/apps/prettysnap-bg.jpg';
 import srcPandaSnap from '../assets/pandasnap.jpg';
-import { routes, urls } from './constants';
+import { routes, urls } from './common/constants';
 import './index.css';
-import PrettyBackground from './pretty-bg/index';
+import PrettyAnnotateApp from './pretty-annotate/index';
+import PrettyBackgroundApp from './pretty-background/index';
 
 render(<PrettySnap />, document.getElementById('root') as HTMLElement)
 
@@ -13,18 +14,23 @@ function PrettySnap() {
     return <div class="col space-y-6 text-gray-800 bg-gray-100 font-open min-h-screen">
         <Header />
         <Router history={createHashHistory() as any}>
-            <Route path={routes.home} component={PageSelector} />
-            <Route path={routes.background} component={PrettyBackground} />
+            <Route path={routes.home} component={AppSelector} />
+            <Route path={routes.annotate} component={PrettyAnnotateApp} />
+            <Route path={routes.background} component={PrettyBackgroundApp} />
         </Router>
         <Footer />
     </div>
 }
 
-function PageSelector() {
-    return <div class="flex-1 flex justify-center items-center">
-        <a href={routes.background} class="col w-full max-w-md space-y-3 group focus:outline-none">
+function AppSelector() {
+    return <div class="flex-1 row flex-wrap justify-center items-center">
+        <a href={routes.background} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
             <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
-            <span class="group-hover:underline font-cursive text-4xl">Background</span>
+            <span class="group-hover:underline font-cursive text-4xl">Pretty Background</span>
+        </a>
+        <a href={routes.annotate} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
+            <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
+            <span class="group-hover:underline font-cursive text-4xl">Pretty Annotate</span>
         </a>
     </div>
 }
