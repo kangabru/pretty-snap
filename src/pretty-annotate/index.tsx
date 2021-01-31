@@ -1,16 +1,11 @@
 import { Fragment, h } from 'preact';
+import Compositor from './components/compositor';
 
 export default function PrettyAnnotate() {
     return <>
-        <Viewer />
+        <Compositor />
         <Controls />
     </>
-}
-
-function Viewer() {
-    return <section class="bg-gray-200 w-full max-w-3xl h-96 rounded-lg">
-
-    </section>
 }
 
 function Controls() {
