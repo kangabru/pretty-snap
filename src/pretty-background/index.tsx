@@ -1,12 +1,10 @@
 import { Fragment, h } from 'preact';
 import srcPreview from '../../assets/preview.jpg';
 import Compositor from './components/compositor';
-import BackgroundSelector from './components/compositor-controls-bg';
 
 export default function PrettyBackground() {
     return <>
         <Compositor />
-        <BackgroundSelector />
         <Info />
         <PH />
     </>

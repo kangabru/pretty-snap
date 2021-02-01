@@ -1,10 +1,10 @@
 import { h } from 'preact';
-import { useChildNavigate } from '../../common/hooks/use-child-nav';
-import { srcToUrlSvg } from '../../common/misc/utils';
-import colours from '../data/colours';
-import patterns, { SvgPatternCallback } from '../data/patterns';
-import useOptionsStore from '../stores/options';
-import { TargetIndicator } from './pattern-colours';
+import { useChildNavigate } from '../../../common/hooks/use-child-nav';
+import { srcToUrlSvg } from '../../../common/misc/utils';
+import colours from '../../data/colours';
+import patterns, { SvgPatternCallback } from '../../data/patterns';
+import useOptionsStore from '../../stores/options';
+import { TargetIndicator } from './colours';
 
 export default function Patterns() {
     const getSrc = useOptionsStore(s => s.backgroundPattern?.getSrc)

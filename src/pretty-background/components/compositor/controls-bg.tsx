@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'react';
-import { join } from '../../common/misc/utils';
-import useUnsplashStore from '../stores/unsplash';
-import ImageSelector from './image-selector';
-import PatternSelector from './pattern-selector';
+import { join } from '../../../common/misc/utils';
+import useUnsplashStore from '../../stores/unsplash';
+import ImageSelector from '../image-selector';
+import PatternSelector from '../pattern-selector';
 
 enum Screen { Pattern, Image }
 

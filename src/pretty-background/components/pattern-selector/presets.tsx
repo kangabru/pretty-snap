@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import { getRandomItem, srcToUrlSvg } from '../../common/misc/utils';
-import colours from '../data/colours';
-import patterns from '../data/patterns';
-import { quickPatterns } from '../misc/constants';
-import { BackgroundPattern, PatternPreset } from '../misc/types';
-import useOptionsStore from '../stores/options';
-import { ImagePreset, ImagePresets, RandButton } from './image-presets';
+import { getRandomItem, srcToUrlSvg } from '../../../common/misc/utils';
+import colours from '../../data/colours';
+import patterns from '../../data/patterns';
+import { quickPatterns } from '../../misc/constants';
+import { BackgroundPattern, PatternPreset } from '../../misc/types';
+import useOptionsStore from '../../stores/options';
+import { ImagePreset, ImagePresets, RandButton } from '../image-selector/presets';
 
 export default function QuickPatterns() {
     const random = () => useOptionsStore.getState().setPattern(getRandomPattern())

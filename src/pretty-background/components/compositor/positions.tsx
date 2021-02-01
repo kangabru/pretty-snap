@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { Ref, useEffect, useRef } from 'preact/hooks';
-import { Position } from '../misc/types';
-import { join } from '../../common/misc/utils';
-import useOptionsStore from '../stores/options';
+import { Position } from '../../misc/types';
+import { join } from '../../../common/misc/utils';
+import useOptionsStore from '../../stores/options';
 
 const positions = [
     Position.Center,

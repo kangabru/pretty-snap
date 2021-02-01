@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { quickSearches } from '../misc/constants';
-import { SearchPreset } from '../misc/types';
-import { join, srcToUrl } from '../../common/misc/utils';
-import useOptionsStore from '../stores/options';
-import useUnsplashStore from '../stores/unsplash';
-import { ImagePreset, ImagePresets, RandButton } from './image-presets';
+import { quickSearches } from '../../misc/constants';
+import { SearchPreset } from '../../misc/types';
+import { join, srcToUrl } from '../../../common/misc/utils';
+import useOptionsStore from '../../stores/options';
+import useUnsplashStore from '../../stores/unsplash';
+import { ImagePreset, ImagePresets, RandButton } from './presets';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function ImageControls() {

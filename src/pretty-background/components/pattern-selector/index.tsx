@@ -1,8 +1,8 @@
 import { h } from 'preact';
-import { urls } from '../misc/constants';
-import Patterns from './pattern-backgrounds';
-import { ColorRow, PatternColours } from './pattern-colours';
-import QuickPatterns from './pattern-presets';
+import { urls } from '../../misc/constants';
+import Patterns from './backgrounds';
+import { ColorRow, PatternColours } from './colours';
+import QuickPatterns from './presets';
 
 export default function PatternSelector() {
     return <div class="space-y-2">

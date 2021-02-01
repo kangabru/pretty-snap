@@ -1,14 +1,14 @@
 import { Fragment, h } from 'preact';
 import { useRef } from 'preact/hooks';
 import { useEffect, useState } from 'react';
-import { useChildNavigate } from '../../common/hooks/use-child-nav';
-import { join, srcToUrl } from '../../common/misc/utils';
-import { urls } from '../misc/constants';
-import { BackgroundImage, UnsplashImage } from '../misc/types';
-import { getUnsplashBacklinkImage, getUnsplashBacklinkUser } from '../misc/utils';
-import useOptionsStore from '../stores/options';
-import useUnsplashStore from '../stores/unsplash';
-import Controls from './image-controls';
+import { useChildNavigate } from '../../../common/hooks/use-child-nav';
+import { join, srcToUrl } from '../../../common/misc/utils';
+import { urls } from '../../misc/constants';
+import { BackgroundImage, UnsplashImage } from '../../misc/types';
+import { getUnsplashBacklinkImage, getUnsplashBacklinkUser } from '../../misc/utils';
+import useOptionsStore from '../../stores/options';
+import useUnsplashStore from '../../stores/unsplash';
+import Controls from './controls';
 
 export default function ImageSelector() {
     const image = useOptionsStore(s => s.backgroundImage)

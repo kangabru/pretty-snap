@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { useChildNavigate } from '../../common/hooks/use-child-nav';
-import { join } from '../../common/misc/utils';
-import colours from '../data/colours';
-import useOptionsStore from '../stores/options';
+import { useChildNavigate } from '../../../common/hooks/use-child-nav';
+import { join } from '../../../common/misc/utils';
+import colours from '../../data/colours';
+import useOptionsStore from '../../stores/options';
 
 export function PatternColours() {
     const colour = useOptionsStore(s => s.backgroundPattern?.svgColour)

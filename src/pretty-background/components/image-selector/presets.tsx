@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { CSSProperties, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
-import { useChildNavigate } from '../../common/hooks/use-child-nav';
-import { join } from '../../common/misc/utils';
+import { useChildNavigate } from '../../../common/hooks/use-child-nav';
+import { join } from '../../../common/misc/utils';
 
 /** Renders the little icons used to set predefined backgrounds */
 export function ImagePresets(props: { children: any, focusArgs?: any[] }) {

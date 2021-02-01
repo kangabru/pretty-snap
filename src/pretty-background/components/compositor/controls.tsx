@@ -1,10 +1,10 @@
 import { Fragment, h, JSX } from 'preact';
-import { SaveState } from '../../common/hooks/use-export';
-import { urls } from '../../common/constants';
-import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../misc/constants';
-import { join } from '../../common/misc/utils';
-import useOptionsStore from '../stores/options';
-import PositionButtonGroup from './compositor-positions';
+import { SaveState } from '../../../common/hooks/use-export';
+import { urls } from '../../../common/constants';
+import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../misc/constants';
+import { join } from '../../../common/misc/utils';
+import useOptionsStore from '../../stores/options';
+import PositionButtonGroup from './positions';
 
 export type CompositorControlProps = { canCopy: boolean, copy: () => void, copyState: SaveState, download: () => void, downloadState: SaveState }
 
