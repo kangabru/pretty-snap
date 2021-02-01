@@ -9,3 +9,7 @@ export const useRandomItem = <T>(items: T[]) => useState(getRandomItem(items))[0
 
 export const srcToUrl = (src: string) => `url('${src}')`
 export const srcToUrlSvg = (src: string) => srcToUrl("data:image/svg+xml," + src)
+
+export function delay(timeout: number) {
+    return new Promise(accept => setTimeout(accept, timeout))
+}

@@ -2,12 +2,12 @@ import { Ref } from 'preact';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
-import { ForegroundImage } from '../../common/misc/types';
-import { srcToUrl, srcToUrlSvg } from '../../common/misc/utils';
-import { BORDER_RADIUS } from '../misc/constants';
-import { Position, Settings } from '../misc/types';
-import { getImageSrc } from '../misc/utils';
-import useOptionsStore from '../stores/options';
+import { ForegroundImage } from '../../../common/misc/types';
+import { srcToUrl, srcToUrlSvg } from '../../../common/misc/utils';
+import { BORDER_RADIUS } from '../../misc/constants';
+import { Position, Settings } from '../../misc/types';
+import { getImageSrc } from '../../misc/utils';
+import useOptionsStore from '../../stores/options';
 
 export const CLASSES_OUTER_IMAGE = "bg-gray-200 bg-cover bg-center"
 export const CLASSES_OUTER_PATTERN = "relative bg-repeat"

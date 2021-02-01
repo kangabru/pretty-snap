@@ -1,8 +1,7 @@
 import { Fragment, h } from 'preact';
-import mergeRefs from 'react-merge-refs';
 import { animated } from 'react-spring';
 import NotSupportedWarning from '../../common/components/not-supported';
-import { useCopy, useDownload } from '../../common/hooks/use-export';
+import useExport from '../../common/hooks/use-export';
 import { onInputChange, useImageDrop, useImagePaste } from '../../common/hooks/use-import';
 import { ForegroundImage } from '../../common/misc/types';
 import { join } from '../../common/misc/utils';
@@ -11,9 +10,7 @@ import useAnnotateStore from '../../common/stores/options';
 /** Renders the main image composition preview component. */
 export default function Compositor() {
     // Get the ref used to export the final image
-    const [ref1, ,] = useDownload()
-    const [ref2, , ,] = useCopy()
-    const ref = mergeRefs([ref1, ref2])
+    const [ref, ,] = useExport()
 
     const image = useAnnotateStore(s => s.image)
     const setImage = (image: ForegroundImage) => useAnnotateStore.setState({ image })

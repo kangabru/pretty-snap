@@ -1,21 +1,23 @@
 import { Fragment, h } from 'preact';
-import mergeRefs from 'react-merge-refs';
 import { animated } from 'react-spring';
 import NotSupportedWarning from '../../../common/components/not-supported';
-import { useCopy, useDownload } from '../../../common/hooks/use-export';
+import useExport from '../../../common/hooks/use-export';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles } from '../../hooks/use-styles';
+import { urls } from '../../misc/constants';
+import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
 import Controls from './controls';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles } from './hooks';
 
 /** Renders the main image composition preview component. */
 export default function CompositorViewer() {
-    // Get the ref used to export the final image
-    const [ref1, download, downloadState] = useDownload()
-    const [ref2, canCopy, copy, copyState] = useCopy()
-    const ref = mergeRefs([ref1, ref2])
+    const [ref, download, copy] = useExport(() => {
+        // Trigger 'download' call as required by the API guidelines
+        const settings = useOptionsStore.getState()
+        settings.backgroundImage && fetch(urls.apiUnsplashUse, { method: "POST", body: getImageSrcDownload(settings.backgroundImage) }).catch(console.log)
+    })
 
     // Handle foreground inputs
     const image = useOptionsStore(s => s.backgroundImage)
@@ -53,7 +55,7 @@ export default function CompositorViewer() {
             </section>
         </div>}
 
-        <Controls {...{ download, downloadState, canCopy, copy, copyState }} />
+        <Controls {...{ download, copy }} />
         <NotSupportedWarning />
     </>
 }
