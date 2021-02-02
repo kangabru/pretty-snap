@@ -1,15 +1,18 @@
 import create from "zustand"
-import { Annotation } from "../misc/types"
+import { Annotation, AnnotationItem, EditType, Style } from "../misc/types"
 
 type AnnotationStore = {
     ids: string[],
-    index: { [id: string]: Annotation },
+    index: { [id: string]: AnnotationItem<any> | undefined },
 
-    addAnnotation(_: any): void,
+    style: Style,
+    styleOptions: { dashed: boolean },
+
+    addAnnotation(_: Annotation<any>): void,
     undo(): void,
     redo(): void,
-    undos: Annotation[],
-    redos: Annotation[],
+    undos: AnnotationItem<any>[],
+    redos: AnnotationItem<any>[],
 }
 
 /** zustand state for state management  */
@@ -17,15 +20,17 @@ const useAnnotateStore = create<AnnotationStore>((set, get) => ({
     ids: [],
     index: {},
 
-    addAnnotation: data => {
+    style: Style.Box,
+    styleOptions: { dashed: true },
+
+    addAnnotation: annotation => {
         const { undos, index, ids } = get()
-        const newId = Math.random().toString(36).slice(2)
-        const newAnnotation: Annotation = { id: newId, data }
+        const id = Math.random().toString(36).slice(2)
+        const annotationItem: AnnotationItem<any> = { ...annotation, id, type: EditType.Add }
         set({
-            index: { ...index, [newId]: newAnnotation },
-            ids: [...ids, newId],
-            undos: [...undos, newAnnotation],
-            redos: [],
+            ids: [...ids, id],
+            index: { ...index, [id]: annotationItem },
+            undos: [...undos, annotationItem], redos: [],
         })
     },
 
@@ -38,8 +43,7 @@ const useAnnotateStore = create<AnnotationStore>((set, get) => ({
         set({
             index: { ...index, [annotation.id]: undefined },
             ids: [...ids.filter(id => id !== annotation.id)],
-            undos: undos.slice(0, -1),
-            redos: [...redos, annotation],
+            undos: undos.slice(0, -1), redos: [...redos, annotation],
         })
     },
     redo: () => {

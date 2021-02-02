@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';

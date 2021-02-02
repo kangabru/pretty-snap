@@ -1,6 +1,7 @@
 import { h } from 'preact';
+import { Annotation, AnnotationItem } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
-import { Box } from '../annotations/box';
+import GenericAnnotation from '../annotations';
 
 export default function Viewer() {
     const ids = useAnnotateStore(s => s.ids)
@@ -9,9 +10,7 @@ export default function Viewer() {
     </section>
 }
 
-function Annotation(props: { id: string }) {
-    const annotation = useAnnotateStore(s => s.index[props.id])
-    console.log(annotation);
-
-    return <Box {...annotation.data} />
+function Annotation({ id }: { id: string }) {
+    const annotation = useAnnotateStore(s => s.index[id] as AnnotationItem<any>)
+    return <GenericAnnotation {...annotation} />
 }

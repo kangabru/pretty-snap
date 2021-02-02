@@ -5,12 +5,11 @@ import useMeasure from 'react-use-measure';
 
 export type Size = { width: number, height: number }
 export type Position = { left: number, top: number }
-export type Dimensions = Size & Position
-export type DimensionsNeg = Size & Position & { negX: boolean, negY: boolean }
+export type Bounds = Size & Position & { negX: boolean, negY: boolean }
 
-type DraggerProps = {
-    onComplete: (dims: DimensionsNeg) => void,
-    render: (dims: DimensionsNeg) => JSX.Element,
+export type DraggerProps = {
+    onComplete: (_: Bounds) => void,
+    render: (_: Bounds) => JSX.Element,
 }
 
 /** A component which a user can drag onto to create shapes. */

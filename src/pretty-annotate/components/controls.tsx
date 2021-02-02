@@ -1,47 +1,51 @@
 import { h } from 'preact';
+import { Style } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 
 export default function Controls() {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
+
+    const setStyle = (style: Style, dashed: boolean) => () => useAnnotateStore.setState({ style, styleOptions: { dashed } })
+
     return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Box, false)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2" y="2" width="16" height="16" rx="2" stroke="black" fill='none' stroke-width="2.75" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Box, true)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2" y="2" width="16" height="16" rx="2" stroke="black" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Arrow, false)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                     <line x1="6" y1="16" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                     <line x1="16" y1="6" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Arrow, true)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
                     <line x1="6" y1="16" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                     <line x1="16" y1="6" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Line, false)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Line, true)}>
                 <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Count, false)}>
                 <span class="bg-black w-8 h-8 rounded-full text-white font-bold text-xl font-mono grid place-items-center">1</span>
             </button>
         </section>

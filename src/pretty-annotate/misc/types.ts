@@ -1,8 +1,24 @@
-export enum AnnotateType { Box, Line, Arrow, Count }
+import { Bounds } from "../components/compositor/resizer"
 
-export type Annotation = {
+export enum EditType { Add, Edit, Delete }
+
+export enum Style { Box, Line, Arrow, Count }
+export type StyleData<S extends StyleDataKeys> = StyleDataMap[S]
+
+export type Annotation<S extends StyleDataKeys> = {
+    style: Style,
+    data: StyleData<S>,
+}
+
+export type AnnotationItem<S extends StyleDataKeys> = Annotation<S> & {
     id: string,
-    type?: AnnotateType,
-    wasEdit?: boolean, // add or edit
-    data: any,
+    type: EditType,
+}
+
+export type StyleDataKeys = keyof StyleDataMap
+type StyleDataMap = {
+    [Style.Box]: Bounds & { dashed: boolean },
+    [Style.Line]: Bounds & { dashed: boolean },
+    [Style.Arrow]: Bounds & { dashed: boolean },
+    [Style.Count]: { value: number },
 }
