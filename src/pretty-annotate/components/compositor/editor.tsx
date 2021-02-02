@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { animated, interpolate, useSpring } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 import { join } from '../../../common/misc/utils';
 import { DimensionsNeg, Dragger } from './resizer';
 
@@ -24,10 +24,10 @@ function DashedRect({ left, top, width, height }: DimensionsNeg) {
 
     return <div class="absolute" style={{ left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
-            <animated.line x1={x1} y1={y1} x2={x2} y2={y1} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
-            <animated.line x1={x1} y1={y2} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
-            <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
-            <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
+            <animated.line x1={x1} y1={y1} x2={x2} y2={y1} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} /> {/* Top */}
+            <animated.line x1={x1} y1={y2} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} /> {/* Bottom */}
+            <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Left */}
+            <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Right */}
         </svg>
     </div>
 }
@@ -49,17 +49,16 @@ function useNiceDashLength(lineLength: number, dashLengthTarget: number, shortCo
     const lengthTarget = 2 * dashLengthTarget // dash + gap
     const dashes = Math.floor(lineLength / lengthTarget) + (shortCorners ? 0 : 0.5)
     const length = lineLength / Math.max(0.1, dashes) // don't divide by 0
+    const dashLength = dashLengthTarget / lengthTarget * length
 
     // Proxy the values through react spring for tasty animations
-    const { dash, gap } = useSpring<{ dash: number, gap: number }>({
-        dash: dashLengthTarget / lengthTarget * length,
-        gap: dashLengthTarget / lengthTarget * length,
+    const { dash, offset } = useSpring<{ dash: number, offset: number }>({
+        dash: dashLength,
+        offset: (shortCorners ? dashLength / 2 : 0),
     })
 
-    return [
-        interpolate([dash, gap] as any, (dash, gap) => `${dash},${gap}`), // svg 'stroke-dasharray' format
-        shortCorners ? dash.interpolate(x => x / 2) : 0,
-    ]
+    // svg 'stroke-dasharray' format
+    return [dash.interpolate(dash => `${dash},${dash}`), offset]
 }
 
 function TempDevImage() {
