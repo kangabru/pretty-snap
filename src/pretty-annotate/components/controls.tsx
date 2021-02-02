@@ -1,6 +1,9 @@
 import { h } from 'preact';
+import useAnnotateStore from '../stores/annotation';
 
 export default function Controls() {
+    const undo = useAnnotateStore(s => s.undo)
+    const redo = useAnnotateStore(s => s.redo)
     return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
@@ -54,10 +57,10 @@ export default function Controls() {
 
         <div className="flex">
             <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
-                <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+                <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={undo}>
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path></svg>
                 </button>
-                <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">
+                <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={redo}>
                     <svg class="w-6 h-6 transform rotate-180" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path></svg>
                 </button>
             </section>
