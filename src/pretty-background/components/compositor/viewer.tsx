@@ -35,11 +35,12 @@ export default function CompositorViewer() {
 
     return <>
         {/* Renders the preview */}
-        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "mx-4 inline-block max max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
+        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "mx-4 inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
                     <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
-                    {foreground?.src ? <animated.img src={foreground?.src} alt="Screenshot" className={CLASSES_INNER} style={stylesScreen.inner} />
+                    {foreground?.src
+                        ? <animated.img src={foreground?.src} alt="Screenshot" className={CLASSES_INNER} style={stylesScreen.inner} />
                         : <animated.div className={join(CLASSES_INNER, "p-4 sm:py-8 sm:px-12 space-y-5 bg-white")} style={stylesScreen.inner}>
                             <ImportDetails {...{ isDropping, isError }} />
                         </animated.div>}
