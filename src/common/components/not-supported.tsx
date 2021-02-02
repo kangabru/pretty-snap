@@ -30,8 +30,8 @@ function isAppleMobileDevice() {
  * https://stackoverflow.com/a/9851769/3801481
  */
 function isSupportedBrowser() {
-    var isFirefox = typeof InstallTrigger !== 'undefined';
-    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-    var isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
+    const isFirefox = typeof InstallTrigger !== 'undefined';
+    const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
     return isFirefox || isChrome || isEdgeChromium
 }

@@ -7,7 +7,7 @@ export default function Editor() {
     const isAdding = true
     return <section class={join("relative", isAdding && "cursor-crosshair")}>
         <TempDevImage />
-        <Dragger onComplete={console.log} render={dims => <DashedRect {...dims} />} />
+        <Dragger render={dims => <DashedRect {...dims} />} />
     </section>
 }
 

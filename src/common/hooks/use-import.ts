@@ -1,4 +1,4 @@
-import { Ref, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { Ref, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { ForegroundImage } from '../../common/misc/types';
 
 type SetForeground = (_: ForegroundImage) => void
@@ -9,7 +9,7 @@ export function useImagePaste(setDataUrl: SetForeground) {
         const onPaste = (e: LocalClipboardEvent) => loadImageOnPaste(e).then(setDataUrl)
         document.addEventListener('paste', onPaste)
         return () => document.removeEventListener('paste', onPaste)
-    }, [])
+    }, [setDataUrl])
 }
 
 /** Imports an image by dragging and dropping from the file system. */
@@ -18,30 +18,30 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
     const [isDropping, setIsDropping] = useState(false)
     const [isError, setIsError] = useState(false)
 
-    const onFileOver = (e: DragEvent) => {
+    const onFileOver = useCallback(() => (e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         e.dataTransfer && (e.dataTransfer.dropEffect = 'copy')
         setIsDropping(true)
-    }
-    const onFileLeave = (e: DragEvent) => {
+    }, [])
+    const onFileLeave = useCallback(() => (e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         e.dataTransfer && (e.dataTransfer.dropEffect = 'none')
         setIsDropping(false)
-    }
-    const onFileDrop = (e: DragEvent) => {
+    }, [])
+    const onFileDrop = useCallback(() => (e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         loadImageOnDrop(e).then(dataUrl => {
             setIsError(false)
             setIsDropping(false)
             setDataUrl(dataUrl)
-        }).catch(_ => {
+        }).catch(() => {
             setIsDropping(false)
             setIsError(true)
         })
-    }
+    }, [setDataUrl])
 
     useLayoutEffect(() => {
-        var zone = dropZone.current
+        const zone = dropZone.current
         if (!zone) return
         zone.addEventListener('dragover', onFileOver)
         zone.addEventListener('dragleave', onFileLeave)
@@ -51,7 +51,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
             zone.removeEventListener('dragleave', onFileLeave)
             zone.removeEventListener('drop', onFileDrop)
         }
-    }, [dropZone.current])
+    }, [onFileOver, onFileLeave, onFileDrop])
 
     return [dropZone, isDropping, isError]
 }
@@ -60,7 +60,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
 function loadImageFromFile(file: File | null | undefined): Promise<ForegroundImage> {
     return new Promise((accept, reject) => {
         if (file?.type.match('image.*')) {
-            var reader = new FileReader()
+            const reader = new FileReader()
             reader.readAsDataURL(file)
             reader.onerror = () => reject("Error reading file")
             reader.onload = evt => loadImageFromDataUrl(evt.target?.result as string)
@@ -77,7 +77,7 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<ForegroundIm
         if (!dataUrl) return reject()
         const image = new Image()
         image.onerror = reject
-        image.onload = _ => {
+        image.onload = () => {
             const width = image.naturalWidth
             const height = image.naturalHeight
             accept({ src: dataUrl, width, height })
@@ -93,7 +93,7 @@ export function onInputChange(setDataUrl: SetForeground) {
 
 function loadImageOnChange(e: Event): Promise<ForegroundImage> {
     return new Promise((accept, reject) => {
-        var files = (e.target as HTMLInputElement)?.files
+        const files = (e.target as HTMLInputElement)?.files
         if (files) loadImageFromFile(files[0]).then(accept).catch(reject)
         else reject("No data given")
     })
@@ -112,7 +112,7 @@ function loadImageOnPaste(e: LocalClipboardEvent): Promise<ForegroundImage> {
 
         const items = clipboardData.items;
         let file: File | null = null
-        for (var i = 0; i < items.length; i++)
+        for (let i = 0; i < items.length; i++)
             if (items[i].type.indexOf("image") === 0)
                 file = items[i].getAsFile()
 
@@ -123,7 +123,7 @@ function loadImageOnPaste(e: LocalClipboardEvent): Promise<ForegroundImage> {
 /** @see https://stackoverflow.com/a/15369753/3801481 */
 function loadImageOnDrop(e: DragEvent): Promise<ForegroundImage> {
     return new Promise((accept, reject) => {
-        var files = e.dataTransfer?.files
+        const files = e.dataTransfer?.files
         if (files) loadImageFromFile(files[0]).then(accept).catch(reject)
         else reject("No data given")
     })

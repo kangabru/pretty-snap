@@ -54,7 +54,7 @@ function useLeftRightActionWhenFocused(isSelected: boolean): [Ref<HTMLButtonElem
     const currentPosition = useOptionsStore(x => x.position)
     const index = positions.indexOf(currentPosition)
     const onKeyDown = (e: KeyboardEvent) => {
-        var newIndex = index
+        let newIndex = index
         if (e.key == 'ArrowLeft') newIndex = Math.max(0, index - 1)
         if (e.key == 'ArrowRight') newIndex = Math.min(index + 1, positions.length - 1)
         if (index != newIndex) useOptionsStore.setState({ position: positions[newIndex] })

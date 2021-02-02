@@ -1,6 +1,6 @@
 import { UnsplashImage } from "../misc/types"
 
-export function testData1(divideHeight: number = 1): UnsplashImage | {} {
+export function testData1(divideHeight = 1): UnsplashImage | Record<string, unknown> {
     return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
         "id": "test_1",
         "width": 4000,
@@ -27,7 +27,7 @@ export function testData1(divideHeight: number = 1): UnsplashImage | {} {
     }
 }
 
-export function testData2(divideHeight: number = 1): UnsplashImage | {} {
+export function testData2(divideHeight = 1): UnsplashImage | Record<string, unknown> {
     return process.env.NODE_ENV == 'production' ? {} as UnsplashImage : {
         "id": "test_2",
         "width": 3654,

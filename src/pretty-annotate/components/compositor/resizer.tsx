@@ -9,7 +9,7 @@ export type Dimensions = Size & Position
 export type DimensionsNeg = Size & Position & { negX: boolean, negY: boolean }
 
 type DraggerProps = {
-    onComplete: (dims: DimensionsNeg) => void,
+    onComplete?: (dims: DimensionsNeg) => void,
     render: (dims: DimensionsNeg) => JSX.Element,
 }
 
@@ -27,7 +27,7 @@ export function Dragger(props: DraggerProps) {
         const width = Math.abs(x1 - x2), height = Math.abs(y1 - y2)
         const negX = x2 < x1, negY = y2 < y1
         return [left - cont.left, top - cont.top, width, height, negX, negY]
-    }, [pos1, pos2])
+    }, [pos1, pos2, cont.left, cont.top])
 
     const onMouseDown = (ev: MouseEvent) => {
         const pos = { left: ev.clientX, top: ev.clientY + window.scrollY }
@@ -36,7 +36,7 @@ export function Dragger(props: DraggerProps) {
 
     const onMouseMove = (ev: MouseEvent) => pos2 && setPos2({ left: ev.clientX, top: ev.clientY + window.scrollY })
     const onMouseUp = () => {
-        props.onComplete({ left, top, width, height, negX, negY })
+        props.onComplete?.({ left, top, width, height, negX, negY })
         setPos1(undefined); setPos2(undefined)
     }
 

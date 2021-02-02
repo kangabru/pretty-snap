@@ -16,7 +16,7 @@ export default function CompositorViewer() {
     const [ref, download, copy] = useExport(() => {
         // Trigger 'download' call as required by the API guidelines
         const settings = useOptionsStore.getState()
-        settings.backgroundImage && fetch(urls.apiUnsplashUse, { method: "POST", body: getImageSrcDownload(settings.backgroundImage) }).catch(console.log)
+        settings.backgroundImage && fetch(urls.apiUnsplashUse, { method: "POST", body: getImageSrcDownload(settings.backgroundImage) }).catch(console.error)
     })
 
     // Handle foreground inputs

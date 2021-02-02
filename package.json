@@ -13,7 +13,7 @@
         "parcel:watch": "parcel ./src/index.html",
         "parcel:build": "parcel build ./src/index.html --no-source-maps",
         "static-assets": "node copy.js",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit && eslint . --ext .ts,.tsx"
     },
     "alias": {
         "react": "preact/compat",
@@ -27,7 +27,11 @@
         "@fullhuman/postcss-purgecss": "^3.0.0",
         "@types/dom-to-image": "^2.6.2",
         "@types/react": "^16.9.55",
+        "@typescript-eslint/eslint-plugin": "^4.14.2",
+        "@typescript-eslint/parser": "^4.14.2",
         "autoprefixer": "^9.8.6",
+        "eslint": "^7.19.0",
+        "eslint-plugin-react-hooks": "^4.2.0",
         "fs-extra": "^9.0.1",
         "parcel-bundler": "^1.12.4",
         "parcel-plugin-bundle-visualiser": "^1.2.0",

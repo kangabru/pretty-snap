@@ -7,7 +7,7 @@ import { Ref, useEffect, useRef } from "preact/hooks"
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
 export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>) {
-    const containerRef = ref || useRef<T>()
+    const containerRef = useRef<T>(ref?.current)
 
     function getResetChildren(): HTMLElement[] {
         if (!containerRef.current) return []
@@ -39,8 +39,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
 
         current.addEventListener('keydown', onKeyDown)
         return () => current.removeEventListener('keydown', onKeyDown)
-    }, [containerRef.current])
-
+    }, [])
 
     useEffect(() => {
         if (!containerRef.current) return
@@ -54,7 +53,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
         containerRef.current.scrollTo({ left, behavior: 'smooth' })
 
-    }, [containerRef.current, ...refocusInputs ?? []])
+    }, refocusInputs ?? [])
 
     return containerRef
 }

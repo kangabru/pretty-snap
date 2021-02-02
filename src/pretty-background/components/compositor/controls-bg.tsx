@@ -19,7 +19,7 @@ export default function CompositorBackgroundControls() {
             useUnsplashStore.getState().search()
             setIsFirstSearch(false)
         }
-    }, [screen])
+    }, [screen, isFirstSearch])
 
 
     const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:underline focus:outline-none transition"

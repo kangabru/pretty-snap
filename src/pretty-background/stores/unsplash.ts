@@ -27,7 +27,7 @@ const useUnsplashStore = create<UnsplashState>((set, get) => ({
 }))
 
 // Fetch on search term change
-useUnsplashStore.subscribe(_ => useUnsplashStore.getState().search(), s => s.searchTerm)
+useUnsplashStore.subscribe(() => useUnsplashStore.getState().search(), s => s.searchTerm)
 
 async function fetchImages(get: GetState<UnsplashState>, set: SetState<UnsplashState>, imagesToKeep?: UnsplashImage[]) {
     const { searchTerm, searchPage, canLoadMore } = get()
