@@ -26,10 +26,7 @@ module.exports = {
     },
     theme: {
         extend: {
-            fontFamily: {
-                open: ["'Open Sans'", "sans-serif"],
-                cursive: ["'Pacifico'", 'cursive'],
-            },
+            backgroundSize: (theme) => theme('spacing'),
             colors: {
                 primary: {
                     light: 'hsl(38, 93%, 77%)',
@@ -38,11 +35,17 @@ module.exports = {
                 },
                 orange: colours.orange,
             },
+            cursor: {
+                crosshair: 'crosshair',
+            },
+            fontFamily: {
+                open: ["'Open Sans'", "sans-serif"],
+                cursive: ["'Pacifico'", 'cursive'],
+            },
             inset: (theme) => ({
                 ...theme('spacing'),
                 '1/2': '50%',
             }),
-            backgroundSize: (theme) => theme('spacing'),
         },
     },
     plugins: [

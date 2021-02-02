@@ -1,46 +1,63 @@
 import { h } from 'preact';
 import { animated, interpolate, useSpring } from 'react-spring';
 import { join } from '../../../common/misc/utils';
-import { Dragger } from './resizer';
+import { DimensionsNeg, Dragger } from './resizer';
 
 export default function Editor() {
     const isAdding = true
-    return <section class={join(isAdding && "cursor-move relative")}>
+    return <section class={join("relative", isAdding && "cursor-crosshair")}>
         <TempDevImage />
-        <Dragger onComplete={console.log} render={({ left, top, width, height, }) => {
-            const strokeWidth = 8, strokeMargin = strokeWidth / 2
-
-            const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth }
-            const [dashArrayW, dashOffsetW] = useNiceDashLength(width, 16, 16, true)
-            const [dashArrayH, dashOffsetH] = useNiceDashLength(height, 16, 16, true)
-
-            const x1 = strokeMargin, y1 = strokeMargin
-            const x2 = x1 + width, y2 = y1 + height
-
-            return <div class="absolute" style={{ left, top }}>
-                <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
-                    <animated.line x1={x1} y1={y1} x2={x2} y2={y1} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
-                    <animated.line x1={x1} y1={y2} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
-                    <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
-                    <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
-                </svg>
-            </div>
-        }} />
+        <Dragger onComplete={console.log} render={dims => <DashedRect {...dims} />} />
     </section>
 }
 
-function useNiceDashLength(lineLength: number, dashTarget: number, gapTarget: number, shortCorners?: boolean) {
-    const lengthTarget = dashTarget + gapTarget
-    const dashes = Math.floor(lineLength / lengthTarget) + (shortCorners ? 0 : 0.5)
-    const length = lineLength / Math.max(0.1, dashes)
+function DashedRect({ left, top, width, height }: DimensionsNeg) {
+    const strokeWidth = 8, strokeMargin = strokeWidth / 2
 
+    const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth }
+    const [dashArrayW, dashOffsetW] = useNiceDashLength(width, 16, true)
+    const [dashArrayH, dashOffsetH] = useNiceDashLength(height, 16, true)
+
+    // Adjust the bounds by half the stroke width so the svg doesn't clip off the edges
+    const x1 = strokeMargin, y1 = strokeMargin
+    const x2 = x1 + width, y2 = y1 + height
+
+    return <div class="absolute" style={{ left: left - strokeMargin, top: top - strokeMargin }}>
+        <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
+            <animated.line x1={x1} y1={y1} x2={x2} y2={y1} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
+            <animated.line x1={x1} y1={y2} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} />
+            <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
+            <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} />
+        </svg>
+    </div>
+}
+
+/** It takes a target dash length and gap and adjusts them so the dash starts and ends perfect for the given line length.
+ * @argument lineLength: The total length of the line
+ * @argument dashLengthTarget: The length of a dash and/or gap (not their sum)
+ * @returns [dash array string, dash offset] as react spring interpolated values
+ */
+function useNiceDashLength(lineLength: number, dashLengthTarget: number, shortCorners?: boolean) {
+
+    // Round down the dash length so they fit the line length perfectly
+    // Short corners:
+    //  - The line starts and ends with a half dash
+    //  - A whole number of dash + gap lengths is required
+    // Long corners:
+    //  - The line starts and ends with a full dash
+    //  - An whole number of dash + gap lengths PLUS one dash is required (hence the 0.5)
+    const lengthTarget = 2 * dashLengthTarget // dash + gap
+    const dashes = Math.floor(lineLength / lengthTarget) + (shortCorners ? 0 : 0.5)
+    const length = lineLength / Math.max(0.1, dashes) // don't divide by 0
+
+    // Proxy the values through react spring for tasty animations
     const { dash, gap } = useSpring<{ dash: number, gap: number }>({
-        dash: dashTarget / lengthTarget * length,
-        gap: gapTarget / lengthTarget * length,
+        dash: dashLengthTarget / lengthTarget * length,
+        gap: dashLengthTarget / lengthTarget * length,
     })
 
     return [
-        interpolate([dash, gap] as any, (dash, gap) => `${dash},${gap}`),
+        interpolate([dash, gap] as any, (dash, gap) => `${dash},${gap}`), // svg 'stroke-dasharray' format
         shortCorners ? dash.interpolate(x => x / 2) : 0,
     ]
 }
