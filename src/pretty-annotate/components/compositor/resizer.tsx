@@ -9,7 +9,7 @@ export type Dimensions = Size & Position
 export type DimensionsNeg = Size & Position & { negX: boolean, negY: boolean }
 
 type DraggerProps = {
-    onComplete?: (dims: DimensionsNeg) => void,
+    onComplete: (dims: DimensionsNeg) => void,
     render: (dims: DimensionsNeg) => JSX.Element,
 }
 
