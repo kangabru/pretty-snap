@@ -1,5 +1,4 @@
-import { Fragment, h } from 'preact';
-import NotSupportedWarning from '../../../common/components/not-supported';
+import { h } from 'preact';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
@@ -17,9 +16,8 @@ export default function Compositor() {
     useImagePaste(setImage)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setImage)
 
-    return <>
-        {/* Renders the preview */}
-        <section class="mx-4 inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md">
+    return <main class="px-4 space-y-6">
+        <section class="block w-full max-w-screen-md mx-auto rounded-xl overflow-hidden shadow-md">
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 {showEditor
                     ? <Editor />
@@ -31,6 +29,5 @@ export default function Compositor() {
         </section>
 
         <Controls />
-        <NotSupportedWarning />
-    </>
+    </main>
 }

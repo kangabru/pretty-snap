@@ -63,7 +63,7 @@ function useNiceDashLength(lineLength: number, dashLengthTarget: number, shortCo
 }
 
 function TempDevImage() {
-    return <div class="bg-white" style={{ width: 800 }}>
+    return <div class="bg-white w-full" >
         <div class="flex items-center justify-end p-3 bg-gray-700">
             <div class="flex space-x-4">
                 <div class="bg-blue-300   w-6 h-6 rounded-full"></div>

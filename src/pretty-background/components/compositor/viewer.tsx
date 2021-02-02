@@ -35,7 +35,7 @@ export default function CompositorViewer() {
 
     return <>
         {/* Renders the preview */}
-        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "mx-4 inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
+        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
             <div ref={dropZone} class={join("w-full", isDropping && "border-dashed border-4 rounded-xl")}>
                 <label class="cursor-pointer">
                     <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />

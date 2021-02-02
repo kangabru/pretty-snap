@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
 export default function Controls() {
-    return <section class="flex justify-center flex-wrap max-w-xl w-full mx-auto">
+    return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
             <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">

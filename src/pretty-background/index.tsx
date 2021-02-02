@@ -1,17 +1,17 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import srcPreview from '../../assets/preview.jpg';
 import Compositor from './components/compositor';
 
 export default function PrettyBackground() {
-    return <>
+    return <main class="col px-4 space-y-6">
         <Compositor />
         <Info />
         <PH />
-    </>
+    </main>
 }
 
 function Info() {
-    return <section class="pt-5 grid md:grid-cols-2 gap-5 px-5">
+    return <section class="pt-5 grid md:grid-cols-2 gap-5">
         <div class="prose">
             <h2>What is this for?</h2>
             <p>To make boring screenshots awesome! Use them for:</p>
