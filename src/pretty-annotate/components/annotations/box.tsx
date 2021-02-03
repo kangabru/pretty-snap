@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
-import { STROKE } from '../../misc/constants';
+import { DASH, STROKE } from '../../misc/constants';
 import { Style, StyleData } from '../../misc/types';
 
 type BoxProps = StyleData<Style.Box>
@@ -27,8 +27,8 @@ function BoxDashed({ left, top, width, height }: BoxProps) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2
 
     const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth }
-    const [dashArrayW, dashOffsetW] = useNiceDashLength(width, 16, true)
-    const [dashArrayH, dashOffsetH] = useNiceDashLength(height, 16, true)
+    const [dashArrayW, dashOffsetW] = useNiceDashLength(width, DASH, true)
+    const [dashArrayH, dashOffsetH] = useNiceDashLength(height, DASH, true)
 
     // Adjust the bounds by half the stroke width so the svg doesn't clip off the edges
     const x1 = strokeMargin, y1 = strokeMargin
