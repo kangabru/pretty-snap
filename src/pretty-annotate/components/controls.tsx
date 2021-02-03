@@ -45,7 +45,7 @@ export default function Controls() {
                     <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Count, false)}>
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Counter, false)}>
                 <span class="bg-black w-8 h-8 rounded-full text-white font-bold text-xl font-mono grid place-items-center">1</span>
             </button>
         </section>

@@ -2,18 +2,15 @@ import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { useMemo } from 'react';
 import useMeasure from 'react-use-measure';
+import { Bounds, Position } from '../../misc/types';
 
-export type Size = { width: number, height: number }
-export type Position = { left: number, top: number }
-export type Bounds = Size & Position & { negX: boolean, negY: boolean }
-
-export type DraggerProps = {
+export type DragPaneProps = {
+    onRender: (_: Bounds) => JSX.Element,
     onComplete: (_: Bounds) => void,
-    render: (_: Bounds) => JSX.Element,
 }
 
 /** A component which a user can drag onto to create shapes. */
-export function Dragger(props: DraggerProps) {
+export function DragPane(props: DragPaneProps) {
     const [ref, cont] = useMeasure()
     const [pos1, setPos1] = useState<Position | undefined>(undefined)
     const [pos2, setPos2] = useState<Position | undefined>(undefined)
@@ -40,6 +37,6 @@ export function Dragger(props: DraggerProps) {
     }
 
     return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} class="absolute inset-0">
-        {pos1 && pos2 && props.render({ left, top, width, height, negX, negY })}
+        {pos1 && pos2 && props.onRender({ left, top, width, height, negX, negY })}
     </div>
 }
