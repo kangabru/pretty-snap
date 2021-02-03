@@ -2,18 +2,18 @@ import { h } from 'preact';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Bounds, Style, StyleData } from '../../misc/types';
+import { Bounds, Style, Annotation } from '../../misc/types';
 import { GetArrowHeadMargin } from './arrow';
 
-type LineProps = StyleData<Style.Line>
+type LineProps = Annotation<Style.Line>
 
 export default function Line(props: LineProps) {
     return props.dashed ? <LineDashed {...props} /> : <LineSolid {...props} />
 }
 
-function LineContainer({ children, left, top, width, height }: Bounds & JSX.ElementChildrenAttribute) {
+function LineContainer({ children, left, top, width, height, colour }: Bounds & { colour: string } & JSX.ElementChildrenAttribute) {
     const margin = GetArrowHeadMargin(), strokeMargin = STROKE / 2
-    return <div class="absolute" style={{ left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
+    return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
         <svg fill="currentColor" width={width + 2 * margin} height={height + 2 * margin} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>

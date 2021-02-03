@@ -6,57 +6,62 @@ export default function Controls() {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
 
-    const setStyle = (style: Style, dashed: boolean) => () => useAnnotateStore.setState({ style, styleOptions: { dashed } })
+    const style = useAnnotateStore(s => s.style)
+    const { colour: color, count } = style
+    const setShape = (type: Style, dashed: boolean) => () => useAnnotateStore.setState({ style: { ...style, type, dashed } })
+    const setColour = (colour: string) => () => useAnnotateStore.setState({ style: { ...style, colour } })
 
     return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
 
-        <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Box, false)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="black" fill='none' stroke-width="2.75" />
+        <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2" style={{ color }}>
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Box, false)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Box, true)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="black" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Box, true)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Arrow, false)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="6" y1="16" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="16" y1="6" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Arrow, false)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Arrow, true)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
-                    <line x1="6" y1="16" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="16" y1="6" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Arrow, true)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
+                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Line, false)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" />
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Line, false)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Line, true)}>
-                <svg class="w-8 h-8 transform" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="black" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Line, true)}>
+                <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
                 </svg>
             </button>
-            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setStyle(Style.Counter, false)}>
-                <span class="bg-black w-8 h-8 rounded-full text-white font-bold text-xl font-mono grid place-items-center">1</span>
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Counter, false)}>
+                <span class="w-8 h-8 rounded-full text-white font-bold text-xl font-mono grid place-items-center" style={{ backgroundColor: color }}>
+                    {count}
+                </span>
             </button>
         </section>
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-red-400"></button>
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-yellow-400"></button>
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-green-400"></button>
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-blue-400"></button>
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-gray-800"></button>
-            <button class="w-12 h-12 rounded-md grid place-items-center bg-white"></button>
+            <button onClick={setColour("#f87171")} class="w-12 h-12 rounded-md grid place-items-center bg-red-400"></button>
+            <button onClick={setColour("#facc15")} class="w-12 h-12 rounded-md grid place-items-center bg-yellow-400"></button>
+            <button onClick={setColour("#4ade80")} class="w-12 h-12 rounded-md grid place-items-center bg-green-400"></button>
+            <button onClick={setColour("#60a5fa")} class="w-12 h-12 rounded-md grid place-items-center bg-blue-400"></button>
+            <button onClick={setColour("#1e293b")} class="w-12 h-12 rounded-md grid place-items-center bg-gray-800"></button>
+            <button onClick={setColour("white")} class="w-12 h-12 rounded-md grid place-items-center bg-white"></button>
         </section>
 
         <div className="flex">

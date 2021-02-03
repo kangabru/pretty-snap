@@ -8,26 +8,22 @@ import { DragPane } from './drag-pane';
 
 export default function Editor() {
     const style = useAnnotateStore(s => s.style)
-    const useClick = style == Style.Counter
+    const useClick = style.type == Style.Counter
     return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
         {useClick ? <ClickEdits /> : <DragEdits />}
     </section>
 }
 
 function ClickEdits() {
-    const style = Style.Counter
-    const count = useAnnotateStore(s => s.count)
+    const style = useAnnotateStore(s => s.style)
     const addAnnotation = useAnnotateStore(s => s.addAnnotation)
-    return <ClickPane
-        onComplete={pos => addAnnotation({ style, data: { ...pos, count } })}
-        onRender={pos => <GenericAnnotation style={style} data={{ ...pos, count }} />} />
+    return <ClickPane onComplete={addAnnotation}
+        onRender={pos => <GenericAnnotation {...style} {...pos} />} />
 }
 
 function DragEdits() {
     const style = useAnnotateStore(s => s.style)
-    const options = useAnnotateStore(s => s.styleOptions)
     const addAnnotation = useAnnotateStore(s => s.addAnnotation)
-    return <DragPane
-        onComplete={bounds => addAnnotation({ style, data: { ...bounds, ...options } })}
-        onRender={bounds => <GenericAnnotation style={style} data={{ ...bounds, ...options }} />} />
+    return <DragPane onComplete={addAnnotation}
+        onRender={bounds => <GenericAnnotation {...style} {...bounds} />} />
 }

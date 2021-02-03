@@ -1,9 +1,9 @@
 import { Fragment, h } from 'preact';
 import { DASH, STROKE } from '../../misc/constants';
-import { Style, StyleData } from '../../misc/types';
+import { Style, Annotation } from '../../misc/types';
 import { GetLineCoords, LineDashed, LineSolid } from './line';
 
-type ArrowProps = StyleData<Style.Arrow>
+type ArrowProps = Annotation<Style.Arrow>
 
 export default function Arrow(props: ArrowProps) {
     return props.dashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />

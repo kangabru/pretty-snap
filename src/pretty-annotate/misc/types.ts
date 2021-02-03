@@ -5,22 +5,16 @@ export type Bounds = Size & Position & { negX: boolean, negY: boolean }
 export enum EditType { Add, Edit, Delete }
 
 export enum Style { Box, Line, Arrow, Counter }
-export type StyleData<S extends StyleDataKeys> = StyleDataMap[S]
+export type StyleOptions = { type: Style, dashed: boolean, count: number, colour: string }
 
-export type Annotation<S extends StyleDataKeys> = {
-    style: Style,
-    data: StyleData<S>,
-}
 
-export type AnnotationItem<S extends StyleDataKeys> = Annotation<S> & {
-    id: string,
-    type: EditType,
-}
+export type AnnotationItem<S extends Style> = Annotation<S>
 
-export type StyleDataKeys = keyof StyleDataMap
-type StyleDataMap = {
-    [Style.Box]: Bounds & { dashed: boolean },
-    [Style.Line]: Bounds & { dashed: boolean },
-    [Style.Arrow]: Bounds & { dashed: boolean },
-    [Style.Counter]: Position & { count: number },
+export type AnnotationAny = StyleOptions & Partial<Bounds>
+export type Annotation<S extends Style> = StyleOptions & StyleData[S]
+type StyleData = {
+    [Style.Box]: Bounds,
+    [Style.Line]: Bounds,
+    [Style.Arrow]: Bounds,
+    [Style.Counter]: Position,
 }

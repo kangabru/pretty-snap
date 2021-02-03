@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Annotation, AnnotationItem } from '../../misc/types';
+import { Annotation, AnnotationAny } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 
@@ -11,6 +11,6 @@ export default function Viewer() {
 }
 
 function Annotation({ id }: { id: string }) {
-    const annotation = useAnnotateStore(s => s.index[id] as AnnotationItem<any>)
+    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
     return <GenericAnnotation {...annotation} />
 }
