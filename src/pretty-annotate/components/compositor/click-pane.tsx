@@ -10,14 +10,14 @@ export type ClickPaneProps = {
 
 /** A component which a user can drag onto to create shapes. */
 export function ClickPane(props: ClickPaneProps) {
-    const [ref, cont] = useMeasure()
+    const [ref, cont] = useMeasure({ scroll: true })
     const [pos, setPos] = useState<Position | undefined>(undefined)
 
-    const left = pos ? (pos.left - cont.left) : 0
-    const top = pos ? (pos.top - cont.top) : 0
+    const left = pos ? (pos.left - cont.x) : 0
+    const top = pos ? (pos.top - cont.y) : 0
 
-    const onMouseDown = (ev: MouseEvent) => setPos({ left: ev.clientX, top: ev.clientY + window.scrollY })
-    const onMouseMove = (ev: MouseEvent) => pos && setPos({ left: ev.clientX, top: ev.clientY + window.scrollY })
+    const onMouseDown = (ev: MouseEvent) => setPos({ left: ev.clientX, top: ev.clientY })
+    const onMouseMove = (ev: MouseEvent) => pos && setPos({ left: ev.clientX, top: ev.clientY })
     const onMouseUp = () => {
         pos && props.onComplete({ left, top })
         setPos(undefined)
