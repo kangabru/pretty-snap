@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import React from 'react';
 import { DASH, STROKE } from '../../misc/constants';
 import { Style, Annotation } from '../../misc/types';
 import { GetLineCoords, LineDashed, LineSolid } from './line';

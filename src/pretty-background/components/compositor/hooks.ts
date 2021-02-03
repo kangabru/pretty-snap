@@ -1,4 +1,3 @@
-import { Ref } from 'preact';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
@@ -24,16 +23,16 @@ type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
  *
  * These elements need similar but slightly different styles that that viewing and rendering behave as expected.
  */
-export function useCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+export function useCompositionStyles(): [React.MutableRefObject<HTMLElement>, CompositionStyles, CompositionStyles] {
     const settings = useOptionsStore() // Not this refreshes on every external option update
     const [contRefScreen, { width }] = useMeasure()
     const stylesScreen = useStylesPreview(settings, width)
     const stylesRender = useStylesRender(settings, width)
-    return [contRefScreen, stylesScreen, stylesRender]
+    return [contRefScreen as any, stylesScreen, stylesRender]
 }
 
 /** Like useCompositionStyles but all properties are animated using react-spring. Must be rendered with animated components. */
-export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+export function useAnimatedCompositionStyles(): [React.MutableRefObject<HTMLElement>, CompositionStyles, CompositionStyles] {
     const [contRefScreen, stylesScreen, stylesRender] = useCompositionStyles()
 
     const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesScreenInner } = stylesScreen.inner as CSSProperties

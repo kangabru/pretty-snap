@@ -1,5 +1,5 @@
-import { Fragment, h } from 'preact';
-import { Annotation, AnnotationAny, Style } from '../../misc/types';
+import React from 'react';
+import { Style, Annotation, AnnotationAny } from '../../misc/types';
 import Box from '../annotations/box';
 import Arrow from './arrow';
 import Counter from './counter';

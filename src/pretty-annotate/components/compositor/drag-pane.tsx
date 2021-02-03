@@ -1,5 +1,5 @@
-import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import React from 'react';
+import { useState } from 'react';
 import { useMemo } from 'react';
 import useMeasure from 'react-use-measure';
 import { Bounds, Position } from '../../misc/types';
@@ -25,18 +25,18 @@ export function DragPane(props: DragPaneProps) {
         return [left - cont.x, top - cont.y, width, height, negX, negY]
     }, [pos1, pos2, cont.x, cont.y])
 
-    const onMouseDown = (ev: MouseEvent) => {
+    const onMouseDown = (ev: any) => {
         const pos = { left: ev.clientX, top: ev.clientY }
         setPos1(pos); setPos2(pos)
     }
 
-    const onMouseMove = (ev: MouseEvent) => pos2 && setPos2({ left: ev.clientX, top: ev.clientY })
+    const onMouseMove = (ev: any) => pos2 && setPos2({ left: ev.clientX, top: ev.clientY })
     const onMouseUp = () => {
         props.onComplete?.({ left, top, width, height, negX, negY })
         setPos1(undefined); setPos2(undefined)
     }
 
-    return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} class="absolute inset-0">
+    return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} className="absolute inset-0">
         {pos1 && pos2 && props.onRender({ left, top, width, height, negX, negY })}
     </div>
 }

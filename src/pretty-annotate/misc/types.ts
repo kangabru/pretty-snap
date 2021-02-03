@@ -12,7 +12,7 @@ export type AnnotationItem<S extends Style> = Annotation<S>
 
 export type AnnotationAny = StyleOptions & Partial<Bounds>
 export type Annotation<S extends Style> = StyleOptions & StyleData[S]
-type StyleData = {
+export type StyleData = {
     [Style.Box]: Bounds,
     [Style.Line]: Bounds,
     [Style.Arrow]: Bounds,

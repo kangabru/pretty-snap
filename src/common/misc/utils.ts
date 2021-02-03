@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks"
+import { useState } from "react"
 
 export type ClassProp = string | boolean | undefined | null
 export const join = (...classes: ClassProp[]): string => joinRaw(classes, " ")

@@ -4,8 +4,8 @@ export type SvgPatternCallbackResp = { w: number, h: number, url: string }
 export type SvgPatternCallback = (bg: Pick<BackgroundPattern, 'svgColour' | 'svgOpacity'>) => SvgPatternCallbackResp
 
 const svg: (w: number, h: number, _: string) => SvgPatternCallbackResp = (w, h, paths) => ({ w, h, url: `<svg width="${w}px" height="${h}px" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${paths}</svg>` })
-const d: (w: number, h: number, _: string) => SvgPatternCallback = (w, h, data) => ({ svgColour, svgOpacity }) => svg(w, h, `<path d="${data}" fill="${svgColour}" opacity="${svgOpacity}" stroke="none" fill-rule="evenodd"></path>`)
-const g: (w: number, h: number, _: string) => SvgPatternCallback = (w, h, paths) => ({ svgColour, svgOpacity }) => svg(w, h, `<g fill="${svgColour}" opacity="${svgOpacity}" stroke="none" fill-rule="evenodd">${paths}</g>`)
+const d: (w: number, h: number, _: string) => SvgPatternCallback = (w, h, data) => ({ svgColour, svgOpacity }) => svg(w, h, `<path d="${data}" fill="${svgColour}" opacity="${svgOpacity}" stroke="none" fillRule="evenodd"></path>`)
+const g: (w: number, h: number, _: string) => SvgPatternCallback = (w, h, paths) => ({ svgColour, svgOpacity }) => svg(w, h, `<g fill="${svgColour}" opacity="${svgOpacity}" stroke="none" fillRule="evenodd">${paths}</g>`)
 
 const none: SvgPatternCallback = () => ({ w: 0, h: 0, url: "" })
 

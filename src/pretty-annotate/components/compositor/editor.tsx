@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 import { join } from '../../../common/misc/utils';
 import { Style } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
@@ -9,7 +9,7 @@ import { DragPane } from './drag-pane';
 export default function Editor() {
     const style = useAnnotateStore(s => s.style)
     const useClick = style.type == Style.Counter
-    return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
+    return <section className={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
         {useClick ? <ClickEdits /> : <DragEdits />}
     </section>
 }

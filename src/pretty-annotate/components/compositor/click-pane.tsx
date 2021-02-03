@@ -1,5 +1,4 @@
-import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import React, { useState } from 'react';
 import useMeasure from 'react-use-measure';
 import { Position } from '../../misc/types';
 
@@ -16,14 +15,14 @@ export function ClickPane(props: ClickPaneProps) {
     const left = pos ? (pos.left - cont.x) : 0
     const top = pos ? (pos.top - cont.y) : 0
 
-    const onMouseDown = (ev: MouseEvent) => setPos({ left: ev.clientX, top: ev.clientY })
-    const onMouseMove = (ev: MouseEvent) => pos && setPos({ left: ev.clientX, top: ev.clientY })
+    const onMouseDown = (ev: any) => setPos({ left: ev.clientX, top: ev.clientY })
+    const onMouseMove = (ev: any) => pos && setPos({ left: ev.clientX, top: ev.clientY })
     const onMouseUp = () => {
         pos && props.onComplete({ left, top })
         setPos(undefined)
     }
 
-    return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} class="absolute inset-0">
+    return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} className="absolute inset-0">
         {pos && props.onRender({ left, top })}
     </div>
 }

@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import React from 'react';
 import Compositor from './components/compositor';
 
 export default function PrettyAnnotate() {

@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
@@ -13,7 +13,7 @@ export default function Line(props: LineProps) {
 
 function LineContainer({ children, left, top, width, height, colour }: Bounds & { colour: string } & JSX.ElementChildrenAttribute) {
     const margin = GetArrowHeadMargin(), strokeMargin = STROKE / 2
-    return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
+    return <div className="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
         <svg fill="currentColor" width={width + 2 * margin} height={height + 2 * margin} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>

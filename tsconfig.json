@@ -7,8 +7,6 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
-        "jsxFactory": "h",
-        "jsxFragmentFactory": "Fragment",
         "noUnusedLocals": true,
         "noUnusedParameters": true,
     },

@@ -1,4 +1,4 @@
-import { Ref, useEffect, useRef } from "preact/hooks"
+import { useEffect, useRef } from "react"
 
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
@@ -6,8 +6,8 @@ import { Ref, useEffect, useRef } from "preact/hooks"
  * @param refocusInputs - An array of props to check. If these change then the inital focused element will refresh
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
-export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>) {
-    const containerRef = useRef<T>(ref?.current)
+export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: React.MutableRefObject<T>) {
+    const containerRef = useRef<T>(ref?.current as T)
 
     function getResetChildren(): HTMLElement[] {
         if (!containerRef.current) return []

@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 import { getRandomItem, srcToUrlSvg } from '../../../common/misc/utils';
 import colours from '../../data/colours';
 import patterns from '../../data/patterns';

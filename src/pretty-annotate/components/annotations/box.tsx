@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
@@ -12,7 +12,7 @@ export default function Box(props: BoxProps) {
 
 function BoxContainer({ children, left, top, width, height, colour }: Bounds & { colour: string } & JSX.ElementChildrenAttribute) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
-    return <div class="absolute" style={{ color: colour, left: left - strokeMargin, top: top - strokeMargin }}>
+    return <div className="absolute" style={{ color: colour, left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>

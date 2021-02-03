@@ -1,4 +1,4 @@
-import { Ref, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ForegroundImage } from '../../common/misc/types';
 
 type SetForeground = (_: ForegroundImage) => void
@@ -13,7 +13,7 @@ export function useImagePaste(setDataUrl: SetForeground) {
 }
 
 /** Imports an image by dragging and dropping from the file system. */
-export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): [Ref<T>, boolean, boolean] {
+export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): [React.MutableRefObject<T>, boolean, boolean] {
     const dropZone = useRef<T>()
     const [isDropping, setIsDropping] = useState(false)
     const [isError, setIsError] = useState(false)
@@ -53,7 +53,7 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
         }
     }, [onFileOver, onFileLeave, onFileDrop])
 
-    return [dropZone, isDropping, isError]
+    return [dropZone as any, isDropping, isError]
 }
 
 /** Imports an image from a file input. */
@@ -88,10 +88,10 @@ function loadImageFromDataUrl(dataUrl: string | undefined): Promise<ForegroundIm
 
 /** Wrapper for input 'onChange' events to load the image then perform a callback. */
 export function onInputChange(setDataUrl: SetForeground) {
-    return (e: Event) => loadImageOnChange(e).then(setDataUrl)
+    return (e: ChangeEvent<HTMLInputElement>) => loadImageOnChange(e).then(setDataUrl)
 }
 
-function loadImageOnChange(e: Event): Promise<ForegroundImage> {
+function loadImageOnChange(e: ChangeEvent<HTMLInputElement>): Promise<ForegroundImage> {
     return new Promise((accept, reject) => {
         const files = (e.target as HTMLInputElement)?.files
         if (files) loadImageFromFile(files[0]).then(accept).catch(reject)

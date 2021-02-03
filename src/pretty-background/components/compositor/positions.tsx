@@ -1,7 +1,6 @@
-import { h } from 'preact';
-import { Ref, useEffect, useRef } from 'preact/hooks';
-import { Position } from '../../misc/types';
+import React, { useEffect, useRef } from 'react';
 import { join } from '../../../common/misc/utils';
+import { Position } from '../../misc/types';
 import useOptionsStore from '../../stores/options';
 
 const positions = [
@@ -13,7 +12,7 @@ const positions = [
 
 /** Renders the position buttons in the control panel. */
 export default function CompositorPositions() {
-    return <div class="inline-flex w-full bg-gray-100 rounded" role="group">
+    return <div className="inline-flex w-full bg-gray-100 rounded" role="group">
         {positions.map(p => <PositionButton position={p} />)}
     </div>
 }
@@ -34,22 +33,22 @@ function PositionButton(props: { position: Position }) {
         [Position.Top]: { title: "Align top", x: 6, y: 2 },
     }[position]
 
-    return <button ref={ref} title={title} onClick={setPosition} onKeyDown={onKeyDown} tabIndex={position == positionActual ? 0 : -1}
-        class={join("flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition rounded",
+    return <button ref={ref} title={title} onClick={setPosition} onKeyDown={onKeyDown as any} tabIndex={position == positionActual ? 0 : -1}
+        className={join("flex-1 sm:flex-auto p-2 focus:outline-none focus:shadow-outline text-center transition rounded",
             isSelected ? "bg-primary-base hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
             position == Position.Center && "rounded-l",
             position == Position.Right && "rounded-r")}>
-        <svg class="inline w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
+        <svg className="inline w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">
             <rect fill="currentColor" stroke="none" rx="2" x={x} y={y} width="12" height="12" />
             <rect fill="none" stroke="currentColor" rx="2" x="2" y="2" width="20" height="20" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
         </svg>
-    </button >
+    </button>
 }
 
 /** Allows the user to change the position by left and right arrows. */
-function useLeftRightActionWhenFocused(isSelected: boolean): [Ref<HTMLButtonElement>, (e: KeyboardEvent) => void] {
+function useLeftRightActionWhenFocused(isSelected: boolean): [React.MutableRefObject<HTMLButtonElement>, (e: KeyboardEvent) => void] {
     const ref = useRef<HTMLButtonElement>()
-    useEffect(() => { isSelected && ref.current.focus() }, [isSelected])
+    useEffect(() => { isSelected && ref.current?.focus() }, [isSelected])
 
     const currentPosition = useOptionsStore(x => x.position)
     const index = positions.indexOf(currentPosition)
@@ -60,5 +59,5 @@ function useLeftRightActionWhenFocused(isSelected: boolean): [Ref<HTMLButtonElem
         if (index != newIndex) useOptionsStore.setState({ position: positions[newIndex] })
     }
 
-    return [ref, onKeyDown]
+    return [ref as any, onKeyDown]
 }

@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { join } from '../../../common/misc/utils';
 import useUnsplashStore from '../../stores/unsplash';
@@ -23,11 +23,11 @@ export default function CompositorBackgroundControls() {
 
 
     const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:underline focus:outline-none transition"
-    return <section class="w-full max-w-screen-lg bg-white shadow-md p-5 space-y-3 rounded-lg">
+    return <section className="w-full max-w-screen-lg bg-white shadow-md p-5 space-y-3 rounded-lg">
 
-        <div class="grid grid-cols-2">
-            <button onClick={switchScreen(Screen.Pattern)} class={join(optionClass, screen == Screen.Pattern ? "border-primary-light" : "border-transparent")}>Pattern</button>
-            <button onClick={switchScreen(Screen.Image)} class={join(optionClass, screen == Screen.Image ? "border-primary-light" : "border-transparentn")}>Image</button>
+        <div className="grid grid-cols-2">
+            <button onClick={switchScreen(Screen.Pattern)} className={join(optionClass, screen == Screen.Pattern ? "border-primary-light" : "border-transparent")}>Pattern</button>
+            <button onClick={switchScreen(Screen.Image)} className={join(optionClass, screen == Screen.Image ? "border-primary-light" : "border-transparentn")}>Image</button>
         </div>
 
         {screen == Screen.Image && <ImageSelector />}

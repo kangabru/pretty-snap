@@ -1,5 +1,5 @@
 import domToImage, { Options as Dom2ImgOptions } from 'dom-to-image';
-import { Ref, useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "react";
 import mergeRefs from 'react-merge-refs';
 import { delay } from '../misc/utils';
 
@@ -18,10 +18,10 @@ export type CopyOptions = { copy: ExportFunc, copyState: SaveState, canCopy: boo
 export type ExportFunc = (width: number, height: number) => Promise<void>
 
 
-export default function useExport<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, DownloadOptions, CopyOptions] {
+export default function useExport<T extends HTMLElement>(onSuccess?: () => void): [React.MutableRefObject<T>, DownloadOptions, CopyOptions] {
     const [ref1, downloadStuff] = useDownload(onSuccess)
     const [ref2, copyStuff] = useCopy(onSuccess)
-    const ref = mergeRefs([ref1, ref2]) as any as Ref<T>
+    const ref = mergeRefs([ref1, ref2]) as any as React.MutableRefObject<T>
     return [ref, downloadStuff, copyStuff]
 }
 
@@ -31,10 +31,10 @@ export default function useExport<T extends HTMLElement>(onSuccess?: () => void)
  * @returns download: a function to trigger the download
  * @returns state: info about the progress of the download
  */
-function useDownload<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, DownloadOptions] {
+function useDownload<T extends HTMLElement>(onSuccess?: () => void): [React.MutableRefObject<T>, DownloadOptions] {
     const ref = useRef<T>()
-    const [download, downloadState] = useExportImage(optns => domToImage.toPng(ref.current, optns).then(downloadImage).then(onSuccess))
-    return [ref, { download, downloadState }]
+    const [download, downloadState] = useExportImage(optns => domToImage.toPng(ref.current as T, optns).then(downloadImage).then(onSuccess))
+    return [ref as any, { download, downloadState }]
 }
 
 
@@ -43,15 +43,15 @@ function useDownload<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, Do
  * @returns download: a function to trigger the download
  * @returns state: info about the availability/progress of the download
  */
-function useCopy<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, CopyOptions] {
+function useCopy<T extends HTMLElement>(onSuccess?: () => void): [React.MutableRefObject<T>, CopyOptions] {
     const ref = useRef<T>()
-    const [copy, copyState] = useExportImage(optns => domToImage.toBlob(ref.current, optns).then(copyImageToClipboard).then(onSuccess))
+    const [copy, copyState] = useExportImage(optns => domToImage.toBlob(ref.current as T, optns).then(copyImageToClipboard).then(onSuccess))
 
     // Check if copying is supported on this browser
     const [canCopy, setCanCopy] = useState(false)
     useEffect(() => void canWriteToClipboard().then(setCanCopy), [])
 
-    return [ref, { canCopy, copy, copyState }]
+    return [ref as any, { canCopy, copy, copyState }]
 }
 
 /** A hook to provide common state management for exporting images.

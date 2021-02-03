@@ -11,6 +11,6 @@ export const urls = {
 
 export const routes = {
     home: '/',
-    annotate: '/annotate',
-    background: '/background',
+    annotate: '/annotate/',
+    background: '/background/',
 }

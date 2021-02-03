@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import React from 'react';
 import BackgroundControls from './controls-bg';
 import CompositorViewer from './viewer';
 
