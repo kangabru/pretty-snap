@@ -13,7 +13,8 @@ const DEFAULT_TEXTS = [
     "Hi 👋",
 ]
 
-const CLS = "hover:cursor-crosshair absolute px-2 py-1 rounded-lg text-white font-bold text-xl font-mono grid place-items-center select-none transform -translate-x-6 -translate-y-6 ring-gray-200 ring-opacity-60"
+const CLASS_POSITION = "absolute transform -translate-x-6 -translate-y-6"
+const CLASS_STYLE = "hover:cursor-crosshair px-2 py-1 rounded-lg text-white font-bold text-xl font-mono grid place-items-center select-none"
 
 export default function Text(props: Props) {
     const { id, text } = props
@@ -28,14 +29,14 @@ export default function Text(props: Props) {
 
     return editable
         ? <TextInput {...props} />
-        : <span style={getStyle(props)} class={join(CLS, canEdit ? "cursor-text pointer-events-auto" : "pointer-events-none")}
+        : <span style={getStyle(props)} class={join(CLASS_POSITION, CLASS_STYLE, canEdit ? "cursor-text pointer-events-auto" : "pointer-events-none")}
             onClick={canEdit ? editOnClick : undefined}>
             {text ?? emptyText}
         </span>
 }
 
 function TextInput(props: Props) {
-    const { id, text } = props
+    const { id, text, left, top, colour } = props
 
     const ref = useRef<HTMLInputElement>()
     const [textEdits, setTextEdits] = useState(text)
@@ -54,11 +55,16 @@ function TextInput(props: Props) {
     useLayoutEffect(() => void ref.current?.focus(), [ref.current])
     useDocumentListener('mousedown', save, [editable])
 
-    return <input ref={ref as any} value={textEdits}
-        style={getStyle(props)} class={join(CLS, "ring-4 pointer-events-auto")}
-        onMouseDown={e => e.stopPropagation()}
-        onKeyDown={onKeys({ 'Escape': save, 'Enter': save })}
-        onInput={e => setTextEdits(e.currentTarget.value)} />
+    return <div style={{ left, top }} class={join(CLASS_POSITION, "flex flex-col items-end space-y-2")}>
+
+        <input ref={ref as any} value={textEdits} style={{ backgroundColor: colour }}
+            class={join(CLASS_STYLE, "ring-4 ring-gray-300 ring-opacity-60 outline-none focus:outline-none pointer-events-auto")}
+            onMouseDown={e => e.stopPropagation()}
+            onKeyDown={onKeys({ 'Escape': stop, 'Enter': save })}
+            onInput={e => setTextEdits(e.currentTarget.value)} />
+
+        <span class="text-xs text-gray-800 font-bold bg-gray-200 px-1 rounded whitespace-nowrap">Enter to save</span>
+    </div>
 }
 
 function getStyle({ top, left, colour }: Props) {
