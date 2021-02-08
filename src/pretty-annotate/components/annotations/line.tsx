@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Bounds, Style, Annotation } from '../../misc/types';
-import { GetArrowHeadMargin } from './arrow';
+import { Annotation, Bounds, Style } from '../../misc/types';
+import { ArrowHeadMargin } from './arrow';
 
 type LineProps = Annotation<Style.Line>
 
@@ -12,7 +12,7 @@ export default function Line(props: LineProps) {
 }
 
 function LineContainer({ children, left, top, width, height, colour }: Bounds & { colour: string } & JSX.ElementChildrenAttribute) {
-    const margin = GetArrowHeadMargin(), strokeMargin = STROKE / 2
+    const margin = ArrowHeadMargin, strokeMargin = STROKE / 2
     return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
         <svg fill="currentColor" width={width + 2 * margin} height={height + 2 * margin} xmlns="http://www.w3.org/2000/svg">
             {children}
@@ -21,7 +21,7 @@ function LineContainer({ children, left, top, width, height, colour }: Bounds & 
 }
 
 export function LineSolid({ children, ...props }: LineProps & { children?: JSX.Element }) {
-    const margin = GetArrowHeadMargin()
+    const margin = ArrowHeadMargin
     const [x1, y1, x2, y2] = GetLineCoords(props, margin, margin)
 
     return <LineContainer {...props}>
@@ -33,7 +33,7 @@ export function LineSolid({ children, ...props }: LineProps & { children?: JSX.E
 export function LineDashed({ children, ...props }: LineProps & { children?: JSX.Element }) {
 
     const { width, height } = props
-    const margin = GetArrowHeadMargin()
+    const margin = ArrowHeadMargin
     const [x1, y1, x2, y2] = GetLineCoords(props, margin, margin)
 
     const lineLength = Math.sqrt(width ** 2 + height ** 2)
