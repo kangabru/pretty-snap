@@ -16,6 +16,8 @@ export default function CompositorViewer() {
     const [ref, download, copy] = useExport(() => {
         // Trigger 'download' call as required by the API guidelines
         const settings = useOptionsStore.getState()
+
+        // eslint-disable-next-line no-console
         settings.backgroundImage && fetch(urls.apiUnsplashUse, { method: "POST", body: getImageSrcDownload(settings.backgroundImage) }).catch(console.error)
     })
 

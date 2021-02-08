@@ -53,6 +53,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
         containerRef.current.scrollTo({ left, behavior: 'smooth' })
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, refocusInputs ?? [])
 
     return containerRef

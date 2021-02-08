@@ -68,6 +68,7 @@ function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [ExportFunc, Sa
             setSaveState(SaveState.success)
             setTimeout(() => setSaveState(SaveState.idle), 1000) // Hide tick in a bit but continue the promise
         } catch (error) {
+            // eslint-disable-next-line no-console
             console.error(error)
             setSaveState(SaveState.error)
         }
