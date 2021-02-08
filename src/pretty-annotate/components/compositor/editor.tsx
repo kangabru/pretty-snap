@@ -1,24 +1,38 @@
 import { h } from 'preact';
 import { join } from '../../../common/misc/utils';
-import { AnnotationAny, Bounds, Style, StyleOptions } from '../../misc/types';
+import { Annotation, AnnotationAny, Bounds, Style, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
-import { ClickPane } from './click-pane';
 import { DragPane } from './drag-pane';
 
+const clickTypes = new Set([Style.Counter, Style.Text])
+
 export default function Editor() {
-    const style = useAnnotateStore(s => s.style)
-    const useClick = style.type == Style.Counter
-    return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
-        {useClick ? <ClickEdits /> : <DragEdits />}
+    return <section class="absolute inset-0">
+        <EditorPane />
+        <Viewer />
     </section>
 }
 
-function ClickEdits() {
+function Viewer() {
+    const ids = useAnnotateStore(s => s.ids)
+    return <section class="absolute inset-0 pointer-events-none">
+        {ids.map(id => <Annotation key={id} id={id} />)}
+    </section>
+}
+
+function Annotation({ id }: { id: string }) {
+    const editing = useAnnotateStore(s => !!s.idEditing)
+    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
+    return <GenericAnnotation id={id} {...annotation} allowEvents={!editing} />
+}
+
+function EditorPane() {
     const style = useAnnotateStore(s => s.style)
-    const save = useAnnotateStore(s => s.saveAnnotation)
-    return <ClickPane onComplete={save as any}
-        onRender={pos => <GenericAnnotation {...style} {...pos} />} />
+    const useClick = clickTypes.has(style.type)
+    return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
+        <DragEdits />
+    </section>
 }
 
 function DragEdits() {

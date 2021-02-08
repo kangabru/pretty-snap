@@ -6,7 +6,6 @@ import useOptionsStore from '../../stores/options';
 import Controls from '../controls';
 import Editor from './editor';
 import ImportDetails from './import';
-import Viewer from './viewer';
 
 /** Renders the main image composition preview component. */
 export default function Compositor() {
@@ -34,11 +33,9 @@ export default function Compositor() {
 }
 
 function ViewerEditor() {
-    const isAdding = true
     return <div class="relative">
         <TempDevImage />
-        <Viewer />
-        {isAdding && <Editor />}
+        <Editor />
     </div>
 }
 
