@@ -13,3 +13,11 @@ export const srcToUrlSvg = (src: string) => srcToUrl("data:image/svg+xml," + src
 export function delay(timeout: number) {
     return new Promise(accept => setTimeout(accept, timeout))
 }
+
+export function onKey(key: string, callback: (e: KeyboardEvent) => void) {
+    return onKeys({ [key]: callback })
+}
+
+export function onKeys(callbackMap: { [key: string]: (e: KeyboardEvent) => void }) {
+    return (e: KeyboardEvent) => void callbackMap[e.key]?.(e)
+}

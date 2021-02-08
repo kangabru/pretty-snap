@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { join } from '../../../common/misc/utils';
-import { Style } from '../../misc/types';
+import { AnnotationAny, Bounds, Style, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 import { ClickPane } from './click-pane';
@@ -16,14 +16,29 @@ export default function Editor() {
 
 function ClickEdits() {
     const style = useAnnotateStore(s => s.style)
-    const addAnnotation = useAnnotateStore(s => s.addAnnotation)
-    return <ClickPane onComplete={addAnnotation}
+    const save = useAnnotateStore(s => s.saveAnnotation)
+    return <ClickPane onComplete={save as any}
         onRender={pos => <GenericAnnotation {...style} {...pos} />} />
 }
 
 function DragEdits() {
     const style = useAnnotateStore(s => s.style)
-    const addAnnotation = useAnnotateStore(s => s.addAnnotation)
-    return <DragPane onComplete={addAnnotation}
-        onRender={bounds => <GenericAnnotation {...style} {...bounds} />} />
+    const save = useAnnotateStore(s => s.saveAnnotation)
+    return <DragPane
+        onComplete={bounds => { save(BoundsToData(style, bounds)) }}
+        onRender={bounds => <GenericAnnotation {...style} {...BoundsToData(style, bounds)} />} />
+}
+
+function BoundsToData(options: StyleOptions, bounds: Bounds): AnnotationAny {
+    const { left: _left, top: _top, width, height, negX, negY } = bounds
+    const left = _left + (negX ? 0 : width)
+    const top = _top + (negY ? 0 : height)
+
+    switch (options.type) {
+        case Style.Text:
+        case Style.Counter:
+            return { ...options, left, top }
+        default:
+            return { ...options, ...bounds }
+    }
 }

@@ -12,5 +12,5 @@ export default function Viewer() {
 
 function Annotation({ id }: { id: string }) {
     const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
-    return <GenericAnnotation {...annotation} />
+    return <GenericAnnotation id={id} {...annotation} />
 }

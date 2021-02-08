@@ -53,6 +53,9 @@ export default function Controls() {
                     {count}
                 </span>
             </button>
+            <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={setShape(Style.Text, false)}>
+                <span class="w-8 h-8 rounded-full text-white font-bold text-xl font-mono grid place-items-center" style={{ backgroundColor: color }}>T</span>
+            </button>
         </section>
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
