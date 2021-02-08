@@ -22,15 +22,15 @@ export function DragPane(props: DragPaneProps) {
         const left = Math.min(x1, x2), top = Math.min(y1, y2)
         const width = Math.abs(x1 - x2), height = Math.abs(y1 - y2)
         const negX = x2 < x1, negY = y2 < y1
-        return [left - cont.x, top - cont.y, width, height, negX, negY]
-    }, [pos1, pos2, cont.x, cont.y])
+        return [left, top, width, height, negX, negY]
+    }, [pos1, pos2])
 
     const onMouseDown = (ev: MouseEvent) => {
-        const pos = { left: ev.clientX, top: ev.clientY }
+        const pos = { left: ev.clientX - cont.x, top: ev.clientY - cont.y }
         setPos1(pos); setPos2(pos)
     }
 
-    const onMouseMove = (ev: MouseEvent) => pos2 && setPos2({ left: ev.clientX, top: ev.clientY })
+    const onMouseMove = (ev: MouseEvent) => pos2 && setPos2({ left: ev.clientX - cont.x, top: ev.clientY - cont.y })
     const onMouseUp = () => {
         props.onComplete?.({ left, top, width, height, negX, negY })
         setPos1(undefined); setPos2(undefined)
