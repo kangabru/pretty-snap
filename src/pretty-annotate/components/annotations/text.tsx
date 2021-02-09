@@ -20,14 +20,14 @@ export default function Text(props: Props) {
     const { id, text, useDarkText } = props
 
     const canEdit = useAnnotateStore(s => s.style.type == Style.Text)
-    const editable = useAnnotateStore(s => canEdit && id && s.idEditing === id)
+    const editing = useAnnotateStore(s => canEdit && id && s.idEditing === id)
 
     const edit = useAnnotateStore(s => s.edit)
     const editOnClick = (e: Event) => { if (id) { edit(id); e.stopPropagation() } }
 
     const emptyText = useRandomItem(DEFAULT_TEXTS)
 
-    return editable
+    return editing
         ? <TextInput {...props} />
         : <span style={getStyle(props)} onClick={canEdit ? editOnClick : undefined}
             class={join(CLASS_POSITION, CLASS_STYLE, textClass(useDarkText), canEdit ? "cursor-text pointer-events-auto" : "pointer-events-none")}>
@@ -36,31 +36,29 @@ export default function Text(props: Props) {
 }
 
 function TextInput(props: Props) {
-    const { id, text, left, top, colour, useDarkText } = props
+    const { text, left, top, colour, useDarkText } = props
 
     const ref = useRef<HTMLInputElement>()
     const [textEdits, setTextEdits] = useState(text)
 
-    const stop = useAnnotateStore(s => s.editStop)
+    const cancel = useAnnotateStore(s => s.editStop)
     const saveText = useAnnotateStore(s => s.saveAnnotation)
-    const editable = useAnnotateStore(s => id && s.idEditing === id)
 
     const save = () => {
-        if (!editable) return
-        if (textEdits == text) stop() // Doesn't create an undo event
+        if (textEdits == text) cancel() // Doesn't create an undo event
         else saveText({ ...props, text: textEdits }, !text) // Creates an undo event
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useLayoutEffect(() => void ref.current?.focus(), [ref.current])
-    useDocumentListener('mousedown', save, [editable])
+    useDocumentListener('mousedown', save)
 
     return <div style={{ left, top }} class={join(CLASS_POSITION, "flex flex-col items-end space-y-2")}>
 
         <input ref={ref as any} value={textEdits} style={{ backgroundColor: colour }}
             class={join(CLASS_STYLE, textClass(useDarkText), "ring-4 ring-gray-300 ring-opacity-60 outline-none focus:outline-none pointer-events-auto")}
             onMouseDown={e => e.stopPropagation()}
-            onKeyDown={onKeys({ 'Escape': stop, 'Enter': save })}
+            onKeyDown={onKeys({ 'Escape': cancel, 'Enter': save })}
             onInput={e => setTextEdits(e.currentTarget.value)} />
 
         <span class="text-xs text-gray-800 font-bold bg-gray-200 px-1 rounded whitespace-nowrap">Enter to save</span>
