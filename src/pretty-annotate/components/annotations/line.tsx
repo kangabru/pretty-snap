@@ -14,7 +14,7 @@ export default function Line(props: LineProps) {
 function LineContainer({ children, left, top, width, height, colour }: Bounds & { colour: string } & JSX.ElementChildrenAttribute) {
     const margin = ArrowHeadMargin, strokeMargin = STROKE / 2
     return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
-        <svg fill="currentColor" width={width + 2 * margin} height={height + 2 * margin} xmlns="http://www.w3.org/2000/svg">
+        <svg fill="currentColor" width={width + 2 * margin + strokeMargin} height={height + 2 * margin + strokeMargin} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>
     </div>
