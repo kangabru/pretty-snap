@@ -21,3 +21,7 @@ export function onKey(key: string, callback: (e: KeyboardEvent) => void) {
 export function onKeys(callbackMap: { [key: string]: (e: KeyboardEvent) => void }) {
     return (e: KeyboardEvent) => void callbackMap[e.key]?.(e)
 }
+
+export function textClass(useDarkText: boolean | undefined) {
+    return useDarkText ? "text-gray-800" : "text-white"
+}
