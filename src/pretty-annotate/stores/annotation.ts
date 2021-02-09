@@ -28,7 +28,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         ids: [], index: {},
 
         style: {
-            type: Style.Text,
+            type: Style.Box,
             dashed: true,
             count: 1,
             colour: '#3b82f6',
