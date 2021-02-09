@@ -3,7 +3,7 @@ export type Position = { left: number, top: number }
 export type Bounds = Size & Position & { negX: boolean, negY: boolean }
 
 export enum Style { Box, Line, Arrow, Counter, Text }
-export type StyleOptions = { id?: string, type: Style, colour: string, dashed?: boolean, count?: number, useDarkText?: boolean }
+export type StyleOptions = { id?: string, type: Style, colour: string, count: number, dashed?: boolean, useDarkText?: boolean }
 
 export type AnnotationItem<S extends Style> = Annotation<S>
 

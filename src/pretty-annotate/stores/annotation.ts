@@ -50,7 +50,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 ids: AddIfNewId(ids, id),
                 index: { ...index, [id]: annotationItem },
                 undos: newUndos, redos: [],
-                style: IncrementCounter(style),
+                style: { ...style, count: style.count + (annotationItem.type == Style.Counter ? 1 : 0) },
                 idEditing: isNew && shouldEditOnCreate(annotation.type) ? id : undefined,
             })
 
@@ -61,14 +61,14 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             const { undos, redos, index, ids, style } = get()
             if (!undos.length) return
 
-            const annotation = undos.slice(-1)[0]
-            const wasNew = annotation.dataPrev === undefined
+            const lastUndo = undos.slice(-1)[0]
+            const wasNew = lastUndo.dataPrev === undefined
 
             set("Undo", {
-                index: { ...index, [annotation.id]: annotation.dataPrev },
+                index: { ...index, [lastUndo.id]: lastUndo.dataPrev },
                 ids: wasNew ? ids.slice(0, -1) : ids.slice(),
-                undos: undos.slice(0, -1), redos: [...redos, annotation],
-                style: IncrementCounter(style, true),
+                undos: undos.slice(0, -1), redos: [...redos, lastUndo],
+                style: { ...style, count: lastUndo.dataNext?.count ?? style.count },
                 idEditing: undefined,
             })
         },
@@ -76,14 +76,14 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             const { undos, redos, index, ids, style } = get()
             if (!redos.length) return
 
-            const annotation = redos.slice(-1)[0]
+            const lastRedo = redos.slice(-1)[0]
 
             set("Redo", {
-                index: { ...index, [annotation.id]: annotation.dataNext },
-                ids: AddIfNewId(ids, annotation.id),
-                undos: [...undos, annotation],
+                index: { ...index, [lastRedo.id]: lastRedo.dataNext },
+                ids: AddIfNewId(ids, lastRedo.id),
+                undos: [...undos, lastRedo],
                 redos: redos.slice(0, -1),
-                style: IncrementCounter(style),
+                style: { ...style, count: lastRedo.dataNext?.count ?? style.count },
                 idEditing: undefined,
             })
         },
@@ -93,7 +93,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         edit: idEditing => set("Edit", { idEditing }),
         editStop: () => {
             const { idEditing, index, ids } = get()
-            const item = index[idEditing]
+            const item = index[idEditing ?? ""]
 
             if (idEditing && item && item.type == Style.Text && !item.text) {
                 // Remove new text annotations that haven't been confirmed
@@ -116,11 +116,6 @@ function AddIfNewId(ids: string[], newId: string) {
 
 function shouldEditOnCreate(style: Style) {
     return style == Style.Text
-}
-
-function IncrementCounter(style: StyleOptions, decrement?: boolean): StyleOptions {
-    const { count } = style
-    return { ...style, count: count + (style.type == Style.Counter ? (decrement ? -1 : 1) : 0) }
 }
 
 export default useAnnotateStore
