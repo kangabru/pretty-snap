@@ -91,7 +91,20 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         redos: [],
 
         edit: idEditing => set("Edit", { idEditing }),
-        editStop: () => set("Edit Stop", { idEditing: undefined }),
+        editStop: () => {
+            const { idEditing, index, ids } = get()
+            const item = index[idEditing]
+
+            if (idEditing && item && item.type == Style.Text && !item.text) {
+                // Remove new text annotations that haven't been confirmed
+                set("Text cancel", {
+                    index: { ...index, [idEditing]: undefined },
+                    ids: ids.slice(0, -1),
+                    idEditing: undefined,
+                })
+            } else
+                set("Edit cancel", { idEditing: undefined })
+        },
     })
 }, "Annotate"))
 
