@@ -1,10 +1,13 @@
 import { h } from 'preact';
-import { textClass, join } from '../../common/misc/utils';
+import { Exports } from '../../common/hooks/use-export';
 import { Children } from '../../common/misc/types';
+import { join, textClass } from '../../common/misc/utils';
+import { ExportButtons, ExportError } from '../../pretty-background/components/compositor/controls';
 import { Style } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
+import useOptionsStore from '../stores/options';
 
-export default function Controls() {
+export default function Controls(props: Exports) {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
 
@@ -12,7 +15,12 @@ export default function Controls() {
     const { colour: color, count } = style
     const setShape = (type: Style, dashed = false) => () => useAnnotateStore.setState({ style: { ...style, type, dashed } })
 
+    const image = useOptionsStore(s => s.image)
+    const canExport = !!image?.src
+
     return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
+
+        <ExportError {...props} />
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2" style={{ color }}>
             <StyleButton type={Style.Box}>
@@ -64,13 +72,7 @@ export default function Controls() {
             </section>
 
             <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2 text-gray-800">
-                <AnnotateButtonSvg onClick={() => console.log("TODO: Download")}>
-                    <path fill="currentColor" fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
-                </AnnotateButtonSvg>
-                <AnnotateButtonSvg onClick={() => console.log("TODO: Copy")}>
-                    <path fill="currentColor" d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z"></path>
-                    <path fill="currentColor" d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z"></path>
-                </AnnotateButtonSvg>
+                <ExportButtons {...props} notReady={!canExport} />
             </section>
         </div>
     </section>

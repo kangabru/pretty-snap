@@ -1,4 +1,5 @@
 import { Ref } from 'preact';
+import { useMemo } from 'preact/hooks';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
@@ -111,10 +112,22 @@ function getForegroundImgSize(foreground: ForegroundImage | undefined) {
     return [foreground?.width ?? 0, foreground?.height ?? 0]
 }
 
+/** A hook that returns the size of the background image accounting for positional padding.
+ * @returns [width, height] of the background image. */
+export function useGetSizeBackground(): [number, number] {
+    const position = useOptionsStore(s => s.position)
+    const foreground = useOptionsStore(s => s.foreground)
+    const paddingPerc = useOptionsStore(s => s.paddingPerc)
+
+    return useMemo(() => {
+        return getSizeBackground({ position, foreground, paddingPerc })
+    }, [position, foreground, paddingPerc])
+}
+
 /** Returns the size of the background image accounting for positional padding.
  * @returns [width, height] of the background image. */
-export function getSizeBackground(settings: Omit<Settings, 'background'>) {
-    const { paddingPerc, position, foreground } = settings
+export function getSizeBackground({ paddingPerc, position, foreground }:
+    Pick<Settings, 'paddingPerc' | 'position' | 'foreground'>): [number, number] {
     const padding = getPadding(paddingPerc, foreground)
 
     const [width, height] = getForegroundImgSize(foreground)

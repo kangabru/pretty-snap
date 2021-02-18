@@ -14,9 +14,9 @@ export default function Editor() {
     </section>
 }
 
-function Viewer() {
+export function Viewer({ scale }: { scale?: number }) {
     const ids = useAnnotateStore(s => s.ids)
-    return <section class="absolute inset-0 pointer-events-none">
+    return <section class="absolute inset-0 pointer-events-none origin-top-left" style={{ transform: scale ? `scale(${scale})` : undefined }}>
         {ids.map(id => <Annotation key={id} id={id} />)}
     </section>
 }

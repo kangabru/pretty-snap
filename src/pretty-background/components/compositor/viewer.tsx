@@ -9,11 +9,12 @@ import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
 import Controls from './controls';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles } from './hooks';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useGetSizeBackground } from './hooks';
 
 /** Renders the main image composition preview component. */
 export default function CompositorViewer() {
-    const [ref, download, copy] = useExport(() => {
+    const [width, height] = useGetSizeBackground()
+    const [ref, download, copy] = useExport(width, height, () => {
         // Trigger 'download' call as required by the API guidelines
         const settings = useOptionsStore.getState()
 

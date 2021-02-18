@@ -3,24 +3,22 @@ import { Ref, useEffect, useRef, useState } from "preact/hooks";
 import mergeRefs from 'react-merge-refs';
 import { delay } from '../misc/utils';
 
-export enum SaveState {
+type Size = [number, number] // [width, height]
+export type Exports = { download: ExportOptions, copy: ExportOptions }
+export type ExportOptions = { run: () => void, state: ExportState, supported: boolean }
+
+export enum ExportState {
     idle,
     loading, //
     success, // For a couple seconds after success
     error, // On error
 }
 
-export type ExportOptions = { download: DownloadOptions, copy: CopyOptions }
 
-export type DownloadOptions = { download: ExportFunc, downloadState: SaveState }
-export type CopyOptions = { copy: ExportFunc, copyState: SaveState, canCopy: boolean }
-
-export type ExportFunc = (width: number, height: number) => Promise<void>
-
-
-export default function useExport<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, DownloadOptions, CopyOptions] {
-    const [ref1, downloadStuff] = useDownload(onSuccess)
-    const [ref2, copyStuff] = useCopy(onSuccess)
+export default function useExport<T extends HTMLElement>(width: number, height: number, onSuccess?: () => void): [Ref<T>, ExportOptions, ExportOptions] {
+    const size: Size = [width, height]
+    const [ref1, downloadStuff] = useDownload(size, onSuccess)
+    const [ref2, copyStuff] = useCopy(size, onSuccess)
     const ref = mergeRefs([ref1, ref2]) as any as Ref<T>
     return [ref, downloadStuff, copyStuff]
 }
@@ -31,10 +29,10 @@ export default function useExport<T extends HTMLElement>(onSuccess?: () => void)
  * @returns download: a function to trigger the download
  * @returns state: info about the progress of the download
  */
-function useDownload<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, DownloadOptions] {
+function useDownload<T extends HTMLElement>(size: Size, onSuccess?: () => void): [Ref<T>, ExportOptions] {
     const ref = useRef<T>()
-    const [download, downloadState] = useExportImage(optns => domToImage.toPng(ref.current, optns).then(downloadImage).then(onSuccess))
-    return [ref, { download, downloadState }]
+    const [download, state] = useExportImage(size, optns => domToImage.toPng(ref.current, optns).then(downloadImage).then(onSuccess))
+    return [ref, { run: download, state, supported: true }]
 }
 
 
@@ -43,34 +41,34 @@ function useDownload<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, Do
  * @returns download: a function to trigger the download
  * @returns state: info about the availability/progress of the download
  */
-function useCopy<T extends HTMLElement>(onSuccess?: () => void): [Ref<T>, CopyOptions] {
+function useCopy<T extends HTMLElement>(size: Size, onSuccess?: () => void): [Ref<T>, ExportOptions] {
     const ref = useRef<T>()
-    const [copy, copyState] = useExportImage(optns => domToImage.toBlob(ref.current, optns).then(copyImageToClipboard).then(onSuccess))
+    const [copy, state] = useExportImage(size, optns => domToImage.toBlob(ref.current, optns).then(copyImageToClipboard).then(onSuccess))
 
     // Check if copying is supported on this browser
     const [canCopy, setCanCopy] = useState(false)
     useEffect(() => void canWriteToClipboard().then(setCanCopy), [])
 
-    return [ref, { canCopy, copy, copyState }]
+    return [ref, { run: copy, state, supported: canCopy }]
 }
 
 /** A hook to provide common state management for exporting images.
  * @param The callback to perform the image save when the returned action is run.
  */
-function useExportImage(saveImage: (o: Dom2ImgOptions) => void): [ExportFunc, SaveState] {
-    const [saveState, setSaveState] = useState<SaveState>(SaveState.idle)
+function useExportImage([width, height]: Size, saveImage: (o: Dom2ImgOptions) => void): [() => void, ExportState] {
+    const [saveState, setSaveState] = useState<ExportState>(ExportState.idle)
 
-    const action: ExportFunc = async (width: number, height: number) => {
+    const action = async () => {
         try {
-            setSaveState(SaveState.loading)
+            setSaveState(ExportState.loading)
             await delay(500)
             await saveImage({ width, height })
-            setSaveState(SaveState.success)
-            setTimeout(() => setSaveState(SaveState.idle), 1000) // Hide tick in a bit but continue the promise
+            setSaveState(ExportState.success)
+            setTimeout(() => setSaveState(ExportState.idle), 1000) // Hide tick in a bit but continue the promise
         } catch (error) {
             // eslint-disable-next-line no-console
             console.error(error)
-            setSaveState(SaveState.error)
+            setSaveState(ExportState.error)
         }
     }
 
