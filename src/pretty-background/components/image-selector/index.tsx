@@ -73,7 +73,7 @@ function Image(img: UnsplashImage) {
             </button>
 
             <UserImageLink img={img} tabIndex={isFocused ? 0 : -1} {...funcs}
-                className={join(commonImageButtonStyles, "items-end overflow-hidden text-white")} />
+                class={join(commonImageButtonStyles, "items-end overflow-hidden text-white")} />
         </div>
     </div>
 }

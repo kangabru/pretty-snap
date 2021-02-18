@@ -1,6 +1,7 @@
 import { Fragment, h, JSX } from 'preact';
 import { urls } from '../../../common/constants';
 import { ExportFunc, ExportOptions, SaveState } from '../../../common/hooks/use-export';
+import { Children } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../misc/constants';
 import useOptionsStore from '../../stores/options';

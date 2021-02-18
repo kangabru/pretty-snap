@@ -3,7 +3,7 @@ import { join } from '../../../common/misc/utils';
 
 /** Renders the initial info section within the compositor before the user has selected an image. */
 export default function ImportDetails({ isDropping, isError }: { isDropping: boolean, isError: boolean }) {
-    return <div className={join("p-4 sm:py-8 sm:px-12 space-y-5 bg-white")}>
+    return <div class={join("p-4 sm:py-8 sm:px-12 space-y-5 bg-white")}>
         <h2 class="max-w-sm mx-auto space-x-1 text-xl sm:text-3xl text-center font-open font-semibold select-none">
             Annotate screenshots right in your browser
         </h2>

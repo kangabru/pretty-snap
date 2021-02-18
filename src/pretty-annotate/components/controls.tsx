@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { textClass, join } from '../../common/misc/utils';
+import { Children } from '../../common/misc/types';
 import { Style } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 
@@ -52,7 +53,7 @@ export default function Controls() {
             <ColourButton colour="white" useDarkText />
         </section>
 
-        <div className="flex">
+        <div class="flex">
             <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2 text-gray-800">
                 <AnnotateButtonSvg onClick={undo}>
                     <path fill="currentColor" d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path>
@@ -75,11 +76,11 @@ export default function Controls() {
     </section>
 }
 
-function AnnotateButton({ children, onClick }: JSX.ElementChildrenAttribute & { onClick: () => void }) {
+function AnnotateButton({ children, onClick }: Children & { onClick: () => void }) {
     return <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={onClick}>{children}</button>
 }
 
-function AnnotateButtonSvg({ children, onClick }: JSX.ElementChildrenAttribute & { onClick: () => void }) {
+function AnnotateButtonSvg({ children, onClick }: Children & { onClick: () => void }) {
     return <AnnotateButton onClick={onClick}>
         <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">{children}</svg>
     </AnnotateButton>
@@ -92,7 +93,7 @@ function AnnotateButtonSpan({ text, onClick }: { text: string | number, onClick:
     </AnnotateButton>
 }
 
-function StyleButton({ type, dashed, children }: JSX.ElementChildrenAttribute & { type: Style, dashed?: boolean }) {
+function StyleButton({ type, dashed, children }: Children & { type: Style, dashed?: boolean }) {
     const setShape = () => {
         const style = useAnnotateStore.getState().style
         useAnnotateStore.setState({ style: { ...style, type, dashed } })
