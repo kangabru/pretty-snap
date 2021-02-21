@@ -22,42 +22,48 @@ export default function Controls(props: Exports) {
 
         <ExportError {...props} />
 
-        <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2" style={{ color }}>
-            <StyleButton type={Style.Box}>
-                <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
-            </StyleButton>
-            <StyleButton type={Style.Box} dashed>
-                <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
-            </StyleButton>
+        <section class="p-3 space-y-3 bg-gray-200 max-w-lg rounded-lg m-2" style={{ color }}>
+            <div class="flex justify-center space-x-3">
+                <StyleButton type={Style.Box}>
+                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
+                </StyleButton>
+                <StyleButton type={Style.Box} dashed>
+                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
+                </StyleButton>
 
-            <StyleButton type={Style.Ellipse}>
-                <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
-            </StyleButton>
-            <StyleButton type={Style.Ellipse} dashed>
-                <circle cx="10" cy="10" r="8" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="4.16" stroke-dashoffset="-2" />
-            </StyleButton>
+                <StyleButton type={Style.Ellipse}>
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
+                </StyleButton>
+                <StyleButton type={Style.Ellipse} dashed>
+                    <circle cx="10" cy="10" r="8" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="4.16" stroke-dashoffset="-2" />
+                </StyleButton>
             </div>
 
-            <StyleButton type={Style.Arrow}>
-                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-            </StyleButton>
-            <StyleButton type={Style.Arrow} dashed>
-                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
-                <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-            </StyleButton>
+            <div class="flex justify-center space-x-3">
+                <StyleButton type={Style.Arrow}>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                </StyleButton>
+                <StyleButton type={Style.Arrow} dashed>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
+                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                </StyleButton>
 
-            <StyleButton type={Style.Line}>
-                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-            </StyleButton>
-            <StyleButton type={Style.Line} dashed>
-                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
-            </StyleButton>
+                <StyleButton type={Style.Line}>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                </StyleButton>
+                <StyleButton type={Style.Line} dashed>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
+                </StyleButton>
+            </div>
 
-            <AnnotateButtonSpan text={count ?? 1} onClick={setShape(Style.Counter)} />
-            <AnnotateButtonSpan text="T" onClick={setShape(Style.Text)} />
+            <div class="flex justify-center space-x-3">
+                <AnnotateButtonSpan text={count ?? 1} onClick={setShape(Style.Counter)} />
+                <AnnotateButtonSpan text="T" onClick={setShape(Style.Text)} />
+            </div>
+
         </section>
 
         <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
