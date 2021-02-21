@@ -30,6 +30,14 @@ export default function Controls(props: Exports) {
                 <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
             </StyleButton>
 
+            <StyleButton type={Style.Ellipse}>
+                <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
+            </StyleButton>
+            <StyleButton type={Style.Ellipse} dashed>
+                <circle cx="10" cy="10" r="8" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="4.16" stroke-dashoffset="-2" />
+            </StyleButton>
+            </div>
+
             <StyleButton type={Style.Arrow}>
                 <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />

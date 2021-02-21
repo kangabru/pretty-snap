@@ -17,14 +17,29 @@ export default function useNiceDashLength(lineLength: number, dashLengthTarget: 
     const lengthTarget = 2 * dashLengthTarget // dash + gap
     const dashes = Math.floor(lineLength / lengthTarget) + (shortCorners ? 0 : 0.5)
     const length = lineLength / Math.max(0.1, dashes) // don't divide by 0
-    const dashLength = dashLengthTarget / lengthTarget * length
 
     // Proxy the values through react spring for tasty animations
     const { dash, offset } = useSpring<{ dash: number, offset: number }>({
-        dash: dashLength,
-        offset: (shortCorners ? dashLength / 2 : 0),
+        dash: length / 2,
+        offset: (shortCorners ? length / 4 : 0),
     })
 
     // svg 'stroke-dasharray' format
-    return [dash.interpolate(dash => `${dash},${dash}`), offset]
+    return [dash, offset]
+}
+
+/** It takes a target dash length and adjusts it so the dash perfectly wraps an ellipse.
+ * @argument lineLength: The total length of the line
+ * @argument dashLengthTarget: The length of a dash and/or gap (not their sum)
+ * @returns The dash length as a react spring interpolated value
+ */
+export function useNiceDashLengthEllipse(lineLength: number, dashLengthTarget: number) {
+
+    const lengthTarget = 2 * dashLengthTarget // dash + gap
+    const dashes = Math.floor(lineLength / lengthTarget)
+    const dashesOdd = dashes % 2 == 0 ? dashes : dashes + 1
+    const length = lineLength / Math.max(0.1, dashesOdd) // don't divide by 0
+
+    // Proxy the values through react spring for tasty animations
+    return useSpring<{ dash: number }>({ dash: length / 2 }).dash
 }

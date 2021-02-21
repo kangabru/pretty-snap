@@ -12,7 +12,7 @@ export default function Line(props: LineProps) {
     return props.dashed ? <LineDashed {...props} /> : <LineSolid {...props} />
 }
 
-function LineContainer({ children, left, top, width, height, colour }: Children & Bounds & { colour: string }) {
+function SvgLineContainer({ children, left, top, width, height, colour }: Children & Bounds & { colour: string }) {
     const margin = ArrowHeadMargin, strokeMargin = STROKE / 2
     return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
         <svg fill="currentColor" width={width + 2 * margin + strokeMargin} height={height + 2 * margin + strokeMargin} xmlns="http://www.w3.org/2000/svg">
@@ -25,10 +25,10 @@ export function LineSolid({ children, ...props }: LineProps & { children?: JSX.E
     const margin = ArrowHeadMargin
     const [x1, y1, x2, y2] = GetLineCoords(props, margin, margin)
 
-    return <LineContainer {...props}>
+    return <SvgLineContainer {...props}>
         <line x1={x1} y1={y1} x2={x2} y2={y2} fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={STROKE} />
         {children}
-    </LineContainer>
+    </SvgLineContainer>
 }
 
 export function LineDashed({ children, ...props }: LineProps & { children?: JSX.Element }) {
@@ -41,10 +41,10 @@ export function LineDashed({ children, ...props }: LineProps & { children?: JSX.
     const [dashArray, dashOffset] = useNiceDashLength(lineLength, DASH)
     const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth: STROKE }
 
-    return <LineContainer {...props}>
+    return <SvgLineContainer {...props}>
         <animated.line x1={x1} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArray} strokeDashoffset={dashOffset} />
         {children}
-    </LineContainer>
+    </SvgLineContainer>
 }
 
 export function GetLineCoords({ width, height, negX, negY }: LineProps, dx = 0, dy = 0) {
