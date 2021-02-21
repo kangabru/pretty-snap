@@ -1,8 +1,8 @@
 import { h } from 'preact';
+import { ExportButtons, ExportError } from '../../common/components/export';
 import { Exports } from '../../common/hooks/use-export';
 import { Children } from '../../common/misc/types';
 import { join, textClass } from '../../common/misc/utils';
-import { ExportButtons, ExportError } from '../../pretty-background/components/compositor/controls';
 import { Style } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 import useOptionsStore from '../stores/options';
