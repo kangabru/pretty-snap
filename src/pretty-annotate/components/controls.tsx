@@ -80,7 +80,7 @@ function ShapeStyleButtonGroup() {
                 <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 1 } })}>
                     <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
                 </AnnotateButtonSvg>
-                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 0.5 } })}>
+                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 0.3 } })}>
                     <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' opacity="0.5" />
                 </AnnotateButtonSvg>
             </>}
