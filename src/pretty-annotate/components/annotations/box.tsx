@@ -34,8 +34,8 @@ function BoxDashed(props: BoxProps) {
     const { width, height } = props
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2
 
-    const [dashArrayW, dashOffsetW] = useNiceDashLength(width, DASH, true)
-    const [dashArrayH, dashOffsetH] = useNiceDashLength(height, DASH, true)
+    const [dashArrayW, dashOffsetW] = useNiceDashLength(width, DASH, { shortCorners: true })
+    const [dashArrayH, dashOffsetH] = useNiceDashLength(height, DASH, { shortCorners: true })
     const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth }
 
     // Adjust the bounds by half the stroke width so the svg doesn't clip off the edges

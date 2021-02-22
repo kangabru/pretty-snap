@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
-import { useNiceDashLengthEllipse } from '../../hooks/use-dash';
+import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Shape } from '../../misc/types';
 import { SvgBoxContainer } from './box';
@@ -33,7 +33,7 @@ function EllipseDashed(props: EllipseProps) {
     const ellipseProps = getEllipseProps(props)
 
     const circumference = calcEllipseCircumference(props) || 0
-    const dashArray = useNiceDashLengthEllipse(circumference, DASH)
+    const [dashArray] = useNiceDashLength(circumference, DASH, { evenCount: true, shortCorners: true })
 
     return <SvgBoxContainer {...props}>
         <animated.ellipse {...ellipseProps} fill="none" stroke="currentColor"
