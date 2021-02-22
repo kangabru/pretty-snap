@@ -7,6 +7,7 @@ import { colors } from '../misc/constants';
 import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 import useOptionsStore from '../stores/options';
+import { GetSolidBracketPath } from './annotations/bracket';
 
 export default function Controls(props: Exports) {
     return <section class="hidden col max-w-xl w-full mx-auto">
@@ -32,6 +33,7 @@ function useSetStyle() {
 function ShapeButtonGroup() {
     const { style, setStyle } = useSetStyle()
     const { color: { color }, count } = style
+
     return <ButtonRow style={{ color }}>
         <div class="flex justify-center space-x-3">
             <StyleButton shape={Shape.Box}>
@@ -41,6 +43,8 @@ function ShapeButtonGroup() {
             <StyleButton shape={Shape.Ellipse}>
                 <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
             </StyleButton>
+
+            <StyleButton shape={Shape.Bracket}><BracketIcon /></StyleButton>
 
             <StyleButton shape={Shape.Arrow}>
                 <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
@@ -151,4 +155,16 @@ function ColorButton({ color, useDarkText }: { color: string, useDarkText?: bool
         useAnnotateStore.setState({ style: { ...style, color: { color: color, useDarkText } } })
     }
     return <button onClick={setColour} style={{ backgroundColor: color }} class="w-12 h-12 rounded-md grid place-items-center" />
+}
+
+function BracketIcon() {
+
+    // Define the bracket for a 20x20 box
+    const padding = 3, rad = 3.5
+    const span = (Math.sqrt(2 * 20 ** 2) - 2 * padding - 4 * rad) / 2
+    const bracketPath = GetSolidBracketPath(rad, span, padding, -1)
+
+    return <g style="transform: translateX(20px) translateY(20px) rotate(-135deg)">
+        <path d={bracketPath} stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" strokeLinejoin="round" />
+    </g>
 }

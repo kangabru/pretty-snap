@@ -2,7 +2,7 @@ export type Size = { width: number, height: number }
 export type Position = { left: number, top: number }
 export type Bounds = Size & Position & { negX: boolean, negY: boolean }
 
-export enum Shape { Box, Ellipse, Line, Arrow, Counter, Text }
+export enum Shape { Box, Ellipse, Line, Arrow, Bracket, Counter, Text }
 export type StyleOptions = { id?: string, shape: Shape, count: number, color: ColorStyle, style: ShapeStyle }
 export type ColorStyle = { color: string, useDarkText?: boolean }
 export type ShapeStyle = { dashed?: boolean, fillOpacity?: number }
@@ -17,6 +17,7 @@ export type StyleData = {
     [Shape.Ellipse]: Bounds,
     [Shape.Line]: Bounds,
     [Shape.Arrow]: Bounds,
+    [Shape.Bracket]: Bounds,
     [Shape.Text]: Position & { text?: string },
     [Shape.Counter]: Position,
 }
@@ -27,6 +28,7 @@ export const supportedStyles: { [_: number]: SupportedStyle } = {
     [Shape.Ellipse]: { line: true, fill: true },
     [Shape.Line]: { line: true },
     [Shape.Arrow]: { line: true },
+    [Shape.Bracket]: { line: true },
     [Shape.Text]: {},
     [Shape.Counter]: {},
 }
