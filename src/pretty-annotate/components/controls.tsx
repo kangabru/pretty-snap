@@ -1,7 +1,9 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
+import { useMemo } from 'react';
+import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
 import { ExportButtons, ExportError } from '../../common/components/export';
 import { Exports } from '../../common/hooks/use-export';
-import { Children, CSSClass, CSSProps } from '../../common/misc/types';
+import { Children, CSSClass } from '../../common/misc/types';
 import { join, textClass } from '../../common/misc/utils';
 import { colors } from '../misc/constants';
 import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
@@ -65,27 +67,50 @@ function ShapeButtonGroup() {
 function ShapeStyleButtonGroup() {
     const { style, setStyle } = useSetStyle()
     const { fill: canUseFill, line: canUseLine } = supportedStyles[style.shape] ?? {} as SupportedStyle
+
     const canUseShapeStyle = canUseFill || canUseLine
-    return canUseShapeStyle ? <ButtonRow style={{ color: style.color.color }}>
-        <div class="flex justify-center space-x-3">
-            {canUseLine && <>
-                <AnnotateButtonSvg onClick={setStyle({ style: {} })}>
+    const showTransition = useTransition(canUseShapeStyle, null, {
+        from: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 1 },
+        enter: { transform: 'scale(1)', padding: '0.75rem 0.375rem', margin: '0.5rem' },
+        leave: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 0 },
+    })
+
+    const items = useMemo(() => {
+        const results: number[] = []
+        if (canUseLine) results.push(1, 2)
+        if (canUseFill) results.push(3, 4)
+        return results
+    }, [canUseLine, canUseFill])
+
+    const transitions = useTransition(items, x => x, {
+        from: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '1' },
+        enter: { transform: 'scale(1)', width: '3rem', height: '3rem', marginLeft: '0.375rem', marginRight: '0.375rem' },
+        leave: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '0' },
+        trail: 100,
+    }).sort((a, b) => a.item - b.item)
+
+    return showTransition.map(({ item, props }) => item && <ButtonRow style={{ ...props, color: style.color.color }}>
+        <div class="flex justify-center">
+            {transitions.map(({ item, props, key }) => {
+
+                if (item == 1) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: {} })}>
                     <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 </AnnotateButtonSvg>
-                <AnnotateButtonSvg onClick={setStyle({ style: { dashed: true } })}>
+
+                if (item == 2) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { dashed: true } })}>
                     <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
                 </AnnotateButtonSvg>
-            </>}
-            {canUseFill && <>
-                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 1 } })}>
+
+                if (item == 3) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { fillOpacity: 1 } })}>
                     <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
                 </AnnotateButtonSvg>
-                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 0.3 } })}>
+
+                if (item == 4) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { fillOpacity: 0.3 } })}>
                     <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' opacity="0.5" />
                 </AnnotateButtonSvg>
-            </>}
+            })}
         </div>
-    </ButtonRow> : null
+    </ButtonRow>) as any
 }
 
 function ColorButtonGroup() {
@@ -120,16 +145,16 @@ function ExportButtonGroup(props: Exports) {
     </ButtonRow>
 }
 
-function ButtonRow({ children, class: cls, style }: Children & CSSClass & CSSProps) {
-    return <section class={join(cls, "flex p-3 space-x-3 bg-gray-200 max-w-lg rounded-lg m-2")} style={style}>{children}</section>
+function ButtonRow({ children, class: cls, ...props }: Children & CSSClass & AnimatedValue<ForwardedProps<any>>) {
+    return <animated.section {...props} className={join(cls, "flex p-3 space-x-3 bg-gray-200 max-w-lg rounded-lg m-2")}>{children}</animated.section>
 }
 
-function AnnotateButton({ children, onClick }: Children & { onClick: () => void }) {
-    return <button class="bg-gray-300 w-12 h-12 rounded-md grid place-items-center" onClick={onClick}>{children}</button>
+function AnnotateButton({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
+    return <animated.button {...props} className="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">{children}</animated.button>
 }
 
-function AnnotateButtonSvg({ children, onClick }: Children & { onClick: () => void }) {
-    return <AnnotateButton onClick={onClick}>
+function AnnotateButtonSvg({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
+    return <AnnotateButton {...props}>
         <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">{children}</svg>
     </AnnotateButton>
 }
