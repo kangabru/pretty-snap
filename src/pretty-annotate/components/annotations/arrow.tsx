@@ -1,14 +1,14 @@
 import { Fragment, h } from 'preact';
 import { DASH, STROKE } from '../../misc/constants';
-import { Style, Annotation } from '../../misc/types';
+import { Shape, Annotation } from '../../misc/types';
 import { GetLineCoords, LineDashed, LineSolid } from './line';
 
-type ArrowProps = Annotation<Style.Arrow>
+type ArrowProps = Annotation<Shape.Arrow>
 
 export const ArrowHeadMargin = DASH  // Allow for arrow head length and margin
 
 export default function Arrow(props: ArrowProps) {
-    return props.dashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />
+    return props.style.dashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />
 }
 
 function ArrowSolid(props: ArrowProps) {

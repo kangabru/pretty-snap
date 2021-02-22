@@ -3,18 +3,18 @@ import { animated } from 'react-spring';
 import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Bounds, Style } from '../../misc/types';
+import { Annotation, Bounds, ColorStyle, Shape } from '../../misc/types';
 import { ArrowHeadMargin } from './arrow';
 
-type LineProps = Annotation<Style.Line>
+type LineProps = Annotation<Shape.Line>
 
 export default function Line(props: LineProps) {
-    return props.dashed ? <LineDashed {...props} /> : <LineSolid {...props} />
+    return props.style.dashed ? <LineDashed {...props} /> : <LineSolid {...props} />
 }
 
-function SvgLineContainer({ children, left, top, width, height, colour }: Children & Bounds & { colour: string }) {
+function SvgLineContainer({ children, left, top, width, height, color: { color } }: Children & Bounds & { color: ColorStyle }) {
     const margin = ArrowHeadMargin, strokeMargin = STROKE / 2
-    return <div class="absolute" style={{ color: colour, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
+    return <div class="absolute" style={{ color, left: left - margin - strokeMargin, top: top - margin - strokeMargin }}>
         <svg fill="currentColor" width={width + 2 * margin + strokeMargin} height={height + 2 * margin + strokeMargin} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>

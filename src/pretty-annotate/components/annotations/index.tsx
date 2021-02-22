@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import { Annotation, AnnotationAny, Style } from '../../misc/types';
+import { Annotation, AnnotationAny, Shape } from '../../misc/types';
 import Box from '../annotations/box';
 import Arrow from './arrow';
 import Ellipse from './ellipse';
@@ -9,11 +9,11 @@ import Text from './text';
 
 export default function GenericAnnotation(props: AnnotationAny) {
     return <>
-        {props.type == Style.Box && <Box {...props as Annotation<Style.Box>} />}
-        {props.type == Style.Ellipse && <Ellipse {...props as Annotation<Style.Ellipse>} />}
-        {props.type == Style.Line && <Line {...props as Annotation<Style.Line>} />}
-        {props.type == Style.Arrow && <Arrow {...props as Annotation<Style.Arrow>} />}
-        {props.type == Style.Counter && <Counter {...props as Annotation<Style.Counter>} />}
-        {props.type == Style.Text && <Text {...props as Annotation<Style.Text>} />}
+        {props.shape == Shape.Box && <Box {...props as Annotation<Shape.Box>} />}
+        {props.shape == Shape.Ellipse && <Ellipse {...props as Annotation<Shape.Ellipse>} />}
+        {props.shape == Shape.Line && <Line {...props as Annotation<Shape.Line>} />}
+        {props.shape == Shape.Arrow && <Arrow {...props as Annotation<Shape.Arrow>} />}
+        {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />}
+        {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />}
     </>
 }

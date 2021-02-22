@@ -2,17 +2,17 @@ import { h } from 'preact';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Style } from '../../misc/types';
+import { Annotation, Shape } from '../../misc/types';
 
-type BoxProps = Annotation<Style.Box>
+type BoxProps = Annotation<Shape.Box>
 
 export default function Box(props: BoxProps) {
-    return props.dashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
+    return props.style.dashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
 }
 
-export function SvgBoxContainer({ children, left, top, width, height, colour }: BoxProps & JSX.ElementChildrenAttribute) {
+export function SvgBoxContainer({ children, left, top, width, height, color: { color } }: BoxProps & JSX.ElementChildrenAttribute) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
-    return <div class="absolute" style={{ color: colour, left: left - strokeMargin, top: top - strokeMargin }}>
+    return <div class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>

@@ -1,95 +1,123 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import { ExportButtons, ExportError } from '../../common/components/export';
 import { Exports } from '../../common/hooks/use-export';
-import { Children } from '../../common/misc/types';
+import { Children, CSSClass, CSSProps } from '../../common/misc/types';
 import { join, textClass } from '../../common/misc/utils';
-import { Style } from '../misc/types';
+import { colors } from '../misc/constants';
+import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 import useOptionsStore from '../stores/options';
 
 export default function Controls(props: Exports) {
-    const undo = useAnnotateStore(s => s.undo)
-    const redo = useAnnotateStore(s => s.redo)
+    return <section class="hidden col max-w-xl w-full mx-auto">
+        <ShapeButtonGroup />
+        <ShapeStyleButtonGroup />
+        <ColorButtonGroup />
 
-    const style = useAnnotateStore(s => s.style)
-    const { colour: color, count } = style
-    const setShape = (type: Style, dashed = false) => () => useAnnotateStore.setState({ style: { ...style, type, dashed } })
-
-    const image = useOptionsStore(s => s.image)
-    const canExport = !!image?.src
-
-    return <section class="hidden sm:flex justify-center flex-wrap max-w-xl w-full mx-auto">
+        <div class="flex text-gray-800">
+            <HistoryButtonGroup />
+            <ExportButtonGroup {...props} />
+        </div>
 
         <ExportError {...props} />
-
-        <section class="p-3 space-y-3 bg-gray-200 max-w-lg rounded-lg m-2" style={{ color }}>
-            <div class="flex justify-center space-x-3">
-                <StyleButton type={Style.Box}>
-                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
-                </StyleButton>
-                <StyleButton type={Style.Box} dashed>
-                    <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3.795" stroke-dashoffset="3.795" />
-                </StyleButton>
-
-                <StyleButton type={Style.Ellipse}>
-                    <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
-                </StyleButton>
-                <StyleButton type={Style.Ellipse} dashed>
-                    <circle cx="10" cy="10" r="8" stroke="currentcolor" fill='none' stroke-width="2.75" stroke-linecap="round" stroke-dasharray="4.16" stroke-dashoffset="-2" />
-                </StyleButton>
-            </div>
-
-            <div class="flex justify-center space-x-3">
-                <StyleButton type={Style.Arrow}>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                </StyleButton>
-                <StyleButton type={Style.Arrow} dashed>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="-1" />
-                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                    <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                </StyleButton>
-
-                <StyleButton type={Style.Line}>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                </StyleButton>
-                <StyleButton type={Style.Line} dashed>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
-                </StyleButton>
-            </div>
-
-            <div class="flex justify-center space-x-3">
-                <AnnotateButtonSpan text={count ?? 1} onClick={setShape(Style.Counter)} />
-                <AnnotateButtonSpan text="T" onClick={setShape(Style.Text)} />
-            </div>
-
-        </section>
-
-        <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2">
-            <ColourButton colour="#f87171" /> {/* red 400 */}
-            <ColourButton colour="#facc15" /> {/* yellow 400 */}
-            <ColourButton colour="#4ade80" /> {/* green 400 */}
-            <ColourButton colour="#60a5fa" /> {/* blue 400 */}
-            <ColourButton colour="#1e293b" /> {/* blue gray 800 */}
-            <ColourButton colour="white" useDarkText />
-        </section>
-
-        <div class="flex">
-            <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2 text-gray-800">
-                <AnnotateButtonSvg onClick={undo}>
-                    <path fill="currentColor" d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path>
-                </AnnotateButtonSvg>
-                <AnnotateButtonSvg onClick={redo}>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z"></path></svg>
-                </AnnotateButtonSvg>
-            </section>
-
-            <section class="flex justify-center space-x-3 p-3 bg-gray-200 max-w-lg rounded-lg m-2 text-gray-800">
-                <ExportButtons {...props} notReady={!canExport} />
-            </section>
-        </div>
     </section>
+}
+
+function useSetStyle() {
+    const style = useAnnotateStore(s => s.style)
+    const setStyle = (_style: Partial<StyleOptions>) => () => useAnnotateStore.setState({ style: { ...style, ..._style } })
+    return { style, setStyle }
+}
+
+function ShapeButtonGroup() {
+    const { style, setStyle } = useSetStyle()
+    const { color: { color }, count } = style
+    return <ButtonRow style={{ color }}>
+        <div class="flex justify-center space-x-3">
+            <StyleButton shape={Shape.Box}>
+                <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
+            </StyleButton>
+
+            <StyleButton shape={Shape.Ellipse}>
+                <circle cx="10" cy="10" r="8" stroke="currentColor" fill='none' stroke-width="2.75" />
+            </StyleButton>
+
+            <StyleButton shape={Shape.Arrow}>
+                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                <line x1="6" y1="16" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                <line x1="16" y1="6" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+            </StyleButton>
+
+            <StyleButton shape={Shape.Line}>
+                <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+            </StyleButton>
+
+            <AnnotateButtonSpan text={count ?? 1} onClick={setStyle({ shape: Shape.Counter })} />
+            <AnnotateButtonSpan text="T" onClick={setStyle({ shape: Shape.Text })} />
+        </div>
+    </ButtonRow>
+}
+
+function ShapeStyleButtonGroup() {
+    const { style, setStyle } = useSetStyle()
+    const { fill: canUseFill, line: canUseLine } = supportedStyles[style.shape] ?? {} as SupportedStyle
+    const canUseShapeStyle = canUseFill || canUseLine
+    return canUseShapeStyle ? <ButtonRow style={{ color: style.color.color }}>
+        <div class="flex justify-center space-x-3">
+            {canUseFill && <>
+                <AnnotateButtonSvg onClick={setStyle({ style: {} })}>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+                </AnnotateButtonSvg>
+                <AnnotateButtonSvg onClick={setStyle({ style: { dashed: true } })}>
+                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
+                </AnnotateButtonSvg>
+            </>}
+            {canUseLine && <>
+                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 1 } })}>
+                    <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
+                </AnnotateButtonSvg>
+                <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 0.5 } })}>
+                    <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' opacity="0.5" />
+                </AnnotateButtonSvg>
+            </>}
+        </div>
+    </ButtonRow> : null
+}
+
+function ColorButtonGroup() {
+    return <ButtonRow>
+        <ColorButton color={colors.red} />
+        <ColorButton color={colors.yellow} />
+        <ColorButton color={colors.green} />
+        <ColorButton color={colors.blue} />
+        <ColorButton color={colors.dark} />
+        <ColorButton color={colors.light} useDarkText />
+    </ButtonRow>
+}
+
+function HistoryButtonGroup() {
+    const undo = useAnnotateStore(s => s.undo)
+    const redo = useAnnotateStore(s => s.redo)
+    return <ButtonRow>
+        <AnnotateButtonSvg onClick={undo}>
+            <path fill="currentColor" d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path>
+        </AnnotateButtonSvg>
+        <AnnotateButtonSvg onClick={redo}>
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z"></path></svg>
+        </AnnotateButtonSvg>
+    </ButtonRow>
+}
+
+function ExportButtonGroup(props: Exports) {
+    const image = useOptionsStore(s => s.image)
+    const canExport = !!image?.src
+    return <ButtonRow>
+        <ExportButtons {...props} notReady={!canExport} />
+    </ButtonRow>
+}
+
+function ButtonRow({ children, class: cls, style }: Children & CSSClass & CSSProps) {
+    return <section class={join(cls, "flex p-3 space-x-3 bg-gray-200 max-w-lg rounded-lg m-2")} style={style}>{children}</section>
 }
 
 function AnnotateButton({ children, onClick }: Children & { onClick: () => void }) {
@@ -103,24 +131,24 @@ function AnnotateButtonSvg({ children, onClick }: Children & { onClick: () => vo
 }
 
 function AnnotateButtonSpan({ text, onClick }: { text: string | number, onClick: () => void }) {
-    const { colour, useDarkText } = useAnnotateStore(s => s.style)
+    const { color: { color, useDarkText } } = useAnnotateStore(s => s.style)
     return <AnnotateButton onClick={onClick}>
-        <span class={join("w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center", textClass(useDarkText))} style={{ backgroundColor: colour }}>{text}</span>
+        <span class={join("w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center", textClass(useDarkText))} style={{ backgroundColor: color }}>{text}</span>
     </AnnotateButton>
 }
 
-function StyleButton({ type, dashed, children }: Children & { type: Style, dashed?: boolean }) {
+function StyleButton({ shape, children }: Children & { shape: Shape }) {
     const setShape = () => {
         const style = useAnnotateStore.getState().style
-        useAnnotateStore.setState({ style: { ...style, type, dashed } })
+        useAnnotateStore.setState({ style: { ...style, shape } })
     }
     return <AnnotateButtonSvg onClick={setShape}>{children}</AnnotateButtonSvg>
 }
 
-function ColourButton({ colour, useDarkText }: { colour: string, useDarkText?: boolean }) {
+function ColorButton({ color, useDarkText }: { color: string, useDarkText?: boolean }) {
     const setColour = () => {
         const style = useAnnotateStore.getState().style
-        useAnnotateStore.setState({ style: { ...style, colour, useDarkText } })
+        useAnnotateStore.setState({ style: { ...style, color: { color: color, useDarkText } } })
     }
-    return <button onClick={setColour} style={{ backgroundColor: colour }} class="w-12 h-12 rounded-md grid place-items-center" />
+    return <button onClick={setColour} style={{ backgroundColor: color }} class="w-12 h-12 rounded-md grid place-items-center" />
 }

@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { join } from '../../../common/misc/utils';
-import { Annotation, AnnotationAny, Bounds, Style, StyleOptions } from '../../misc/types';
+import { Annotation, AnnotationAny, Bounds, Shape, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 import { DragPane } from './drag-pane';
 
-const clickTypes = new Set([Style.Counter, Style.Text])
+const clickTypes = new Set([Shape.Counter, Shape.Text])
 
 export default function Editor() {
     return <section class="absolute inset-0">
@@ -29,7 +29,7 @@ function Annotation({ id }: { id: string }) {
 
 function EditorPane() {
     const style = useAnnotateStore(s => s.style)
-    const useClick = clickTypes.has(style.type)
+    const useClick = clickTypes.has(style.shape)
     return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
         <DragEdits />
     </section>
@@ -48,9 +48,9 @@ function BoundsToData(options: StyleOptions, bounds: Bounds): AnnotationAny {
     const left = _left + (negX ? 0 : width)
     const top = _top + (negY ? 0 : height)
 
-    switch (options.type) {
-        case Style.Text:
-        case Style.Counter:
+    switch (options.shape) {
+        case Shape.Text:
+        case Shape.Counter:
             return { ...options, left, top }
         default:
             return { ...options, ...bounds }

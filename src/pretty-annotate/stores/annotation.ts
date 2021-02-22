@@ -1,6 +1,7 @@
 import create from "zustand"
 import { devtools } from 'zustand/middleware'
-import { AnnotationAny, Style, StyleOptions } from "../misc/types"
+import { colors } from "../misc/constants"
+import { AnnotationAny, Shape, StyleOptions } from "../misc/types"
 
 type AnnotationStore = {
     ids: string[],
@@ -28,10 +29,10 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         ids: [], index: {},
 
         style: {
-            type: Style.Ellipse,
-            dashed: true,
+            shape: Shape.Ellipse,
             count: 1,
-            colour: '#3b82f6',
+            color: { color: colors.blue },
+            style: { dashed: true },
         },
 
         saveAnnotation: (annotation, ignoreHistory) => {
@@ -50,8 +51,8 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 ids: AddIfNewId(ids, id),
                 index: { ...index, [id]: annotationItem },
                 undos: newUndos, redos: [],
-                style: { ...style, count: style.count + (annotationItem.type == Style.Counter ? 1 : 0) },
-                idEditing: isNew && shouldEditOnCreate(annotation.type) ? id : undefined,
+                style: { ...style, count: style.count + (annotationItem.shape == Shape.Counter ? 1 : 0) },
+                idEditing: isNew && shouldEditOnCreate(annotation.shape) ? id : undefined,
             })
 
             return id
@@ -95,7 +96,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             const { idEditing, index, ids } = get()
             const item = index[idEditing ?? ""]
 
-            if (idEditing && item && item.type == Style.Text && !item.text) {
+            if (idEditing && item && item.shape == Shape.Text && !item.text) {
                 // Remove new text annotations that haven't been confirmed
                 set("Text cancel", {
                     index: { ...index, [idEditing]: undefined },
@@ -114,8 +115,8 @@ function AddIfNewId(ids: string[], newId: string) {
     return isLastId ? ids.slice() : [...ids, newId]
 }
 
-function shouldEditOnCreate(style: Style) {
-    return style == Style.Text
+function shouldEditOnCreate(style: Shape) {
+    return style == Shape.Text
 }
 
 export default useAnnotateStore

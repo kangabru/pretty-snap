@@ -6,9 +6,9 @@ import useOptionsStore from '../../stores/options';
 
 const positions = [
     Position.Center,
+    Position.Bottom,
     Position.Left,
     Position.Right,
-    Position.Bottom,
 ]
 
 /** Renders the position buttons in the control panel. */

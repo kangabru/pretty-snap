@@ -2,10 +2,10 @@ import { h } from 'preact';
 import { animated } from 'react-spring';
 import { useNiceDashLengthEllipse } from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Style } from '../../misc/types';
+import { Annotation, Shape } from '../../misc/types';
 import { SvgBoxContainer } from './box';
 
-type EllipseProps = Annotation<Style.Ellipse>
+type EllipseProps = Annotation<Shape.Ellipse>
 
 /** Returns an ellipse where the ellipse contains the selected box.
  * This makes it easier for a user to annotate content without having to adjust the size afterwards.
@@ -16,7 +16,7 @@ export default function OuterEllipse(props: EllipseProps) {
 
 /** Returns an ellipse where the ellipse is contained within the selected box. */
 export function InnerEllipse(props: EllipseProps) {
-    return props.dashed ? <EllipseDashed {...props} /> : <EllipseSolid {...props} />
+    return props.style.dashed ? <EllipseDashed {...props} /> : <EllipseSolid {...props} />
 }
 
 function EllipseSolid(props: EllipseProps) {

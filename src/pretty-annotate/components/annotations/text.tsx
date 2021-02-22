@@ -2,10 +2,10 @@ import { h } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useDocumentListener } from '../../../common/hooks/misc';
 import { join, onKeys, textClass, useRandomItem } from '../../../common/misc/utils';
-import { Annotation, Style } from '../../misc/types';
+import { Annotation, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 
-type Props = Annotation<Style.Text>
+type Props = Annotation<Shape.Text>
 
 const DEFAULT_TEXTS = [
     "Hello",
@@ -17,9 +17,9 @@ const CLASS_POSITION = "absolute transform -translate-x-6 -translate-y-6"
 const CLASS_STYLE = "hover:cursor-crosshair px-2 py-1 rounded-lg font-bold text-xl font-mono grid place-items-center select-none"
 
 export default function Text(props: Props) {
-    const { id, text, useDarkText } = props
+    const { id, text, color: { useDarkText } } = props
 
-    const canEdit = useAnnotateStore(s => s.style.type == Style.Text)
+    const canEdit = useAnnotateStore(s => s.style.shape == Shape.Text)
     const editing = useAnnotateStore(s => canEdit && id && s.idEditing === id)
 
     const edit = useAnnotateStore(s => s.edit)
@@ -36,7 +36,7 @@ export default function Text(props: Props) {
 }
 
 function TextInput(props: Props) {
-    const { text, left, top, colour, useDarkText } = props
+    const { text, left, top, color: { color: colour, useDarkText } } = props
 
     const ref = useRef<HTMLInputElement>()
     const [textEdits, setTextEdits] = useState(text)
@@ -65,6 +65,6 @@ function TextInput(props: Props) {
     </div>
 }
 
-function getStyle({ top, left, colour }: Props) {
-    return { left, top, backgroundColor: colour }
+function getStyle({ top, left, color: { color } }: Props) {
+    return { left, top, backgroundColor: color }
 }
