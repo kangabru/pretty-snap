@@ -3,7 +3,7 @@ import { animated } from 'react-spring';
 import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape } from '../../misc/types';
+import { Annotation, Bounds, Shape } from '../../misc/types';
 import { SvgLineContainer } from './line';
 
 type BracketProps = Annotation<Shape.Bracket>
@@ -110,4 +110,12 @@ function getBracketPadding(width: number, height: number) {
 function getBracketLength(width: number, height: number) {
     const [rad, span] = getSpanLength(width, height)
     return span + Math.PI * rad
+}
+
+/** Brackets have a direction that is perpendicular to the drawn one.
+ * e.g. it will render *under* a horizontal line when drawn from left to right, and *above* from right to left.
+ * This function updates bounds to flips that direction. */
+export function setAltBracketBounds(bounds: Bounds) {
+    bounds.negX = !bounds.negX
+    bounds.negY = !bounds.negY
 }

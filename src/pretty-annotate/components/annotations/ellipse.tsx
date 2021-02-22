@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { animated } from 'react-spring';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape } from '../../misc/types';
+import { Annotation, Bounds, Shape } from '../../misc/types';
 import { SvgBoxContainer } from './box';
 
 type EllipseProps = Annotation<Shape.Ellipse>
@@ -10,12 +10,7 @@ type EllipseProps = Annotation<Shape.Ellipse>
 /** Returns an ellipse where the ellipse contains the selected box.
  * This makes it easier for a user to annotate content without having to adjust the size afterwards.
  */
-export default function OuterEllipse(props: EllipseProps) {
-    return <InnerEllipse {...getOuterEllipseProps(props)} />
-}
-
-/** Returns an ellipse where the ellipse is contained within the selected box. */
-export function InnerEllipse(props: EllipseProps) {
+export default function Ellipse(props: EllipseProps) {
     return props.style.dashed ? <EllipseDashed {...props} /> : <EllipseSolid {...props} />
 }
 
@@ -56,17 +51,22 @@ function getEllipseProps(props: EllipseProps): { cx: number, cy: number, rx: num
     return { cx: x, cy: y, rx: width / 2, ry: height / 2 }
 }
 
-/** Returns new ellipse props so that the ellipse wraps the inner box instead of being contained by it.
+/** Returns ellipse bounds so that the ellipse contains the selected bounds.
+ * This makes it easier for a user to annotate content without having to adjust the size afterwards.
+ * In the alt case the bounds contains the ellipse like in other programs.
  *
  * The calculation works by:
- * - Solving the ellipse equation where x^2 / a^2 + y^2 / b^2 = 1
- * - Assumes the original width / height map to x, y coordinates on the new ellipse
- * - The ellipse a/b ratio equals width/height
+ * - Solving the ellipse equation where x^2 / a^2 + y^2 / b^2 = 1 and a/b = width/height
+ * - Assumes the bounds corners map to coordinates on the new ellipse
  *
  * @see https://en.wikipedia.org/wiki/Ellipse
  */
-function getOuterEllipseProps(props: EllipseProps): EllipseProps {
-    const { width: w, height: h, left: l, top: t, ...rest } = props
+export function getEllipseBounds(bounds: Bounds, useAlt: boolean) {
+    // Treat the case where the bounds contains the ellipse as the alt state
+    if (useAlt) return bounds
+
+    // Expand the bounds so the ellipse contains the given bounds
+    const { width: w, height: h, left: l, top: t, ...rest } = bounds
     const x = w / 2, y = h / 2 // Define the coordinate pair on the new ellipse assuming the centre is at (0, 0)
     const b = w < 0.05 ? 0 : Math.sqrt(h ** 2 * x ** 2 / w ** 2 + y ** 2)
     const a = h < 0.05 ? 0 : w * b / h // Assume a/b = width/height

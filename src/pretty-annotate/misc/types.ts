@@ -7,10 +7,8 @@ export type StyleOptions = { id?: string, shape: Shape, count: number, color: Co
 export type ColorStyle = { color: string, useDarkText?: boolean }
 export type ShapeStyle = { dashed?: boolean, fillOpacity?: number }
 
-export type AnnotationItem<S extends Shape> = Annotation<S>
-
-export type AnnotationAny = StyleOptions & Partial<Bounds & { text: string, allowEvents?: boolean }>
 export type Annotation<S extends Shape> = StyleOptions & StyleData[S]
+export type AnnotationAny = StyleOptions & Partial<Bounds & { text: string, allowEvents: boolean }>
 
 export type StyleData = {
     [Shape.Box]: Bounds,
