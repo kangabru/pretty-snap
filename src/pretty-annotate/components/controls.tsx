@@ -64,7 +64,7 @@ function ShapeStyleButtonGroup() {
     const canUseShapeStyle = canUseFill || canUseLine
     return canUseShapeStyle ? <ButtonRow style={{ color: style.color.color }}>
         <div class="flex justify-center space-x-3">
-            {canUseFill && <>
+            {canUseLine && <>
                 <AnnotateButtonSvg onClick={setStyle({ style: {} })}>
                     <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
                 </AnnotateButtonSvg>
@@ -72,7 +72,7 @@ function ShapeStyleButtonGroup() {
                     <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
                 </AnnotateButtonSvg>
             </>}
-            {canUseLine && <>
+            {canUseFill && <>
                 <AnnotateButtonSvg onClick={setStyle({ style: { fillOpacity: 1 } })}>
                     <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
                 </AnnotateButtonSvg>

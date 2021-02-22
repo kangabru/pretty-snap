@@ -20,9 +20,12 @@ export function InnerEllipse(props: EllipseProps) {
 }
 
 function EllipseSolid(props: EllipseProps) {
+    const { fillOpacity } = props.style
     const ellipseProps = getEllipseProps(props)
     return <SvgBoxContainer {...props}>
-        <ellipse {...ellipseProps} fill="none" stroke="currentColor" strokeWidth={STROKE} />
+        <ellipse {...ellipseProps}
+            fill={fillOpacity ? "currentColor" : "none"} opacity={fillOpacity}
+            stroke="currentColor" strokeWidth={STROKE} />
     </SvgBoxContainer>
 }
 

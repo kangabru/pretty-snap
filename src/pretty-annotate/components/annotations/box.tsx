@@ -6,6 +6,8 @@ import { Annotation, Shape } from '../../misc/types';
 
 type BoxProps = Annotation<Shape.Box>
 
+const strokeMargin = STROKE / 2
+
 export default function Box(props: BoxProps) {
     return props.style.dashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
 }
@@ -20,10 +22,11 @@ export function SvgBoxContainer({ children, left, top, width, height, color: { c
 }
 
 function BoxSolid(props: BoxProps) {
-    const { width, height } = props
-    const strokeMargin = STROKE / 2, x1 = strokeMargin, y1 = strokeMargin
+    const { width, height, style: { fillOpacity } } = props
     return <SvgBoxContainer {...props}>
-        <rect x={x1} y={y1} width={width} height={height} fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth={STROKE} />
+        <rect x={strokeMargin} y={strokeMargin} width={width} height={height}
+            fill={fillOpacity ? "currentColor" : "none"} opacity={fillOpacity}
+            stroke="currentColor" strokeLinejoin="round" strokeWidth={STROKE} />
     </SvgBoxContainer>
 }
 
@@ -36,8 +39,7 @@ function BoxDashed(props: BoxProps) {
     const dashProps = { stroke: "currentColor", strokeLinecap: "round" as any, strokeWidth }
 
     // Adjust the bounds by half the stroke width so the svg doesn't clip off the edges
-    const x1 = strokeMargin, y1 = strokeMargin
-    const x2 = x1 + width, y2 = y1 + height
+    const x1 = strokeMargin, y1 = strokeMargin, x2 = x1 + width, y2 = y1 + height
 
     return <SvgBoxContainer {...props}>
         <animated.line x1={x1} y1={y1} x2={x2} y2={y1} {...dashProps} strokeDasharray={dashArrayW} strokeDashoffset={dashOffsetW} /> {/* Top */}

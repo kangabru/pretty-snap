@@ -9,8 +9,8 @@ const clickTypes = new Set([Shape.Counter, Shape.Text])
 
 export default function Editor() {
     return <section class="absolute inset-0">
-        <EditorPane />
         <Viewer />
+        <EditorPane />
     </section>
 }
 
