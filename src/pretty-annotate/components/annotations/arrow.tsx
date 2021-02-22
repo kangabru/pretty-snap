@@ -1,26 +1,27 @@
 import { Fragment, h } from 'preact';
 import { DASH, STROKE } from '../../misc/constants';
-import { Shape, Annotation } from '../../misc/types';
+import { Annotation, Shape } from '../../misc/types';
 import { GetLineCoords, LineDashed, LineSolid } from './line';
 
 type ArrowProps = Annotation<Shape.Arrow>
 
-export const ArrowHeadMargin = DASH  // Allow for arrow head length and margin
+/** Ensure the svg bounds don't cut off the arrow head */
+const ArrowHeadPadding = DASH / 2 + STROKE
 
 export default function Arrow(props: ArrowProps) {
     return props.style.dashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />
 }
 
 function ArrowSolid(props: ArrowProps) {
-    return <LineSolid {...props}><ArrowHead {...props} /></LineSolid>
+    return <LineSolid {...props} padding={ArrowHeadPadding}><ArrowHead {...props} /></LineSolid>
 }
 
 function ArrowDashed(props: ArrowProps) {
-    return <LineDashed {...props}><ArrowHead {...props} /></LineDashed>
+    return <LineDashed {...props} padding={ArrowHeadPadding}><ArrowHead {...props} /></LineDashed>
 }
 
 function ArrowHead(props: ArrowProps) {
-    const [, , x2, y2] = GetLineCoords(props, ArrowHeadMargin, ArrowHeadMargin)
+    const [, , x2, y2] = GetLineCoords(props)
 
     const { width, height, negX, negY } = props
     const angle = Math.atan2(negX ? -width : width, negY ? -height : height)
