@@ -84,7 +84,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 ids: AddIfNewId(ids, lastRedo.id),
                 undos: [...undos, lastRedo],
                 redos: redos.slice(0, -1),
-                style: { ...style, count: lastRedo.dataNext?.count ?? style.count },
+                style: { ...style, count: 1 + (lastRedo.dataNext?.count ?? style.count) },
                 idEditing: undefined,
             })
         },
