@@ -1,4 +1,5 @@
 import { Fragment, h } from 'preact';
+import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
 import NotSupportedWarning from '../../../common/components/not-supported';
 import useExport from '../../../common/hooks/use-export';
@@ -26,7 +27,7 @@ export default function CompositorViewer() {
     const image = useOptionsStore(s => s.backgroundImage)
     const pattern = useOptionsStore(s => s.backgroundPattern)
     const foreground = useOptionsStore(s => s.foreground)
-    const setForeground = (foreground: ForegroundImage) => useOptionsStore.setState({ foreground })
+    const setForeground = useCallback((foreground: ForegroundImage) => useOptionsStore.setState({ foreground }), [])
 
     useImagePaste(setForeground)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)

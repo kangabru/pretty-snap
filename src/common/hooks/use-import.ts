@@ -18,17 +18,19 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
     const [isDropping, setIsDropping] = useState(false)
     const [isError, setIsError] = useState(false)
 
-    const onFileOver = useCallback(() => (e: DragEvent) => {
+    const onFileOver = useCallback((e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         e.dataTransfer && (e.dataTransfer.dropEffect = 'copy')
         setIsDropping(true)
     }, [])
-    const onFileLeave = useCallback(() => (e: DragEvent) => {
+
+    const onFileLeave = useCallback((e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         e.dataTransfer && (e.dataTransfer.dropEffect = 'none')
         setIsDropping(false)
     }, [])
-    const onFileDrop = useCallback(() => (e: DragEvent) => {
+
+    const onFileDrop = useCallback((e: DragEvent) => {
         e.stopPropagation(); e.preventDefault();
         loadImageOnDrop(e).then(dataUrl => {
             setIsError(false)
@@ -51,7 +53,8 @@ export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): 
             zone.removeEventListener('dragleave', onFileLeave)
             zone.removeEventListener('drop', onFileDrop)
         }
-    }, [onFileOver, onFileLeave, onFileDrop])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dropZone.current, onFileOver, onFileLeave, onFileDrop])
 
     return [dropZone, isDropping, isError]
 }

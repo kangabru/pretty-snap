@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import useExport from '../../../common/hooks/use-export';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
@@ -14,6 +15,7 @@ export default function Compositor() {
     const image = useOptionsStore(s => s.image)
     const setImage = (image: ForegroundImage) => useOptionsStore.setState({ image })
     const [exportRef, download, copy] = useExport(image?.width || 1000, image?.height || 1000)
+    const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
 
     useImagePaste(setImage)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setImage)
