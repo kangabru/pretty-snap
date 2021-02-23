@@ -75,7 +75,7 @@ function loadImageFromFile(file: File | null | undefined): Promise<ForegroundIma
 }
 
 /** Loads an image data and dimensions */
-function loadImageFromDataUrl(dataUrl: string | undefined): Promise<ForegroundImage> {
+export function loadImageFromDataUrl(dataUrl: string | undefined): Promise<ForegroundImage> {
     return new Promise((accept, reject) => {
         if (!dataUrl) return reject()
         const image = new Image()
