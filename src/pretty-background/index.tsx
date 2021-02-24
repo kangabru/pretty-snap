@@ -12,15 +12,15 @@ export default function PrettyBackground() {
 
 function Info() {
     return <section class="pt-5 grid md:grid-cols-2 gap-5">
-        <div class="prose">
-            <h2>What is this for?</h2>
+        <div class="text-gray-600">
+            <h2 class="text-2xl mb-6 font-semibold">What can I use this for?</h2>
             <p>To make boring screenshots awesome! Use them for:</p>
-            <ul>
+            <ul class="bullets py-5 space-y-3.5">
                 <li>Product screenshots on landing pages</li>
-                <li>Eye catching website <a href="https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary" class="link">summary cards</a></li>
+                <li>Eye catching website <a class="text-gray-900 underline" href="https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary">summary cards</a></li>
                 <li>Better screenshot posts on social media</li>
             </ul>
-            <p>Found an issue or have a suggestion? <a href="https://github.com/kangabru/pretty-snap/issues/new" class="link">Let me know here!</a></p>
+            <p>Found an issue or have a suggestion? <a class="text-gray-900 underline" href="https://github.com/kangabru/pretty-snap/issues/new">Let me know here!</a></p>
         </div>
         <img class="rounded-lg shadow w-full max-w-md" src={srcPreview} alt="Example output" />
     </section>

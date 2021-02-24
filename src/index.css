@@ -42,6 +42,22 @@
     .animate-fade-in {
         animation: fade-in 500ms ease-in-out;
     }
+
+    .bullets > li {
+        position: relative;
+        padding-left: 1.75rem;
+    }
+
+    .bullets > li::before {
+        content: "";
+        position: absolute;
+        background-color: #e2e8f0;
+        border-radius: 50%;
+        width: 0.375em;
+        height: 0.375em;
+        top: 0.6875em;
+        left: 0.25em;
+    }
 }
 
 .slider {
