@@ -50,13 +50,14 @@ export function DemoImageButton({ setImage }: { setImage: (image: ForegroundImag
             <div class="flex bg-gray-200">
                 <div class="w-1/3 bg-gray-100 pt-3 px-2 space-y-1">
                     <div class="bg-gray-300 w-3/6 h-2 rounded-full"></div>
-                    <div class="bg-gray-300 w-2/6 h-2 rounded-full"></div>
+                    <div class="bg-gray-300 w-1/6 h-2 rounded-full"></div>
                     <div class="bg-gray-300 w-5/6 h-2 rounded-full"></div>
+                    <div class="bg-gray-300 w-2/6 h-2 rounded-full"></div>
                 </div>
 
                 <div class="flex-1 space-y-2 p-4">
                     <div class="bg-white w-5/6 h-3 rounded-full"></div>
-                    <div class="bg-white w-3/6 h-3 rounded-full"></div>
+                    <div class="bg-white w-2/6 h-3 rounded-full"></div>
                 </div>
             </div>
         </div>
