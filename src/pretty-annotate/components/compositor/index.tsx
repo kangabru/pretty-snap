@@ -8,6 +8,7 @@ import { ForegroundImage } from '../../../common/misc/types';
 import useOptionsStore from '../../stores/options';
 import Controls from '../controls';
 import Editor, { Viewer } from './editor';
+import logo from './title.svg';
 
 /** Renders the main image composition preview component. */
 export default function Compositor() {
@@ -28,7 +29,7 @@ export default function Compositor() {
                 : <div ref={dropZone} class="w-full">
                     <label class="cursor-pointer block">
                         <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setImage)} />
-                        <ImportDetails {...{ isDropping, isError, setImage }} title="Annotate screenshots right from your browser" />
+                        <ImportDetails {...{ isDropping, isError, setImage }} title={<img src={logo} />} />
                     </label>
                 </div>}
         </section>
