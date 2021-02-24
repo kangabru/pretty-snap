@@ -21,46 +21,30 @@ function SvgBracketContainer({ children, ...props }: Children & BracketProps) {
     </SvgLineContainer>
 }
 
-export function BracketSolid(props: BracketProps) {
-    return <SvgBracketContainer {...props}><path d={GetSolidPath(props)} /></SvgBracketContainer>
+function BracketSolid(props: BracketProps) {
+    const [rad, span] = getSpanLength(props.width, props.height)
+    const [d1, d2] = GetDashedPaths(rad, span)
+    return <SvgBracketContainer {...props}><path d={d1} /><path d={d2} /></SvgBracketContainer>
 }
 
-export function BracketDashed({ children, ...props }: BracketProps & { children?: JSX.Element }) {
-    const [dPath1, dPath2] = GetDashedPaths(props)
+function BracketDashed({ children, ...props }: BracketProps & { children?: JSX.Element }) {
+    const [rad, span] = getSpanLength(props.width, props.height)
+    const [d1, d2] = GetDashedPaths(rad, span)
 
     const lineLength = getBracketLength(props.width, props.height)
     const [dashArray, dashOffset] = useNiceDashLength(lineLength, DASH, { evenCount: true })
 
     return <SvgBracketContainer {...props}>
-        <animated.path d={dPath1} strokeDasharray={dashArray} strokeDashoffset={dashOffset} />
-        <animated.path d={dPath2} strokeDasharray={dashArray} strokeDashoffset={dashOffset} />
+        <animated.path d={d1} strokeDasharray={dashArray} strokeDashoffset={dashOffset} />
+        <animated.path d={d2} strokeDasharray={dashArray} strokeDashoffset={dashOffset} />
     </SvgBracketContainer>
-}
-
-function GetSolidPath(props: BracketProps): string {
-    const { width, height } = props
-    const [rad, span] = getSpanLength(width, height)
-    return GetSolidBracketPath(rad, span)
-}
-
-/** Returns the 'd' value of an svg <path> element which defines a horizontal bracket going from left to right. */
-export function GetSolidBracketPath(rad: number, span: number, dx = 0, dy = 0): string {
-
-    // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#arcs
-    const cornorBL = `a${rad},${rad} 0 0 0 ${rad},${rad}`
-    const cornorTR = `a${rad},${rad} 0 0 1 ${rad},${rad}`
-    const cornorTL = `a${rad},${rad} 0 0 1 ${rad},-${rad}`
-    const cornorBR = `a${rad},${rad} 0 0 0 ${rad},-${rad}`
-
-    return `M${dx},${dy} ${cornorBL} h${span} ${cornorTR} ${cornorTL} h${span} ${cornorBR}`
 }
 
 /** Returns two 'd' values of an svg <path> element which defines a horizontal bracket going from left to right.
  * Two paths are returned which define two halves of the bracket. Each half starts
  * from the middle so that animations occur at the edges instead of at the middle.
  */
-function GetDashedPaths({ width, height }: BracketProps): [string, string] {
-    const [rad, span] = getSpanLength(width, height)
+export function GetDashedPaths(rad: number, span: number): [string, string] {
 
     // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#arcs
     const cornorTR = `a${rad},${rad} 0 0 0 -${rad},-${rad}`
