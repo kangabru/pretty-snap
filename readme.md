@@ -26,6 +26,8 @@ npm install
 npm start
 ```
 
+Read the [`architecture.md`](architecture.md) file for detailed info about the code base and how everything works.
+
 ### (Optional) Unsplash API
 
 <details>
