@@ -95,7 +95,7 @@ To export an image we use the `dom-to-image` library to transform HTML and CSS o
 
 ---
 
-### [Pretty Background](src\pretty-background)
+### [Pretty Background](src/pretty-background)
 
 Add pretty background patterns or images to screenshots. Some key features are:
 - Select a pattern and adjust its colour and style
@@ -103,12 +103,12 @@ Add pretty background patterns or images to screenshots. Some key features are:
 - Update the image size and position relative to the background
 
 Some interesting code details:
-- Patterns are [dynamic SVG strings](src\pretty-background\data\patterns.ts) that can be used as CSS `background-image` properties. By defining them as SVG strings we can change the size and colours dynamically according to the chosen settings.
-- The main [compositor hook](src\pretty-background\components\compositor\hooks.ts) outputs the CSS styles for both the visible and render elements. It must scale the padding and position appropriately because the visible component must shrink in order to fix on screen and match the rendered image.
+- Patterns are [dynamic SVG strings](src/pretty-background/data/patterns.ts) that can be used as CSS `background-image` properties. By defining them as SVG strings we can change the size and colours dynamically according to the chosen settings.
+- The main [compositor hook](src/pretty-background/components/compositor/hooks.ts) outputs the CSS styles for both the visible and render elements. It must scale the padding and position appropriately because the visible component must shrink in order to fix on screen and match the rendered image.
 
 ---
 
-### [Pretty Annotate](src\pretty-annotate)
+### [Pretty Annotate](src/pretty-annotate)
 
 Add text and shape annotations to screenshots. Some key features are:
 - Select various shapes, text, and colours
@@ -116,6 +116,6 @@ Add text and shape annotations to screenshots. Some key features are:
 - Undo/redo edits
 
 Some interesting code details:
-- All shapes are drawn using common [box 'bounds'](src\pretty-annotate\misc\types.ts) which define the position and size of the drawn area. This allows the shape [viewer and editor](src\pretty-annotate\components\compositor\editor.tsx)  to remain shape agnostic and keeps the [store](src\pretty-annotate\stores\annotation.ts) fairly simple too.
-- Annotations are defined as modular components and are [rendered here](src\pretty-annotate\components\annotations\index.tsx) according on their type. The component simply require the 'bounds' and 'style' objects to render themselves.
-- All elements support a dashed line version which are updated on the fly to fit the drawn shape perfectly. Changes in dash length are [animated smoothly](src\pretty-annotate\hooks\use-dash.ts) via react-spring.
+- All shapes are drawn using common [box 'bounds'](src/pretty-annotate/misc/types.ts) which define the position and size of the drawn area. This allows the shape [viewer and editor](src/pretty-annotate/components/compositor/editor.tsx)  to remain shape agnostic and keeps the [store](src/pretty-annotate/stores/annotation.ts) fairly simple too.
+- Annotations are defined as modular components and are [rendered here](src/pretty-annotate/components/annotations/index.tsx) according on their type. The component simply require the 'bounds' and 'style' objects to render themselves.
+- All elements support a dashed line version which are updated on the fly to fit the drawn shape perfectly. Changes in dash length are [animated smoothly](src/pretty-annotate/hooks/use-dash.ts) via react-spring.
