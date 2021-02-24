@@ -29,7 +29,7 @@ export default function Compositor() {
                 : <div ref={dropZone} class="w-full bg-blue-200 p-10 pb-0">
                     <label class="cursor-pointer block bg-white rounded-t-lg overflow-hidden shadow-lg">
                         <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setImage)} />
-                        <ImportDetails {...{ isDropping, isError, setImage }} title={<img src={logo} class="max-w-sm mx-auto -mb-3" />} />
+                        <ImportDetails {...{ isDropping, isError, setImage }} title={<img src={logo} class="max-w-sm mx-auto -mb-1" />} />
                     </label>
                 </div>}
         </section>
