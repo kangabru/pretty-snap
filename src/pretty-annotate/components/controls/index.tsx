@@ -1,14 +1,14 @@
 import { h } from 'preact';
 import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
-import { ExportButtons, ExportError } from '../../common/components/export';
-import { Exports } from '../../common/hooks/use-export';
-import { Children, CSSClass, CSSProps } from '../../common/misc/types';
-import { join, textClass } from '../../common/misc/utils';
-import { colors } from '../misc/constants';
-import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
-import useAnnotateStore from '../stores/annotation';
-import useOptionsStore from '../stores/options';
-import { GetBracketPaths } from './annotations/bracket';
+import { ExportButtons, ExportError } from '../../../common/components/export';
+import { Exports } from '../../../common/hooks/use-export';
+import { Children, CSSClass, CSSProps } from '../../../common/misc/types';
+import { join, textClass } from '../../../common/misc/utils';
+import { colors } from '../../misc/constants';
+import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../../misc/types';
+import useAnnotateStore from '../../stores/annotation';
+import useOptionsStore from '../../stores/options';
+import { GetBracketPaths } from '../annotations/bracket';
 
 export default function Controls(props: Exports) {
     return <section class="hidden col max-w-xl w-full mx-auto">
@@ -151,7 +151,7 @@ function ButtonRowWithAnim({ children, style }: Children & CSSProps) {
 }
 
 function ButtonRow({ children, class: cls, ...props }: Children & CSSClass & AnimatedValue<ForwardedProps<any>>) {
-    return <animated.section {...props} className={join(cls, "flex p-3 space-x-3 bg-gray-200 max-w-lg rounded-lg m-2")}>{children}</animated.section>
+    return <animated.section {...props} className={join(cls, "col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md")}>{children}</animated.section>
 }
 
 function AnnotateButton({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
