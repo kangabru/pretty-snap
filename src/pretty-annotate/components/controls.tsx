@@ -1,9 +1,8 @@
 import { h } from 'preact';
-import { useMemo } from 'react';
 import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
 import { ExportButtons, ExportError } from '../../common/components/export';
 import { Exports } from '../../common/hooks/use-export';
-import { Children, CSSClass } from '../../common/misc/types';
+import { Children, CSSClass, CSSProps } from '../../common/misc/types';
 import { join, textClass } from '../../common/misc/utils';
 import { colors } from '../misc/constants';
 import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
@@ -36,7 +35,7 @@ function ShapeButtonGroup() {
     const { style, setStyle } = useSetStyle()
     const { color: { color }, count } = style
 
-    return <ButtonRow style={{ color }}>
+    return <ButtonRowWithAnim style={{ color }}>
         <div class="flex justify-center space-x-3">
             <StyleButton shape={Shape.Box}>
                 <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
@@ -61,37 +60,21 @@ function ShapeButtonGroup() {
             <AnnotateButtonSpan text={count ?? 1} onClick={setStyle({ shape: Shape.Counter })} />
             <AnnotateButtonSpan text="T" onClick={setStyle({ shape: Shape.Text })} />
         </div>
-    </ButtonRow>
+    </ButtonRowWithAnim>
 }
 
 function ShapeStyleButtonGroup() {
     const { style, setStyle } = useSetStyle()
     const { fill: canUseFill, line: canUseLine } = supportedStyles[style.shape] ?? {} as SupportedStyle
 
-    const canUseShapeStyle = canUseFill || canUseLine
-    const showTransition = useTransition(canUseShapeStyle, null, {
-        from: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 1 },
-        enter: { transform: 'scale(1)', padding: '0.75rem 0.375rem', margin: '0.5rem' },
-        leave: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 0 },
-    })
+    const items = ([] as number[]).concat(canUseLine ? [1, 2] : []).concat(canUseFill ? [3, 4] : [])
 
-    const items = useMemo(() => {
-        const results: number[] = []
-        if (canUseLine) results.push(1, 2)
-        if (canUseFill) results.push(3, 4)
-        return results
-    }, [canUseLine, canUseFill])
+    const rowTransition = useRowTransition(canUseFill || canUseLine as boolean)
+    const buttonTransitions = useRowButtonTransitions(items)
 
-    const transitions = useTransition(items, x => x, {
-        from: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '1' },
-        enter: { transform: 'scale(1)', width: '3rem', height: '3rem', marginLeft: '0.375rem', marginRight: '0.375rem' },
-        leave: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '0' },
-        trail: 100,
-    }).sort((a, b) => a.item - b.item)
-
-    return showTransition.map(({ item, props }) => item && <ButtonRow style={{ ...props, color: style.color.color }}>
+    return rowTransition.map(({ item, props }) => item && <ButtonRow style={{ ...props, color: style.color.color }}>
         <div class="flex justify-center">
-            {transitions.map(({ item, props, key }) => {
+            {buttonTransitions.map(({ item, props, key }) => {
 
                 if (item == 1) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: {} })}>
                     <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
@@ -114,27 +97,27 @@ function ShapeStyleButtonGroup() {
 }
 
 function ColorButtonGroup() {
-    return <ButtonRow>
+    return <ButtonRowWithAnim>
         <ColorButton color={colors.red} />
         <ColorButton color={colors.yellow} />
         <ColorButton color={colors.green} />
         <ColorButton color={colors.blue} />
         <ColorButton color={colors.dark} />
         <ColorButton color={colors.light} useDarkText />
-    </ButtonRow>
+    </ButtonRowWithAnim>
 }
 
 function HistoryButtonGroup() {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
-    return <ButtonRow>
+    return <ButtonRowWithAnim>
         <AnnotateButtonSvg onClick={undo}>
             <path fill="currentColor" d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"></path>
         </AnnotateButtonSvg>
         <AnnotateButtonSvg onClick={redo}>
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M4.555 5.168A1 1 0 003 6v8a1 1 0 001.555.832L10 11.202V14a1 1 0 001.555.832l6-4a1 1 0 000-1.664l-6-4A1 1 0 0010 6v2.798l-5.445-3.63z"></path></svg>
         </AnnotateButtonSvg>
-    </ButtonRow>
+    </ButtonRowWithAnim>
 }
 
 function ExportButtonGroup(props: Exports) {
@@ -143,6 +126,28 @@ function ExportButtonGroup(props: Exports) {
     return <ButtonRow>
         <ExportButtons {...props} notReady={!canExport} />
     </ButtonRow>
+}
+
+function useRowTransition(canShow: boolean) {
+    return useTransition(canShow, null, {
+        from: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 1 },
+        enter: { transform: 'scale(1)', padding: '0.75rem 0.375rem', margin: '0.5rem' },
+        leave: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem', opacity: 0 },
+    })
+}
+
+function useRowButtonTransitions(ids: number[]) {
+    return useTransition(ids, x => x, {
+        from: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '1' },
+        enter: { transform: 'scale(1)', width: '3rem', height: '3rem', marginLeft: '0.375rem', marginRight: '0.375rem' },
+        leave: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '0' },
+        trail: 100,
+    }).sort((a, b) => a.item - b.item)
+}
+
+function ButtonRowWithAnim({ children, style }: Children & CSSProps) {
+    const rowTransition = useRowTransition(true)
+    return rowTransition.map(({ item, props }) => item && <ButtonRow style={{ ...props, ...style as any, padding: '0.75rem' }}>{children}</ButtonRow>) as any
 }
 
 function ButtonRow({ children, class: cls, ...props }: Children & CSSClass & AnimatedValue<ForwardedProps<any>>) {
