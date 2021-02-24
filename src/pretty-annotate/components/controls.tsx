@@ -8,7 +8,7 @@ import { colors } from '../misc/constants';
 import { Shape, StyleOptions, SupportedStyle, supportedStyles } from '../misc/types';
 import useAnnotateStore from '../stores/annotation';
 import useOptionsStore from '../stores/options';
-import { GetDashedPaths } from './annotations/bracket';
+import { GetBracketPaths } from './annotations/bracket';
 
 export default function Controls(props: Exports) {
     return <section class="hidden col max-w-xl w-full mx-auto">
@@ -192,7 +192,7 @@ function BracketIcon() {
     // Define the bracket for a 20x20 box
     const padding = 3, rad = 3.5
     const span = (Math.sqrt(2 * 20 ** 2) - 2 * padding - 4 * rad) / 2
-    const [d1, d2] = GetDashedPaths(rad, span)
+    const [d1, d2] = GetBracketPaths(rad, span)
 
     return <g style="transform: translateX(20px) translateY(20px) rotate(-135deg)">
         <g style={{ transform: `translateX(${padding}px) translateY(-1px)` }}

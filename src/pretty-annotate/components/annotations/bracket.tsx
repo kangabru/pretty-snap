@@ -23,13 +23,13 @@ function SvgBracketContainer({ children, ...props }: Children & BracketProps) {
 
 function BracketSolid(props: BracketProps) {
     const [rad, span] = getSpanLength(props.width, props.height)
-    const [d1, d2] = GetDashedPaths(rad, span)
+    const [d1, d2] = GetBracketPaths(rad, span)
     return <SvgBracketContainer {...props}><path d={d1} /><path d={d2} /></SvgBracketContainer>
 }
 
 function BracketDashed({ children, ...props }: BracketProps & { children?: JSX.Element }) {
     const [rad, span] = getSpanLength(props.width, props.height)
-    const [d1, d2] = GetDashedPaths(rad, span)
+    const [d1, d2] = GetBracketPaths(rad, span)
 
     const lineLength = getBracketLength(props.width, props.height)
     const [dashArray, dashOffset] = useNiceDashLength(lineLength, DASH, { evenCount: true })
@@ -42,11 +42,10 @@ function BracketDashed({ children, ...props }: BracketProps & { children?: JSX.E
 
 /** Returns two 'd' values of an svg <path> element which defines a horizontal bracket going from left to right.
  * Two paths are returned which define two halves of the bracket. Each half starts
- * from the middle so that animations occur at the edges instead of at the middle.
+ * from the middle so that dash animations radiate from the middle outwards towards the edges.
+ * @see https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#arcs
  */
-export function GetDashedPaths(rad: number, span: number): [string, string] {
-
-    // https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#arcs
+export function GetBracketPaths(rad: number, span: number): [string, string] {
     const cornorTR = `a${rad},${rad} 0 0 0 -${rad},-${rad}`
     const cornorBL = `a${rad},${rad} 0 0 1 -${rad},-${rad}`
     const cornorTL = `a${rad},${rad} 0 0 1 ${rad},-${rad}`
