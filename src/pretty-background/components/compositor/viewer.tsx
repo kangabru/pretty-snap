@@ -47,7 +47,7 @@ export default function CompositorViewer() {
                     {foreground?.src
                         ? <Image style={stylesScreen.inner as any} />
                         : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesScreen.inner}>
-                            <ImportDetails {...{ isDropping, isError }} title="Add pretty backgrounds to your screenshots" setImage={setForeground} />
+                            <ImportDetails {...{ isDropping, isError }} title="Add a pretty background to your screenshots" setImage={setForeground} />
                         </animated.div>}
                 </label>
             </div>
