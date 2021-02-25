@@ -11,7 +11,7 @@ import PrettyBackgroundApp from './pretty-background/index';
 render(<PrettySnap />, document.getElementById('root') as HTMLElement)
 
 function PrettySnap() {
-    return <div class="space-y-6 text-gray-800 bg-gray-50 font-open min-h-screen">
+    return <div class="flex flex-col space-y-6 text-gray-800 bg-gray-50 font-open min-h-screen">
         <Header />
         <Router history={createHashHistory() as any}>
             <Route path={routes.home} component={AppSelector} />

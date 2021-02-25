@@ -8,14 +8,6 @@ export function useSetStyle() {
     return { style, setStyle }
 }
 
-export function useRowTransition(canShow: boolean) {
-    return useTransition(canShow, null, {
-        from: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem 0rem', opacity: 1 },
-        enter: { transform: 'scale(1)', padding: '0rem 0.375rem', margin: '0rem 0.5rem' },
-        leave: { transform: 'scale(0)', padding: '0rem 0rem', margin: '0rem 0rem', opacity: 0 },
-    })
-}
-
 export function useRowButtonTransitions(ids: number[]) {
     return useTransition(ids, x => x, {
         from: { transform: 'scale(0)', width: '0rem', height: '0rem', marginLeft: '0rem', marginRight: '0rem', opacity: '1' },

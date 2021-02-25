@@ -8,7 +8,7 @@ import useAnnotateStore from '../../stores/annotation';
 export default function ColorButtonGroup() {
     const [showColours, setShowColours] = useState(false)
     useDocumentListener('mousedown', () => setShowColours(false), [showColours])
-    useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours]))
+    useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours])
 
     const { color: { color } } = useAnnotateStore(s => s.style)
 

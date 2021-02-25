@@ -1,20 +1,20 @@
 import { h } from 'preact';
-import { animated, AnimatedValue, ForwardedProps } from 'react-spring';
-import { Children, CSSClass, CSSProps } from '../../../common/misc/types';
-import { join } from '../../../common/misc/utils';
-import { useRowTransition } from './hooks';
+import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
+import { Children, CSSProps } from '../../../common/misc/types';
 
 export function ButtonRowWithAnim({ children, style }: Children & CSSProps) {
-    const rowTransition = useRowTransition(true)
-    return rowTransition.map(({ item, props }) => item && <ButtonRow style={{ ...props, ...style as any, padding: '0.75rem' }}>{children}</ButtonRow>) as any
-}
-
-export function ButtonRow({ children, class: cls, ...props }: Children & CSSClass & AnimatedValue<ForwardedProps<any>>) {
-    return <animated.section {...props} className={join(cls, "col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md")}>{children}</animated.section>
+    const rowTransition = useTransition(true, null, {
+        from: { transform: 'scale(0)', opacity: 1 },
+        enter: { transform: 'scale(1)' },
+    })
+    return rowTransition.map(({ item, props }) => item && <animated.div style={{ ...props, ...style as any }}
+        className="flex space-x-3 p-3 rounded-lg bg-white shadow-md">
+        {children}
+    </animated.div>) as any
 }
 
 export function AnnotateButton({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
-    return <animated.button {...props} className="bg-gray-300 w-12 h-12 rounded-md grid place-items-center">{children}</animated.button>
+    return <animated.button {...props} className="bg-gray-100 w-12 h-12 rounded-md grid place-items-center">{children}</animated.button>
 }
 
 export function AnnotateButtonSvg({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
