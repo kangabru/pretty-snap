@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import ImportDetails from '../../../common/components/import-info';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
 import useExport from '../../../common/hooks/use-export';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { ForegroundImage } from '../../../common/misc/types';
@@ -13,8 +14,10 @@ import logo from './title.svg';
 /** Renders the main image composition preview component. */
 export default function Compositor() {
     const image = useOptionsStore(s => s.image)
+    useWarningOnClose(!!image) // Assume they're editing if they've add an image
+
     const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
-    const [exportRef, download, copy] = useExport(image?.width ?? 0, image?.height ?? 0)
+    const [exportRef, download, copy] = useExport(image?.width ?? 0, image?.height ?? 0, () => setWarningOnClose(false))
 
     useImagePaste(setImage)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setImage)

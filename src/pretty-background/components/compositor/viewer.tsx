@@ -3,6 +3,7 @@ import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
 import ImportDetails from '../../../common/components/import-info';
 import NotSupportedWarning from '../../../common/components/not-supported';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
 import useExport from '../../../common/hooks/use-export';
 import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { CSSProps, ForegroundImage } from '../../../common/misc/types';
@@ -17,6 +18,8 @@ import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedC
 export default function CompositorViewer() {
     const [width, height] = useGetSizeBackground()
     const [ref, download, copy] = useExport(width, height, () => {
+        setWarningOnClose(false)
+
         // Trigger 'download' call as required by the API guidelines
         const settings = useOptionsStore.getState()
 
@@ -29,6 +32,8 @@ export default function CompositorViewer() {
     const pattern = useOptionsStore(s => s.backgroundPattern)
     const foreground = useOptionsStore(s => s.foreground)
     const setForeground = useCallback((foreground: ForegroundImage) => useOptionsStore.setState({ foreground }), [])
+
+    useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
 
     useImagePaste(setForeground)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)

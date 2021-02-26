@@ -35,3 +35,15 @@ export function useKeysHeld(): KeysHeld {
     }, [mouseDown])
     return keysHeld
 }
+
+export function setWarningOnClose(active: boolean) {
+    console.log('Using warning', active);
+    window.onbeforeunload = active ? () => "You have unsaved changes. Are you sure you want to leave?" : null
+}
+
+export function useWarningOnClose(active: boolean) {
+    useEffect(() => {
+        setWarningOnClose(active)
+        return () => setWarningOnClose(false)
+    }, [active])
+}
