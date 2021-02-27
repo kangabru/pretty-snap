@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { animated, useSpring } from 'react-spring';
 import { SupportedStyle, supportedStyles } from '../../misc/types';
 import { useRowButtonTransitions, useSetStyle } from './hooks';
 import { AnnotateButtonSvg } from './misc';
@@ -10,8 +11,10 @@ export default function ShapeStyleButtonGroup() {
     const items = ([] as number[]).concat(canUseLine ? [1, 2] : []).concat(canUseFill ? [3, 4] : [])
     const buttonTransitions = useRowButtonTransitions(items)
 
-    return <div style={{ color: style.color.color }}>
-        <div class="flex -mx-1.5">
+    const { margin } = useSpring({ margin: items.length ? '0.75rem' : '0rem' })
+
+    return <animated.div style={{ color: style.color.color, marginLeft: margin }}>
+        <div className="flex -mx-1.5">
             {buttonTransitions.map(({ item, props, key }) => {
 
                 if (item == 1) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: {} })}>
@@ -31,5 +34,5 @@ export default function ShapeStyleButtonGroup() {
                 </AnnotateButtonSvg>
             })}
         </div>
-    </div>
+    </animated.div>
 }
