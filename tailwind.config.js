@@ -22,6 +22,7 @@ module.exports = {
             opacity: ['disabled'],
             ringWidth: ['group-hover', 'group-focus'],
             textDecoration: ['focus'],
+            cursor: ['disabled'],
         }
     },
     theme: {

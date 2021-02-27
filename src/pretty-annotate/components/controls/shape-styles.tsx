@@ -1,38 +1,55 @@
-import { h } from 'preact';
-import { animated, useSpring } from 'react-spring';
+import { Fragment, h } from 'preact';
 import { SupportedStyle, supportedStyles } from '../../misc/types';
-import { useRowButtonTransitions, useSetStyle } from './hooks';
-import { AnnotateButtonSvg } from './misc';
+import { useSetStyle } from './hooks';
+import { AnnotateButtonSvg, ButtonWithModal } from './misc';
+
+enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }
 
 export default function ShapeStyleButtonGroup() {
-    const { style, setStyle } = useSetStyle()
-    const { fill: canUseFill, line: canUseLine } = supportedStyles[style.shape] ?? {} as SupportedStyle
+    const { shape, color: { color } } = useSetStyle().style
+    const { fill: canUseFill, line: canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
-    const items = ([] as number[]).concat(canUseLine ? [1, 2] : []).concat(canUseFill ? [3, 4] : [])
-    const buttonTransitions = useRowButtonTransitions(items)
+    const currentShapeStyle = useCurrentShapeStyle(!!canUseFill)
 
-    const { margin } = useSpring({ margin: items.length ? '0.75rem' : '0rem' })
+    return <ButtonWithModal style={{ color }} button={open => <ButtonGeneric
+        disabled={!(canUseFill || canUseLine)}
+        shapeStyle={currentShapeStyle} onClick={open} />}>
+        {canUseLine && <>
+            <ButtonGeneric shapeStyle={ShapeStyle.Outline} />
+            <ButtonGeneric shapeStyle={ShapeStyle.OutlineDashed} />
+        </>}
+        {canUseFill && <>
+            <ButtonGeneric shapeStyle={ShapeStyle.Solid} />
+            <ButtonGeneric shapeStyle={ShapeStyle.Transparent} />
+        </>}
+    </ButtonWithModal>
+}
 
-    return <animated.div style={{ color: style.color.color, marginLeft: margin }}>
-        <div className="flex -mx-1.5">
-            {buttonTransitions.map(({ item, props, key }) => {
+function useCurrentShapeStyle(canUseFill: boolean): ShapeStyle {
+    const { fillOpacity, dashed } = useSetStyle().style.style
+    if (canUseFill && fillOpacity) return fillOpacity >= 1
+        ? ShapeStyle.Solid
+        : ShapeStyle.Transparent
+    return dashed ? ShapeStyle.OutlineDashed : ShapeStyle.Outline
+}
 
-                if (item == 1) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: {} })}>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
-                </AnnotateButtonSvg>
+function ButtonGeneric({ onClick, disabled, shapeStyle }: { shapeStyle: ShapeStyle, onClick?: () => void, disabled?: boolean }) {
+    const { setStyle } = useSetStyle()
+    return <>
+        {shapeStyle === ShapeStyle.Outline && <AnnotateButtonSvg disabled={disabled} onClick={onClick ?? setStyle({ style: {} })}>
+            <path d="m4,4 C 10,5 10,15 16,16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" />
+        </AnnotateButtonSvg>}
 
-                if (item == 2) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { dashed: true } })}>
-                    <line x1="4" y1="4" x2="16" y2="16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="2.5,5" stroke-dashoffset="0" />
-                </AnnotateButtonSvg>
+        {shapeStyle === ShapeStyle.OutlineDashed && <AnnotateButtonSvg disabled={disabled} onClick={onClick ?? setStyle({ style: { dashed: true } })}>
+            <path d="m4,4 C 10,5 10,15 16,16" stroke="currentcolor" stroke-width="2.75" stroke-linecap="round" stroke-dasharray="3,4.2" stroke-dashoffset="0" />
+        </AnnotateButtonSvg>}
 
-                if (item == 3) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { fillOpacity: 1 } })}>
-                    <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
-                </AnnotateButtonSvg>
+        {shapeStyle === ShapeStyle.Solid && <AnnotateButtonSvg disabled={disabled} onClick={onClick ?? setStyle({ style: { fillOpacity: 1 } })}>
+            <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' />
+        </AnnotateButtonSvg>}
 
-                if (item == 4) return <AnnotateButtonSvg key={key} style={props} onClick={setStyle({ style: { fillOpacity: 0.3 } })}>
-                    <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' opacity="0.5" />
-                </AnnotateButtonSvg>
-            })}
-        </div>
-    </animated.div>
+        {shapeStyle === ShapeStyle.Transparent && <AnnotateButtonSvg disabled={disabled} onClick={onClick ?? setStyle({ style: { fillOpacity: 0.3 } })}>
+            <rect x="2" y="2" width="16" height="16" rx="2" fill='currentColor' opacity="0.5" />
+        </AnnotateButtonSvg>}
+    </>
 }

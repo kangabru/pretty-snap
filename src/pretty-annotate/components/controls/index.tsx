@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import { ExportButtons, ExportError } from '../../../common/components/export';
 import { useDocumentListener } from '../../../common/hooks/misc';
 import { Exports } from '../../../common/hooks/use-export';
@@ -10,28 +10,27 @@ import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
 
 export default function Controls(props: Exports) {
-    return <section class="col max-w-xl w-full mx-auto space-y-3">
-        <ButtonRowWithAnim>
-            <ShapeButtonGroup />
-        </ButtonRowWithAnim>
+    const hasEdits = !!useAnnotateStore(s => s.undos.length || s.redos.length)
 
-        <div class="flex space-x-3">
+    return <>
+        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-x-3">
+            {hasEdits && <ButtonRowWithAnim>
+                <HistoryButtonGroup />
+            </ButtonRowWithAnim>}
+
             <ButtonRowWithAnim>
                 <ColorButtonGroup />
+                <ShapeButtonGroup />
                 <ShapeStyleButtonGroup />
             </ButtonRowWithAnim>
 
-            <ButtonRowWithAnim>
-                <HistoryButtonGroup />
-            </ButtonRowWithAnim>
-
-            <ButtonRowWithAnim>
+            {hasEdits && <ButtonRowWithAnim>
                 <ExportButtonGroup {...props} />
-            </ButtonRowWithAnim>
-        </div>
+            </ButtonRowWithAnim>}
 
+        </section>
         <ExportError {...props} />
-    </section>
+    </>
 }
 
 function HistoryButtonGroup() {
