@@ -4,7 +4,7 @@ import { join, textClass } from '../../../common/misc/utils';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
-import { useSetStyle } from './hooks';
+import { useSetStyle } from '../../hooks/styles';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './misc';
 
 export default function ShapeButtonGroup({ text }: { text: string }) {

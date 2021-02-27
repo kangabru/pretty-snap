@@ -3,9 +3,10 @@ import { forwardRef, Ref } from 'preact/compat';
 import { useState } from 'react';
 import { useDocumentListener } from '../../../common/hooks/misc';
 import { join } from '../../../common/misc/utils';
+import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/styles';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
-import { ButtonWithModal, useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from './misc';
+import { ButtonWithModal } from './misc';
 
 export default function ColorButtonGroup({ text }: { text: string }) {
     const [showColours, setShowColours] = useState(false)

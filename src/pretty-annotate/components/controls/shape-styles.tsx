@@ -1,6 +1,6 @@
 import { Fragment, h } from 'preact';
 import { SupportedStyle, supportedStyles } from '../../misc/types';
-import { useSetStyle } from './hooks';
+import { useSetStyle } from '../../hooks/styles';
 import { AnnotateButtonSvg, ButtonWithModal } from './misc';
 
 enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }
