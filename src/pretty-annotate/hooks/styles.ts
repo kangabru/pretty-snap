@@ -1,13 +1,17 @@
 import { Ref, useRef } from 'preact/hooks';
 import { useLayoutEffect, useState } from 'react';
-import { colors } from '../misc/constants';
-import { StyleOptions } from "../misc/types";
+import { colors, SHAPE_TRANSPARENT_OPACITY } from '../misc/constants';
+import { ShapeStyle, StyleOptions } from "../misc/types";
 import useAnnotateStore from "../stores/annotation";
 
 export function useSetStyle() {
     const style = useAnnotateStore(s => s.style)
-    const setStyle = (_style: Partial<StyleOptions>) => () => useAnnotateStore.setState({ style: { ...style, ..._style } })
+    const setStyle = (_style: Partial<StyleOptions>) => useAnnotateStore.setState({ style: { ...style, ..._style } })
     return { style, setStyle }
+}
+
+export function useFillOpacity(style: ShapeStyle) {
+    return style === ShapeStyle.Transparent ? SHAPE_TRANSPARENT_OPACITY : 1
 }
 
 /** Returns a ring colour matching the current style colour.

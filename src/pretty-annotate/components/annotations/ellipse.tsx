@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
+import { useFillOpacity } from '../../hooks/styles';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Bounds, Shape } from '../../misc/types';
+import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
 import { SvgBoxContainer } from './box';
 
 type EllipseProps = Annotation<Shape.Ellipse>
@@ -11,11 +12,11 @@ type EllipseProps = Annotation<Shape.Ellipse>
  * This makes it easier for a user to annotate content without having to adjust the size afterwards.
  */
 export default function Ellipse(props: EllipseProps) {
-    return props.style.dashed ? <EllipseDashed {...props} /> : <EllipseSolid {...props} />
+    return props.shapeStyle === ShapeStyle.OutlineDashed ? <EllipseDashed {...props} /> : <EllipseSolid {...props} />
 }
 
 function EllipseSolid(props: EllipseProps) {
-    const { fillOpacity } = props.style
+    const fillOpacity = useFillOpacity(props.shapeStyle)
     const ellipseProps = getEllipseProps(props)
     return <SvgBoxContainer {...props}>
         <ellipse {...ellipseProps}

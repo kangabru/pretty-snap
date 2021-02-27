@@ -1,6 +1,6 @@
 import { Fragment, h } from 'preact';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape } from '../../misc/types';
+import { Annotation, Shape, ShapeStyle } from '../../misc/types';
 import { GetLineCoords, LineDashed, LineSolid } from './line';
 
 type ArrowProps = Annotation<Shape.Arrow>
@@ -9,7 +9,7 @@ type ArrowProps = Annotation<Shape.Arrow>
 const ArrowHeadPadding = DASH / 2 + STROKE
 
 export default function Arrow(props: ArrowProps) {
-    return props.style.dashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />
+    return props.shapeStyle == ShapeStyle.OutlineDashed ? <ArrowDashed {...props} /> : <ArrowSolid {...props} />
 }
 
 function ArrowSolid(props: ArrowProps) {

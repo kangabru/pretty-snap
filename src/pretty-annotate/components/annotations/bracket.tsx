@@ -3,13 +3,13 @@ import { animated } from 'react-spring';
 import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Bounds, Shape } from '../../misc/types';
+import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
 import { SvgLineContainer } from './line';
 
 type BracketProps = Annotation<Shape.Bracket>
 
 export default function Bracket(props: BracketProps) {
-    return props.style.dashed ? <BracketDashed {...props} /> : <BracketSolid {...props} />
+    return props.shapeStyle == ShapeStyle.OutlineDashed ? <BracketDashed {...props} /> : <BracketSolid {...props} />
 }
 
 function SvgBracketContainer({ children, ...props }: Children & BracketProps) {

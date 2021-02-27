@@ -1,4 +1,4 @@
-import { Ref, useEffect, useRef } from "preact/hooks"
+import { Ref, useEffect, useRef, useState } from "preact/hooks"
 
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
@@ -9,16 +9,16 @@ import { Ref, useEffect, useRef } from "preact/hooks"
 export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>) {
     const containerRef = useRef<T>(ref?.current)
 
-    function getResetChildren(): HTMLElement[] {
-        if (!containerRef.current) return []
-        const children = [...containerRef.current.childNodes.values()] as HTMLElement[]
-        children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
-        return children
-    }
-
     useEffect(() => {
         const current = containerRef.current
         if (!current) return
+
+        function getResetChildren(): HTMLElement[] {
+            if (!containerRef.current) return []
+            const children = [...containerRef.current.childNodes.values()] as HTMLElement[]
+            children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
+            return children
+        }
 
         const onKeyDown = (e: KeyboardEvent) => {
             const isLeft = e.key == "ArrowLeft" || e.key == "Left"
@@ -37,12 +37,6 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
             target?.click()
         }
 
-        current.addEventListener('keydown', onKeyDown)
-        return () => current.removeEventListener('keydown', onKeyDown)
-    }, [])
-
-    useEffect(() => {
-        if (!containerRef.current) return
         const children = getResetChildren()
         const initIndex = Math.max(0, children.findIndex(x => x.dataset && x.dataset['target'] == 'true'))
         children[initIndex].tabIndex = 0
@@ -53,8 +47,26 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
         containerRef.current.scrollTo({ left, behavior: 'smooth' })
 
+        current.addEventListener('keydown', onKeyDown)
+        return () => current.removeEventListener('keydown', onKeyDown)
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, refocusInputs ?? [])
 
     return containerRef
+}
+
+/** Equivalent to the 'useChildNavigate' hook but returns an additional initialise function.
+ *
+ * Reasoning:
+ * Sometimes the standard 'useEffect' will not initialise properly because the ref targets a
+ * components in a child component from where the hook is called. In this case the hook won't
+ * initialise and thus keyboard navigation won't work.
+ * @returns The group container ref and an initialise function.
+ */
+export function useChildNavigateWithTrigger<T extends HTMLElement>(refocusInputs?: any[], _ref?: Ref<T>):
+    [Ref<T>, () => void] {
+    const [init, setInit] = useState(false)
+    const ref = useChildNavigate([...refocusInputs ?? [], init], _ref)
+    return [ref, () => setInit(s => !s)]
 }

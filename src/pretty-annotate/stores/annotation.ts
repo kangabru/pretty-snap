@@ -1,7 +1,7 @@
 import create from "zustand"
 import { devtools } from 'zustand/middleware'
 import { colors } from "../misc/constants"
-import { AnnotationAny, Shape, StyleOptions } from "../misc/types"
+import { AnnotationAny, Shape, ShapeStyle, StyleOptions } from "../misc/types"
 
 type AnnotationStore = {
     ids: string[],
@@ -30,9 +30,9 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
 
         style: {
             shape: Shape.Box,
-            count: 1,
+            shapeStyle: ShapeStyle.Outline,
             color: { color: colors.blue },
-            style: { dashed: true },
+            count: 1,
         },
 
         saveAnnotation: (annotation, ignoreHistory) => {
