@@ -1,15 +1,16 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
+import { useFillOpacity } from '../../hooks/styles';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape } from '../../misc/types';
+import { Annotation, Shape, ShapeStyle } from '../../misc/types';
 
 type BoxProps = Annotation<Shape.Box>
 
 const strokeMargin = STROKE / 2
 
 export default function Box(props: BoxProps) {
-    return props.style.dashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
+    return props.shapeStyle == ShapeStyle.OutlineDashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
 }
 
 export function SvgBoxContainer({ children, left, top, width, height, color: { color } }: BoxProps & JSX.ElementChildrenAttribute) {
@@ -22,7 +23,8 @@ export function SvgBoxContainer({ children, left, top, width, height, color: { c
 }
 
 function BoxSolid(props: BoxProps) {
-    const { width, height, style: { fillOpacity } } = props
+    const { width, height, shapeStyle } = props
+    const fillOpacity = useFillOpacity(shapeStyle)
     return <SvgBoxContainer {...props}>
         <rect x={strokeMargin} y={strokeMargin} width={width} height={height}
             fill={fillOpacity ? "currentColor" : "none"} opacity={fillOpacity}

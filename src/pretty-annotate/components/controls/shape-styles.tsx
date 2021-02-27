@@ -1,13 +1,12 @@
 import { Fragment, h } from 'preact';
-import { SupportedStyle, supportedStyles } from '../../misc/types';
+import { Children } from '../../../common/misc/types';
 import { useSetStyle } from '../../hooks/styles';
-import { AnnotateButtonSvg, ButtonWithModal } from './buttons';
-
-enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }
+import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
+import { AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
 
 export default function ShapeStyleButtonGroup({ text }: { text: string }) {
-    const { shape, color: { color } } = useSetStyle().style
     const { fill: canUseFill, line: canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
+    const { shape, shapeStyle, color: { color } } = useSetStyle().style
 
     const currentShapeStyle = useCurrentShapeStyle(!!canUseFill)
 

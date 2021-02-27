@@ -3,13 +3,13 @@ import { animated } from 'react-spring';
 import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Bounds, ColorStyle, Shape } from '../../misc/types';
+import { Annotation, Bounds, ColorStyle, Shape, ShapeStyle } from '../../misc/types';
 
 type PaddingProps = { padding?: number }
 type LineProps = Annotation<Shape.Line> & PaddingProps
 
 export default function Line(props: LineProps) {
-    return props.style.dashed ? <LineDashed {...props} /> : <LineSolid {...props} />
+    return props.shapeStyle == ShapeStyle.OutlineDashed ? <LineDashed {...props} /> : <LineSolid {...props} />
 }
 
 export function SvgLineContainer({ children, ...props }: Children & Bounds & PaddingProps & { color: ColorStyle }) {

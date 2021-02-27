@@ -9,3 +9,5 @@ export const colors = {
     dark: "#1e293b", // blue gray 800
     light: "white", // blue gray 800
 }
+
+export const SHAPE_TRANSPARENT_OPACITY = 0.3
