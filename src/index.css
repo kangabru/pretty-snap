@@ -32,12 +32,18 @@
         @apply text-primary-dark outline-link;
     }
 
-    .outline-link {
-        @apply outline-primary hover:underline px-1 rounded-sm;
+    .outline-ring {
+        @apply focus:ring-4 outline-none focus:outline-none transition-shadow;
+        @apply ring-opacity-40;
     }
 
     .outline-primary {
-        @apply ring-primary-dark ring-opacity-40 focus:ring-4 outline-none focus:outline-none transition;
+        @apply ring-primary-dark;
+        @apply outline-ring; /* Ensure ring opacity is applied */
+    }
+
+    .outline-link {
+        @apply outline-primary hover:underline px-1 rounded-sm;
     }
 
     .animate-fade-in {

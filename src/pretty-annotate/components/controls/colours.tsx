@@ -4,16 +4,20 @@ import { useDocumentListener } from '../../../common/hooks/misc';
 import { join } from '../../../common/misc/utils';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
+import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from './misc';
 
 export default function ColorButtonGroup() {
     const [showColours, setShowColours] = useState(false)
     useDocumentListener('mousedown', () => setShowColours(false), [showColours])
     useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours])
 
-    const { color: { color } } = useAnnotateStore(s => s.style)
+    const color = useAnnotateStore(s => s.style.color.color)
+    const [ref, ringColor] = useRingColourStyle()
 
     return <div class="flex relative" onMouseDown={e => e.stopPropagation()}>
-        <button onClick={() => setShowColours(true)} style={{ backgroundColor: color }} class="w-12 h-12 rounded-md grid place-items-center" />
+        <button ref={ref} onClick={() => setShowColours(true)}
+            style={{ backgroundColor: color, [VAR_RING_COLOR]: ringColor }}
+            class="w-12 h-12 rounded-md grid place-items-center outline-ring" />
 
         {showColours && <div class="absolute top-full mt-2 -ml-2 shadow rounded-lg">
             <Triangle />
@@ -46,10 +50,13 @@ function Triangle() {
 }
 
 function ColorButton({ color, useDarkText }: { color: string, useDarkText?: boolean }) {
+    const [ref, ringColor] = useRingColourWithOpacity(useDarkText ? colors.dark : color)
     const setColour = () => {
         const style = useAnnotateStore.getState().style
         useAnnotateStore.setState({ style: { ...style, color: { color: color, useDarkText } } })
     }
-    return <button onClick={setColour} style={{ backgroundColor: color }}
-        class={join("relative w-12 h-12 rounded-md grid place-items-center", useDarkText && "border-2 border-gray-500")} />
+    return <button ref={ref} onClick={setColour}
+        style={{ backgroundColor: color, [VAR_RING_COLOR]: ringColor }}
+        class={join("w-12 h-12 relative rounded-md grid place-items-center outline-ring border-2",
+            useDarkText ? "border-gray-400" : "border-transparent")} />
 }
