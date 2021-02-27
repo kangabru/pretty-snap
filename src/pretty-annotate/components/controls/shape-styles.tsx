@@ -5,13 +5,13 @@ import { AnnotateButtonSvg, ButtonWithModal } from './misc';
 
 enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }
 
-export default function ShapeStyleButtonGroup() {
+export default function ShapeStyleButtonGroup({ text }: { text: string }) {
     const { shape, color: { color } } = useSetStyle().style
     const { fill: canUseFill, line: canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
     const currentShapeStyle = useCurrentShapeStyle(!!canUseFill)
 
-    return <ButtonWithModal style={{ color }} button={open => <ButtonGeneric
+    return <ButtonWithModal text={text} style={{ color }} button={open => <ButtonGeneric
         disabled={!(canUseFill || canUseLine)}
         shapeStyle={currentShapeStyle} onClick={open} />}>
         {canUseLine && <>

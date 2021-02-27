@@ -7,9 +7,9 @@ import { GetBracketPaths } from '../annotations/bracket';
 import { useSetStyle } from './hooks';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './misc';
 
-export default function ShapeButtonGroup() {
+export default function ShapeButtonGroup({ text }: { text: string }) {
     const { color: { color }, shape } = useSetStyle().style
-    return <ButtonWithModal style={{ color }} button={open => <StyleButtonGeneric shape={shape} onClick={open} />}>
+    return <ButtonWithModal text={text} style={{ color }} button={open => <StyleButtonGeneric shape={shape} onClick={open} />}>
         <StyleButtonGeneric shape={Shape.Box} />
         <StyleButtonGeneric shape={Shape.Ellipse} />
         <StyleButtonGeneric shape={Shape.Bracket} />

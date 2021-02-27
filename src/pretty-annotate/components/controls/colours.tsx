@@ -7,7 +7,7 @@ import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
 import { ButtonWithModal, useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from './misc';
 
-export default function ColorButtonGroup() {
+export default function ColorButtonGroup({ text }: { text: string }) {
     const [showColours, setShowColours] = useState(false)
     useDocumentListener('mousedown', () => setShowColours(false), [showColours])
     useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours])
@@ -15,7 +15,7 @@ export default function ColorButtonGroup() {
     const { color, useDarkText } = useAnnotateStore(s => s.style.color)
     const [ref, ringColor] = useRingColourStyle()
 
-    return <ButtonWithModal button={open => <InnerButton ref={ref} onClick={open} {...{ color, ringColor, useDarkText }} />}>
+    return <ButtonWithModal text={text} button={open => <InnerButton ref={ref} onClick={open} {...{ color, ringColor, useDarkText }} />}>
         <ColorButton color={colors.blue} />
         <ColorButton color={colors.red} />
         <ColorButton color={colors.yellow} />

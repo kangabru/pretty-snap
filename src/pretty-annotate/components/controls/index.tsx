@@ -19,9 +19,9 @@ export default function Controls(props: Exports) {
             </ButtonRowWithAnim>}
 
             <ButtonRowWithAnim>
-                <ColorButtonGroup />
-                <ShapeButtonGroup />
-                <ShapeStyleButtonGroup />
+                <ShapeButtonGroup text="Shape" />
+                <ColorButtonGroup text="Colour" />
+                <ShapeStyleButtonGroup text="Style" />
             </ButtonRowWithAnim>
 
             {hasEdits && <ButtonRowWithAnim>

@@ -32,13 +32,16 @@ export function AnnotateButton({ children, style, ...props }: AnimatedValue<Forw
     </animated.button>
 }
 
-export function ButtonWithModal({ button, children, style }: CSSProps & Children & { button: (open: () => void) => JSX.Element }) {
+export function ButtonWithModal({ text, button, children, style }: CSSProps & Children & { text: string, button: (open: () => void) => JSX.Element }) {
     const [showModal, setShowModal] = useState(false)
     useDocumentListener('mousedown', () => setShowModal(false), [showModal])
     useDocumentListener('keydown', e => e.key === "Escape" && setShowModal(false), [showModal])
 
     return <div class="flex relative" style={style} onMouseDown={e => showModal && e.stopPropagation()}>
-        {button(() => setShowModal(true))}
+        <div class="col space-y-1">
+            {button(() => setShowModal(true))}
+            <span class="text-sm text-gray-600">{text}</span>
+        </div>
         <ButtonRowModal show={showModal}>{children}</ButtonRowModal>
     </div>
 }
