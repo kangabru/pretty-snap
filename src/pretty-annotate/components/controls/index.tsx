@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { ExportButtons, ExportError } from '../../../common/components/export';
+import { useDocumentListener } from '../../../common/hooks/misc';
 import { Exports } from '../../../common/hooks/use-export';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
@@ -40,7 +41,16 @@ function HistoryButtonGroup() {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
 
-    return <div class="flex space-x-3 text-gray-700">
+    // Keyboard shortcuts
+    useDocumentListener('keydown', e => {
+        const key = e.key.toLowerCase()
+        const stop = () => { e.stopPropagation(); e.preventDefault() }
+        if (e.ctrlKey && e.shiftKey && key === 'z') { redo(); stop() } // Ctrl + Shift + z -> redo
+        else if (e.ctrlKey && key === 'y') { redo(); stop() } // Ctrl + y -> redo
+        else if (e.ctrlKey && key === 'z') { undo(); stop() } // Ctrl + z -> undo
+    }, [canUndo, canRedo, undo, redo])
+
+    return <div class="flex space-x-3 text-gray-600">
         <AnnotateButtonSvg onClick={undo} disabled={!canUndo}>
             <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M7 11 l-4 -4l4 -4" />
             <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M17 18 a11 11 0 0 0 -11 -11h-3" />
