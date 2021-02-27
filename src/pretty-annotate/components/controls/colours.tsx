@@ -6,7 +6,7 @@ import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/styles';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
-import { ButtonWithModal } from './misc';
+import { ButtonWithModal } from './buttons';
 
 export default function ColorButtonGroup({ text }: { text: string }) {
     const [showColours, setShowColours] = useState(false)

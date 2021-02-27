@@ -5,7 +5,7 @@ import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
 import { useSetStyle } from '../../hooks/styles';
-import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './misc';
+import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
 
 export default function ShapeButtonGroup({ text }: { text: string }) {
     const { color: { color }, shape } = useSetStyle().style

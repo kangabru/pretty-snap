@@ -5,7 +5,7 @@ import { Exports } from '../../../common/hooks/use-export';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
 import ColorButtonGroup from './colours';
-import { AnnotateButtonSvg, ButtonRowWithAnim } from './misc';
+import { AnnotateButtonSvg, ButtonRowWithAnim } from './buttons';
 import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
 
