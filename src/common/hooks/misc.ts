@@ -1,4 +1,4 @@
-import { Inputs, useEffect, useState } from "preact/hooks"
+import { Inputs, useCallback, useEffect, useState } from "preact/hooks"
 
 export function useDocumentListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, inputs?: Inputs) {
     useEffect(() => {
@@ -14,24 +14,20 @@ export type KeysHeld = { alt: boolean, ctrl: boolean, shift: boolean }
 export function useKeysHeld(): KeysHeld {
     const [mouseDown, setMouseDown] = useState(false)
     const [keysHeld, setKeysHeld] = useState({ alt: false, ctrl: false, shift: false })
-    useEffect(() => {
-        const onMouseDown = () => setMouseDown(true)
-        const onMouseUp = () => setMouseDown(false)
-        document.addEventListener('mousedown', onMouseDown)
-        document.addEventListener('mouseup', onMouseUp)
 
-        const updateKeys = (e: KeyboardEvent) => {
-            setKeysHeld({ alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey })
-            if (mouseDown && e.key.toLowerCase() == 'alt') e.preventDefault() // Stop alt from opening the address bar when drawing
-        }
-        document.addEventListener('keydown', updateKeys)
-        document.addEventListener('keyup', updateKeys)
-        return () => {
-            document.removeEventListener('mousedown', onMouseDown)
-            document.removeEventListener('mouseup', onMouseUp)
-            document.removeEventListener('keydown', updateKeys)
-            document.removeEventListener('keyup', updateKeys)
-        }
+    useDocumentListener('mousedown', () => setMouseDown(true), [mouseDown])
+    useDocumentListener('mouseup', () => setMouseDown(false), [mouseDown])
+
+    const updateKeys = useCallback((e: KeyboardEvent) => {
+        if (mouseDown && e.key.toLowerCase() == 'alt') e.preventDefault() // Stop alt from opening the address bar when drawing
+        setKeysHeld(s => {
+            const isEqual = (s.alt === e.altKey) && (s.ctrl === e.ctrlKey) && (s.shift === e.shiftKey)
+            return isEqual ? s : { alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey }
+        })
     }, [mouseDown])
+
+    useDocumentListener('keydown', updateKeys, [mouseDown])
+    useDocumentListener('keyup', updateKeys, [mouseDown])
+
     return keysHeld
 }
