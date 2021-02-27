@@ -21,13 +21,13 @@ export type StyleData = {
     [Shape.Counter]: Position,
 }
 
-export type SupportedStyle = { line?: boolean, fill?: boolean }
+export type SupportedStyle = { canUseLine?: boolean, canUseFill?: boolean }
 export const supportedStyles: { [_: number]: SupportedStyle } = {
-    [Shape.Box]: { line: true, fill: true },
-    [Shape.Ellipse]: { line: true, fill: true },
-    [Shape.Line]: { line: true },
-    [Shape.Arrow]: { line: true },
-    [Shape.Bracket]: { line: true },
+    [Shape.Box]: { canUseLine: true, canUseFill: true },
+    [Shape.Ellipse]: { canUseLine: true, canUseFill: true },
+    [Shape.Line]: { canUseLine: true },
+    [Shape.Arrow]: { canUseLine: true },
+    [Shape.Bracket]: { canUseLine: true },
     [Shape.Text]: {},
     [Shape.Counter]: {},
 }

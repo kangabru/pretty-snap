@@ -6,7 +6,7 @@ import useAnnotateStore from "../stores/annotation";
 
 export function useSetStyle() {
     const style = useAnnotateStore(s => s.style)
-    const setStyle = (_style: Partial<StyleOptions>) => () => useAnnotateStore.setState({ style: { ...style, ..._style } })
+    const setStyle = (_style: Partial<StyleOptions>) => useAnnotateStore.setState({ style: { ...style, ..._style } })
     return { style, setStyle }
 }
 
