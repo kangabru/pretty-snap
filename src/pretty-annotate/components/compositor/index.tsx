@@ -25,7 +25,7 @@ export default function Compositor() {
     const [editorRef, { width }] = useMeasure()
     const renderScale = image && width ? image?.width / width : 1
 
-    return <main class="px-4 space-y-6">
+    return <main class="flex-1 px-4 space-y-6">
         <section ref={editorRef} class="block w-full max-w-screen-md mx-auto rounded-xl overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
@@ -46,7 +46,7 @@ export default function Compositor() {
             </section>
         </div>}
 
-        <Controls {...{ download, copy }} />
+        {image && <Controls {...{ download, copy }} />}
     </main>
 }
 
