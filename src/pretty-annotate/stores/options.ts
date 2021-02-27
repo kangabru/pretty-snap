@@ -6,8 +6,8 @@ type OptionsStore = {
 }
 
 /** zustand state for state management  */
-const useAnnotateStore = create<OptionsStore>(() => ({
+const useOptionsStore = create<OptionsStore>(() => ({
     // init state
 }))
 
-export default useAnnotateStore
+export default useOptionsStore
