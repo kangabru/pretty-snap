@@ -1,10 +1,20 @@
 import { h } from 'preact';
 import srcPreview from '../../assets/preview.jpg';
+import Advanced from '../common/components/advanced';
+import { SettingRenderTransparent, SettingRoundedImageCorners } from '../common/components/stored-settings';
 import Compositor from './components/compositor';
 
 export default function PrettyBackground() {
     return <main class="col px-4 space-y-6">
         <Compositor />
+
+        <Advanced>
+            <div class="space-y-3">
+                <SettingRenderTransparent />
+                <SettingRoundedImageCorners />
+            </div>
+        </Advanced>
+
         <Info />
         <PH />
     </main>

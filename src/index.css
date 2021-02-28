@@ -66,6 +66,22 @@
         top: 0.6875em;
         left: 0.25em;
     }
+
+    .toggle-checkbox {
+        @apply absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer outline-primary;
+    }
+
+    .toggle-label {
+        @apply block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer;
+    }
+
+    .toggle-checkbox:checked {
+        @apply right-0 border-primary-light;
+    }
+
+    .toggle-checkbox:checked + .toggle-label {
+        @apply bg-primary-light;
+    }
 }
 
 .slider {
