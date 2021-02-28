@@ -25,7 +25,8 @@
     }
 
     .button {
-        @apply p-2 rounded bg-gray-100 hover:bg-gray-200 outline-primary;
+        @apply p-2 rounded-md bg-gray-100 hover:bg-gray-200 outline-ring;
+        @apply disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-gray-100;
     }
 
     .link {

@@ -26,7 +26,7 @@ export function AnnotateButtonSvg({ children, ...props }: AnimatedValue<Forwarde
 export function AnnotateButton({ children, style, ...props }: AnimatedValue<ForwardedProps<any>>) {
     const [ref, ringColor] = useRingColourStyle()
     return <animated.button ref={ref} {...props} style={{ ...style, [VAR_RING_COLOR]: ringColor }}
-        className="bg-gray-100 w-12 h-12 rounded-md grid place-items-center outline-ring disabled:opacity-40 disabled:cursor-not-allowed">
+        className="button w-12 h-12 grid place-items-center outline-ring">
         {children}
     </animated.button>
 }

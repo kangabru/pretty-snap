@@ -8,6 +8,7 @@ import ColorButtonGroup from './colours';
 import { AnnotateButtonSvg, ButtonRowWithAnim } from './buttons';
 import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
+import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/styles';
 
 export default function Controls(props: Exports) {
     const hasEdits = !!useAnnotateStore(s => s.undos.length || s.redos.length)
@@ -66,7 +67,9 @@ function HistoryButtonGroup() {
 function ExportButtonGroup(props: Exports) {
     const image = useOptionsStore(s => s.image)
     const canExport = !!image?.src
-    return <div class="flex space-x-3">
-        <ExportButtons {...props} notReady={!canExport} />
+    const [ref, ringColor] = useRingColourStyle()
+
+    return <div ref={ref} class="flex space-x-3 text-gray-600 outline-ring">
+        <ExportButtons {...props} notReady={!canExport} style={{ [VAR_RING_COLOR]: ringColor }} />
     </div>
 }
