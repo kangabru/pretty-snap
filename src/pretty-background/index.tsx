@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import srcPreview from '../../assets/preview.jpg';
 import Advanced from '../common/components/advanced';
-import { SettingRenderTransparent, SettingRoundedImageCorners } from '../common/components/stored-settings';
+import { ToggleRenderTransparent, ToggleRoundedImageCorners } from '../common/components/stored-settings';
 import Compositor from './components/compositor';
 
 export default function PrettyBackground() {
@@ -10,8 +10,8 @@ export default function PrettyBackground() {
 
         <Advanced>
             <div class="space-y-3">
-                <SettingRenderTransparent />
-                <SettingRoundedImageCorners />
+                <ToggleRenderTransparent />
+                <ToggleRoundedImageCorners />
             </div>
         </Advanced>
 
