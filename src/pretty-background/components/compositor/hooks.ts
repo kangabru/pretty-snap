@@ -3,6 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
+import useStoredSettings, { SettingRoundedImageCorners, } from '../../../common/hooks/stored-settings';
 import { ForegroundImage } from '../../../common/misc/types';
 import { srcToUrl, srcToUrlSvg } from '../../../common/misc/utils';
 import { BORDER_RADIUS } from '../../misc/constants';
@@ -67,7 +68,7 @@ function useStylesPreview(settings: Settings, windowWidth: number): CompositionS
         : windowWidth / (2 + 100 / paddingPerc) // just use the screen width until an image is chosen
 
     const bgStylesOuter = getBackgroundStyles(settings, 1) // Don't scale patterns
-    const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position, 1) // Don't scale border radius
+    const [posStylesInner, posStylesOuter] = usePositionStyles(padding, position, 1) // Don't scale border radius
 
     return {
         inner: posStylesInner,
@@ -89,7 +90,7 @@ function useStylesRender(settings: Settings, windowWidth: number): CompositionSt
     const scaleUp = (width + 2 * padding) / windowWidth
 
     const bgStylesOuter = getBackgroundStyles(settings, scaleUp)
-    const [posStylesInner, posStylesOuter] = getPositionStyles(padding, position, scaleUp)
+    const [posStylesInner, posStylesOuter] = usePositionStyles(padding, position, scaleUp)
 
     // Explicitly set width and height so the html to image libary renders correctly
     return {
@@ -154,8 +155,10 @@ function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings, b
 /** Returns styles for fore and background images to position the foreground according to the user selected options.
  * @param scale - Scales the border radius of the inner image
  */
-function getPositionStyles(padding: number, position: Position, scale: number): [CSSProperties, CSSProperties] {
-    const rad = BORDER_RADIUS * scale
+function usePositionStyles(padding: number, position: Position, scale: number): [CSSProperties, CSSProperties] {
+    const useImageBorderRadius = useStoredSettings(s => s[SettingRoundedImageCorners])
+    const rad = useImageBorderRadius ? BORDER_RADIUS * scale : 0
+
     const stylesForeground: Partial<CSSProperties> = {
         borderTopLeftRadius: rad, borderTopRightRadius: rad,
         borderBottomLeftRadius: rad, borderBottomRightRadius: rad,

@@ -25,8 +25,9 @@ export default function Compositor() {
         <section ref={editorRef} class="block w-full max-w-screen-md mx-auto rounded-xl overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
-                : <DropZone class="bg-blue-200 p-10 pb-0" setImage={setImage}
-                    title={<img src={logo} class="max-w-sm mx-auto -mb-1" />} />}
+                : <DropZone class="bg-blue-200 p-10 pb-0 rounded-t-lg" setImage={setImage}
+                    title={<img src={logo} class="max-w-sm mx-auto -mb-1" />}
+                    contentProps={{ "class": "bg-white rounded-t-lg" }} />}
         </section>
 
         {/** A hacky hidden element used by dom-to-image to render the image.

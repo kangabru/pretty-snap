@@ -1,9 +1,11 @@
 import { h } from 'preact';
 import { onInputChange, SetImage, useImageDrop, useImagePaste } from '../hooks/use-import';
+import { CssClass, CssStyle } from '../misc/types';
 import { join } from '../misc/utils';
 import ImportDetails from './import-info';
 
-type DropZoneProps = { setImage: SetImage, title: string | JSX.Element, class?: string }
+type DropZoneProps = CssClass & { setImage: SetImage, title: string | JSX.Element, contentProps?: DropZoneContentProps }
+type DropZoneContentProps = CssStyle & CssClass
 
 export default function DropZone(props: DropZoneProps) {
     return <DropZoneWrap {...props}>
@@ -14,13 +16,16 @@ export default function DropZone(props: DropZoneProps) {
 type InnerDropZoneProps = { isDropping: boolean, isError: boolean, setImage: SetImage, title: string | JSX.Element }
 type DropZoneChildren = { children: (_: InnerDropZoneProps) => JSX.Element }
 
-export function DropZoneWrap({ title, class: cls, setImage, children }: DropZoneChildren & DropZoneProps) {
+export function DropZoneWrap({ contentProps, ...props }: DropZoneChildren & DropZoneProps) {
+    const { title, setImage, children } = props
+
     useImagePaste(setImage)
     const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setImage)
     const innerProps: InnerDropZoneProps = { title, isDropping, isError, setImage }
 
-    return <div ref={dropZone} class={join(cls, "w-full")}>
-        <label class="cursor-pointer block bg-white rounded-t-lg overflow-hidden shadow-lg outline-ring group">
+    return <div ref={dropZone} class={join(props.class, "w-full")}>
+        <label style={contentProps?.style}
+            class={join(contentProps?.class, "cursor-pointer block overflow-hidden shadow-lg outline-ring group")}>
             <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setImage)} />
             {children(innerProps)}
         </label>
