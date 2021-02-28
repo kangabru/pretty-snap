@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
-import useStoredSettings, { SettingRoundedImageCorners, } from '../../../common/hooks/stored-settings';
+import useStoredSettings, { SettingRoundedImageCorners, } from '../../../common/hooks/use-stored-settings';
 import { ForegroundImage } from '../../../common/misc/types';
 import { srcToUrl, srcToUrlSvg } from '../../../common/misc/utils';
 import { BORDER_RADIUS } from '../../misc/constants';

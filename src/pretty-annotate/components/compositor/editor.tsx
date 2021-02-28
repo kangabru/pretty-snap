@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { KeysHeld, useKeysHeld } from '../../../common/hooks/misc';
+import { KeysHeld, useKeysHeld } from '../../../common/hooks/use-misc';
 import { join } from '../../../common/misc/utils';
 import { AnnotationAny, Bounds, Shape, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';

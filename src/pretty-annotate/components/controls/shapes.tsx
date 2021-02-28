@@ -2,7 +2,7 @@ import { Fragment, h } from 'preact';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { Children } from '../../../common/misc/types';
 import { join, textClass } from '../../../common/misc/utils';
-import { useSetStyle } from '../../hooks/styles';
+import { useSetStyle } from '../../hooks/use-styles';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';

@@ -1,8 +1,8 @@
 import { Fragment, h } from 'preact';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
-import { useDocumentListener } from '../../../common/hooks/misc';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { Exports } from '../../../common/hooks/use-export';
-import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/styles';
+import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
 import { AnnotateButtonSvg, ButtonRowWithAnim } from './buttons';

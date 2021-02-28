@@ -2,9 +2,9 @@ import { Fragment, h } from 'preact';
 import { forwardRef, Ref, useEffect } from 'preact/compat';
 import { useState } from 'react';
 import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
-import { useDocumentListener } from '../../../common/hooks/misc';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { Children, CssStyle } from '../../../common/misc/types';
-import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/styles';
+import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 
 export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
     const rowTransition = useTransition(true, null, {

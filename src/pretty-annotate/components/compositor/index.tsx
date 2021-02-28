@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useExport from '../../../common/hooks/use-export';
 import { ForegroundImage } from '../../../common/misc/types';
 import useOptionsStore from '../../stores/options';

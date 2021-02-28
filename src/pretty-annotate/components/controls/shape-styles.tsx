@@ -1,7 +1,7 @@
 import { Fragment, h } from 'preact';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { Children } from '../../../common/misc/types';
-import { useSetStyle } from '../../hooks/styles';
+import { useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
 import { AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
 

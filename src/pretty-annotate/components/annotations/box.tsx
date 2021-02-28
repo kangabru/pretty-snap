@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
-import { useFillOpacity } from '../../hooks/styles';
+import { useFillOpacity } from '../../hooks/use-styles';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Shape, ShapeStyle } from '../../misc/types';

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useCallback } from 'react';
-import useStoredSettings, { SettingRenderTransparent, SettingRoundedImageCorners, StoredSetting } from '../hooks/stored-settings';
+import useStoredSettings, { SettingRenderTransparent, SettingRoundedImageCorners, StoredSetting } from '../hooks/use-stored-settings';
 
 function SettingToggle({ setting, text }: { setting: StoredSetting, text: string }) {
     const setStoredSetting = useStoredSettings(s => s.setStoredSetting)

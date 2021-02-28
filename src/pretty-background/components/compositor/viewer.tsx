@@ -4,7 +4,7 @@ import { animated } from 'react-spring';
 import { DropZoneWrap } from '../../../common/components/drop-zone';
 import ImportDetails from '../../../common/components/import-info';
 import NotSupportedWarning from '../../../common/components/not-supported';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useExport from '../../../common/hooks/use-export';
 import { CssStyle, ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
@@ -12,7 +12,7 @@ import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
 import Controls from './controls';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useGetSizeBackground } from './hooks';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useGetSizeBackground } from './use-comp-styles';
 
 /** Renders the main image composition preview component. */
 export default function CompositorViewer() {
