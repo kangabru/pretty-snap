@@ -32,8 +32,8 @@ module.exports = {
             backgroundSize: (theme) => theme('spacing'),
             colors: {
                 primary: {
+                    DEFAULT: 'hsl(33, 90%, 65%)',
                     light: 'hsl(38, 93%, 77%)',
-                    base: 'hsl(33, 90%, 65%)',
                     dark: 'hsl(27, 84%, 57%)',
                 },
                 orange: colours.orange,

@@ -79,7 +79,7 @@
 
 .slider::-moz-range-thumb,
 .slider::-webkit-slider-thumb {
-    @apply appearance-none h-6 w-6 border-white border-2 rounded-full bg-primary-base cursor-pointer -mt-2 transition border-transparent;
+    @apply appearance-none h-6 w-6 border-white border-2 rounded-full bg-primary cursor-pointer -mt-2 transition border-transparent;
 }
 
 .slider:hover::-moz-range-thumb,

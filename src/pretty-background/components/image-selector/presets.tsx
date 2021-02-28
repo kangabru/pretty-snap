@@ -24,7 +24,7 @@ export function RandButton(props: { onClick: () => void }) {
     const onEnter = () => { setDown(); setTimeout(setUp, 250) }
     const onHover = () => { setDown(); setTimeout(setUp, 20) }
 
-    return <button class="button bg-primary-base hover:bg-primary-base text-white rounded-full border-white border-2 shadow transform hover:scale-105"
+    return <button class="button bg-primary hover:bg-primary text-white rounded-full border-white border-2 shadow transform hover:scale-105"
         onClick={props.onClick} onMouseEnter={onHover} onMouseDown={setDown} onMouseUp={setUp} onKeyPress={e => e.key == "Enter" && onEnter()}>
         <animated.svg className="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"
             style={{ transform: angle.interpolate(a => `rotate(${a}deg)`) }}>
