@@ -10,8 +10,16 @@ export function useSetStyle() {
     return { style, setStyle }
 }
 
-export function useFillOpacity(style: ShapeStyle) {
-    return style === ShapeStyle.Transparent ? SHAPE_TRANSPARENT_OPACITY : 1
+/** Returns the fill opacity (value from 0 to 1) for the given shape style or undefined if no fill should be applied. */
+export function useFillOpacity(style: ShapeStyle): number | undefined {
+    switch (style) {
+        case ShapeStyle.Solid:
+            return 1
+        case ShapeStyle.Transparent:
+            return SHAPE_TRANSPARENT_OPACITY
+        default:
+            return undefined
+    }
 }
 
 /** Returns a ring colour matching the current style colour.
