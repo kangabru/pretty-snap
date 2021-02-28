@@ -1,10 +1,9 @@
 import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
-import ImportDetails from '../../../common/components/import-info';
+import DropZone from '../../../common/components/drop-zone';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
 import useExport from '../../../common/hooks/use-export';
-import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { ForegroundImage } from '../../../common/misc/types';
 import useOptionsStore from '../../stores/options';
 import Controls from '../controls';
@@ -13,15 +12,12 @@ import logo from './title.svg';
 
 /** Renders the main image composition preview component. */
 export default function Compositor() {
-    const image = useOptionsStore(s => s.image)
-    useWarningOnClose(!!image) // Assume they're editing if they've add an image
 
+    const image = useOptionsStore(s => s.image)
     const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
     const [exportRef, download, copy] = useExport(image?.width ?? 0, image?.height ?? 0, () => setWarningOnClose(false))
 
-    useImagePaste(setImage)
-    const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setImage)
-
+    useWarningOnClose(!!image) // Assume they're editing if they've add an image
     const [editorRef, { width }] = useMeasure()
     const renderScale = image && width ? image?.width / width : 1
 
@@ -29,12 +25,8 @@ export default function Compositor() {
         <section ref={editorRef} class="block w-full max-w-screen-md mx-auto rounded-xl overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
-                : <div ref={dropZone} class="w-full bg-blue-200 p-10 pb-0">
-                    <label class="cursor-pointer block bg-white rounded-t-lg overflow-hidden shadow-lg">
-                        <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setImage)} />
-                        <ImportDetails {...{ isDropping, isError, setImage }} title={<img src={logo} class="max-w-sm mx-auto -mb-1" />} />
-                    </label>
-                </div>}
+                : <DropZone class="bg-blue-200 p-10 pb-0" setImage={setImage}
+                    title={<img src={logo} class="max-w-sm mx-auto -mb-1" />} />}
         </section>
 
         {/** A hacky hidden element used by dom-to-image to render the image.

@@ -1,10 +1,10 @@
 import { Ref, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { ForegroundImage } from '../../common/misc/types';
 
-type SetForeground = (_: ForegroundImage) => void
+export type SetImage = (_: ForegroundImage) => void
 
 /** Imports an image by pasting from clipboard */
-export function useImagePaste(setDataUrl: SetForeground) {
+export function useImagePaste(setDataUrl: SetImage) {
     useEffect(() => {
         const onPaste = (e: LocalClipboardEvent) => loadImageOnPaste(e).then(setDataUrl)
         document.addEventListener('paste', onPaste)
@@ -13,7 +13,7 @@ export function useImagePaste(setDataUrl: SetForeground) {
 }
 
 /** Imports an image by dragging and dropping from the file system. */
-export function useImageDrop<T extends HTMLElement>(setDataUrl: SetForeground): [Ref<T>, boolean, boolean] {
+export function useImageDrop<T extends HTMLElement>(setDataUrl: SetImage): [Ref<T>, boolean, boolean] {
     const dropZone = useRef<T>()
     const [isDropping, setIsDropping] = useState(false)
     const [isError, setIsError] = useState(false)
@@ -90,7 +90,7 @@ export function loadImageFromDataUrl(dataUrl: string | undefined): Promise<Foreg
 }
 
 /** Wrapper for input 'onChange' events to load the image then perform a callback. */
-export function onInputChange(setDataUrl: SetForeground) {
+export function onInputChange(setDataUrl: SetImage) {
     return (e: Event) => loadImageOnChange(e).then(setDataUrl)
 }
 

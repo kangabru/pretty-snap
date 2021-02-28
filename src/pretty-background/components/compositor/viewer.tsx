@@ -1,11 +1,11 @@
 import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
+import { DropZoneWrap } from '../../../common/components/drop-zone';
 import ImportDetails from '../../../common/components/import-info';
 import NotSupportedWarning from '../../../common/components/not-supported';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
 import useExport from '../../../common/hooks/use-export';
-import { onInputChange, useImageDrop, useImagePaste } from '../../../common/hooks/use-import';
 import { CSSProps, ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
@@ -35,8 +35,6 @@ export default function CompositorViewer() {
 
     useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
 
-    useImagePaste(setForeground)
-    const [dropZone, isDropping, isError] = useImageDrop<HTMLDivElement>(setForeground)
 
     // Get the styles for the preview and hidden render components
     const [refPreviewContainer, stylesScreen, stylesRender] = useAnimatedCompositionStyles()
@@ -46,16 +44,13 @@ export default function CompositorViewer() {
     return <>
         {/* Renders the preview */}
         <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
-            <div ref={dropZone} class="w-full">
-                <label class="cursor-pointer">
-                    <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setForeground)} />
-                    {foreground?.src
-                        ? <Image style={stylesScreen.inner as any} />
-                        : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesScreen.inner}>
-                            <ImportDetails {...{ isDropping, isError }} title="Add a pretty background to your screenshots" setImage={setForeground} />
-                        </animated.div>}
-                </label>
-            </div>
+            <DropZoneWrap setImage={setForeground} title="Add a pretty background to your screenshots">
+                {innerProps => foreground?.src
+                    ? <Image style={stylesScreen.inner as any} />
+                    : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesScreen.inner}>
+                        <ImportDetails {...innerProps} title="Add a pretty background to your screenshots" />
+                    </animated.div>}
+            </DropZoneWrap>
         </animated.section>
 
         {/** A hacky hidden element used by dom-to-image to render the image.
