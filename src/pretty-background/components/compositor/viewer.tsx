@@ -6,7 +6,7 @@ import ImportDetails from '../../../common/components/import-info';
 import NotSupportedWarning from '../../../common/components/not-supported';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/misc';
 import useExport from '../../../common/hooks/use-export';
-import { CSSProps, ForegroundImage } from '../../../common/misc/types';
+import { CssStyle, ForegroundImage } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
@@ -34,7 +34,6 @@ export default function CompositorViewer() {
     const setForeground = useCallback((foreground: ForegroundImage) => useOptionsStore.setState({ foreground }), [])
 
     useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
-
 
     // Get the styles for the preview and hidden render components
     const [refPreviewContainer, stylesScreen, stylesRender] = useAnimatedCompositionStyles()
@@ -66,7 +65,7 @@ export default function CompositorViewer() {
     </>
 }
 
-function Image({ style }: CSSProps) {
+function Image({ style }: CssStyle) {
     const image = useOptionsStore(s => s.foreground)
     return <animated.img src={image?.src} alt="Screenshot" className={CLASSES_INNER} style={style as any} />
 }

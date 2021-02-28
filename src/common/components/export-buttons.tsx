@@ -1,7 +1,7 @@
 import { Fragment, h, JSX } from 'preact';
 import { urls } from '../constants';
 import { ExportOptions, Exports, ExportState } from '../hooks/use-export';
-import { Children, CSSClass, CSSProps } from '../misc/types';
+import { Children, CssClass, CssStyle } from '../misc/types';
 import { join } from '../misc/utils';
 
 export function ExportError({ copy: { state: copyState }, download: { state: downloadState } }: Exports) {
@@ -28,7 +28,7 @@ export function ExportButtons({ copy, download, notReady, ...styles }: Exports &
     </>
 }
 
-type ButtonStyleProps = CSSClass & CSSProps
+type ButtonStyleProps = CssClass & CssStyle
 type ButtonProps = Omit<JSX.HTMLAttributes<HTMLButtonElement>, 'children' | 'onClick'>
 
 export function ExportButton({ run, state, disabled, children, class: cls, ...props }: ButtonProps & Children & ExportOptions) {

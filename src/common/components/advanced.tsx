@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { Children, CSSClass } from '../misc/types';
+import { Children, CssClass } from '../misc/types';
 import { join } from '../misc/utils';
 
-export default function Advanced({ children, class: cls }: Children & CSSClass) {
+export default function Advanced({ children, class: cls }: Children & CssClass) {
     const [show, setShow] = useState(false)
     return <section class={join(cls, "col mx-auto w-full max-w-screen-md space-y-5")}>
 
