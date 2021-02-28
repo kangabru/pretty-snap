@@ -40,7 +40,7 @@ function Header() {
 
         <div class="row space-x-2 row-start-2 md:row-start-1">
             <a class="hidden sm:inline-block w-12 h-12 sm:w-12 sm:h-12 outline-primary hover:shadow rounded-md overflow-hidden transition" href={urls.pandasnap}><img src={srcPandaSnap} alt="Panda Snap Logo" class="pointer-events-none" /></a>
-            <div class="col items-start whitespace-nowrap">
+            <div class="flex flex-col whitespace-nowrap">
                 <span>by &nbsp;<a class="outline-link font-semibold" href={urls.kangabru}>kangabru</a></span>
                 <span>for <a class="outline-link font-semibold" href={urls.pandasnap}>pandasnap.io</a></span>
             </div>

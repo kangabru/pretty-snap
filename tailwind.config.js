@@ -23,6 +23,8 @@ module.exports = {
             ringWidth: ['group-hover', 'group-focus'],
             textDecoration: ['focus'],
             cursor: ['disabled'],
+            translate: ['group-focus'],
+            boxShadow: ['group-focus'],
         }
     },
     theme: {

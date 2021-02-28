@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import { ExportButtons, ExportError } from '../../../common/components/export';
+import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../misc/constants';
 import useOptionsStore from '../../stores/options';

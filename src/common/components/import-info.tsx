@@ -37,8 +37,8 @@ export default function ImportDetails({ title, isDropping, isError, setImage }: 
 
 export function DemoImageButton({ setImage }: { setImage: (image: ForegroundImage) => void }) {
     const onClick = () => loadImageFromDataUrl(DemoImage).then(setImage)
-    return <button class="block w-full max-w-md mx-auto pt-5 px-5 -mt-5" onClick={onClick}>
-        <div class="transition-all duration-300 transform translate-y-5 hover:-translate-y-0 shadow-xl hover:shadow-2xl">
+    return <button class="block w-full max-w-md mx-auto pt-5 px-5 -mt-5 group  outline-none focus:outline-none" onClick={onClick}>
+        <div class="transition-all duration-300 transform translate-y-5 shadow-xl hover:-translate-y-0 group-focus:-translate-y-0 hover:shadow-2xl group-focus:shadow-2xl">
             <div class="flex items-center justify-end p-2 rounded-t-lg bg-gray-700">
                 <div class="flex space-x-2">
                     <div class="bg-blue-300   w-3 h-3 rounded-full"></div>

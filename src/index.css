@@ -72,32 +72,24 @@
     @apply appearance-none outline-none;
 }
 
-.slider::-moz-range-track {
-    @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
-}
+.slider::-moz-range-track,
 .slider::-webkit-slider-runnable-track {
     @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
 }
 
-.slider::-moz-range-thumb {
-    @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent;
-}
+.slider::-moz-range-thumb,
 .slider::-webkit-slider-thumb {
-    @apply appearance-none h-6 w-6 rounded-full bg-primary-base shadow cursor-pointer -mt-2 transition border-transparent;
+    @apply appearance-none h-6 w-6 border-white border-2 rounded-full bg-primary-base cursor-pointer -mt-2 transition border-transparent;
 }
 
-.slider:hover::-moz-range-thumb {
-    @apply bg-primary-dark;
-}
+.slider:hover::-moz-range-thumb,
 .slider:hover::-webkit-slider-thumb {
     @apply bg-primary-dark;
 }
 
-.slider:focus::-moz-range-thumb {
-    @apply ring;
-}
+.slider:focus::-moz-range-thumb,
 .slider:focus::-webkit-slider-thumb {
-    @apply ring;
+    @apply ring-4 ring-opacity-40 ring-primary-dark;
 }
 
 @keyframes fade-in {
