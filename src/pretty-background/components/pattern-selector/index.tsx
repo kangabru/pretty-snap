@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { urls } from '../../misc/constants';
 import Patterns from './backgrounds';
-import { ColorRow, PatternColours } from './colours';
+import { ColourPanel, PatternColours } from './colours';
 import QuickPatterns from './presets';
 
 export default function PatternSelector() {
@@ -11,7 +11,7 @@ export default function PatternSelector() {
             <PatternColours />
         </div>
         <Patterns />
-        <ColorRow />
+        <ColourPanel />
         <p class="text-gray-800 text-center pt-3">Patterns by <a class="link" href={urls.patterns}>Hero Patterns</a></p>
     </div>
 }

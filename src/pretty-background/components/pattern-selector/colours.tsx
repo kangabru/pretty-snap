@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { useChildNavigate } from '../../../common/hooks/use-child-nav';
+import { KeyNavCallback, NavKey, useChildNavigate } from '../../../common/hooks/use-child-nav';
 import { join } from '../../../common/misc/utils';
 import colours from '../../data/colours';
 import useOptionsStore from '../../stores/options';
@@ -37,15 +37,30 @@ function PatternColor({ colour, opacity }: { colour: string, opacity: number }) 
     </button>
 }
 
-export function ColorRow() {
+export function ColourPanel() {
     const bgColour = useOptionsStore(s => s.backgroundPattern?.bgColour)
-    const ref = useChildNavigate<HTMLDivElement>([bgColour])
+    const ref = useChildNavigate<HTMLDivElement>([bgColour], undefined, ColourRowNav)
 
     const hexs = useMemo(() => Object.values(colours).filter(c => !(c == colours.white || c == colours.black)), [])
 
     return <div ref={ref} class="grid grid-rows-2 grid-flow-col gap-2 p-2 overflow-x-scroll" tabIndex={-1}>
         {hexs.map(hex => <Colour colour={hex} />)}
     </div>
+}
+
+/** The colour panel has 2 rows so use a custom nav funciton to allow up/down/left/right navigation. */
+const ColourRowNav: KeyNavCallback = (key: NavKey, index: number) => {
+    const isTopRow = index % 2 == 0
+    switch (key) {
+        case NavKey.up:
+            return isTopRow ? 0 : -1
+        case NavKey.down:
+            return isTopRow ? 1 : 0
+        case NavKey.left:
+            return -2
+        case NavKey.right:
+            return 2
+    }
 }
 
 function Colour({ colour }: { colour: string }) {

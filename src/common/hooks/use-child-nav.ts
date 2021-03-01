@@ -1,13 +1,16 @@
 import { Ref, useEffect, useRef, useState } from "preact/hooks"
-import { IsLeft, IsRight } from "../misc/keyboard"
+import { IsDown, IsLeft, IsRight, IsUp } from "../misc/keyboard"
+
+export enum NavKey { up, down, left, right }
 
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
  * Child elements can set the 'data-target' property to set the initial focus element.
  * @param refocusInputs - An array of props to check. If these change then the inital focused element will refresh
+ * @param keyNavCallback - Allows containers to control how many places to move upon keyboard press.
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
-export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>) {
+export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>, keyNavCallback?: KeyNavCallback) {
     const containerRef = useRef<T>(ref?.current)
 
     useEffect(() => {
@@ -22,19 +25,21 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         }
 
         const onKeyDown = (e: KeyboardEvent) => {
-            const isLeft = IsLeft(e), isRight = IsRight(e)
-            if (!(isLeft || isRight)) return
+            const navKey = GetNavKey(e)
+            if (navKey === null) return
 
             const children = getResetChildren()
             if (!children.length) return
 
             const focusIndex = children.findIndex(x => x === document.activeElement)
-            const focusIndexNew = isLeft ? Math.max(focusIndex - 1, 0) : isRight ? Math.min(focusIndex + 1, children.length - 1) : focusIndex
+            const indexDiff = (keyNavCallback ?? DefaultKeyNav)(navKey, focusIndex)
+            const focusIndexNew = Math.max(0, Math.min(focusIndex + indexDiff, children.length - 1))
 
             const target = children[focusIndexNew]
             target.tabIndex = 0 // Make target focusable
             target.focus()
             target?.click()
+            e.preventDefault() // Don't scroll since we've consumed this event
         }
 
         const children = getResetChildren()
@@ -57,6 +62,17 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
 
     return containerRef
 }
+
+function GetNavKey(e: KeyboardEvent): NavKey | null {
+    if (IsUp(e)) return NavKey.up
+    if (IsDown(e)) return NavKey.down
+    if (IsLeft(e)) return NavKey.left
+    if (IsRight(e)) return NavKey.right
+    return null
+}
+
+export type KeyNavCallback = (key: NavKey, index: number) => number
+const DefaultKeyNav: KeyNavCallback = (key: NavKey) => key === NavKey.left ? -1 : key === NavKey.right ? 1 : 0
 
 /** Equivalent to the 'useChildNavigate' hook but returns an additional initialise function.
  *
