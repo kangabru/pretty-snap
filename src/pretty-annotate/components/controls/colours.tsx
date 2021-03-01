@@ -1,34 +1,29 @@
 import { h } from 'preact';
 import { forwardRef, Ref } from 'preact/compat';
-import { useState } from 'react';
-import { useDocumentListener } from '../../../common/hooks/use-misc';
-import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/use-styles';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
-import { ButtonWithModal_Ref, ChildNavInit } from './buttons';
+import { ButtonWithModal } from './buttons';
+import { PortalUpdateChildNav } from './portal';
 
-export default function ColorButtonGroup({ text }: { text: string }) {
-    const [showColours, setShowColours] = useState(false)
-    useDocumentListener('mousedown', () => setShowColours(false), [showColours])
-    useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours])
-
+export default function ColorButtonGroup() {
     const { color, useDarkText } = useAnnotateStore(s => s.style.color)
     const [buttonRef, ringColor] = useRingColourStyle()
 
-    const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([color, useDarkText])
-
-    return <ButtonWithModal_Ref ref={childNavRef} text={text}
-        button={open => <InnerButton_Ref ref={buttonRef} onClick={open} {...{ color, ringColor, useDarkText }} />}>
-        <ChildNavInit init={initChildNav} />
+    return <ButtonWithModal portalId="colors" text="Colour" button={open => (
+        <InnerButton_Ref ref={buttonRef} onClick={open} {...{ color, ringColor, useDarkText }} />
+    )}>
         <ColorButton color={colors.blue} />
         <ColorButton color={colors.red} />
         <ColorButton color={colors.yellow} />
         <ColorButton color={colors.green} />
         <ColorButton color={colors.dark} />
         <ColorButton color={colors.light} useDarkText />
-    </ButtonWithModal_Ref>
+
+        {/* Update the portal's child nav hook when the colour changes */}
+        <PortalUpdateChildNav deps={[color, useDarkText]} />
+    </ButtonWithModal>
 }
 
 function ColorButton({ color, useDarkText }: { color: string, useDarkText?: boolean }) {
@@ -50,6 +45,6 @@ const InnerButton_Ref = forwardRef<HTMLButtonElement, InnerProps>(InnerButton)
 
 function InnerButton({ color, ringColor, useDarkText, ...props }: InnerProps, ref?: Ref<any>) {
     return <button ref={ref} {...props} style={{ backgroundColor: color, [VAR_RING_COLOR]: ringColor }}
-        class={join("w-12 h-12 relative rounded-md grid place-items-center outline-ring border-2",
+        class={join("w-12 h-12 m-1 relative rounded-md grid place-items-center outline-ring border-2",
             useDarkText ? "border-gray-400" : "border-transparent")} />
 }

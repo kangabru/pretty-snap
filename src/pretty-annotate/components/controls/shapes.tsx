@@ -1,20 +1,18 @@
 import { Fragment, h } from 'preact';
-import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { Children } from '../../../common/misc/types';
 import { join, textClass } from '../../../common/misc/utils';
 import { useSetStyle } from '../../hooks/use-styles';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
-import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
+import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { PortalUpdateChildNav } from './portal';
 
-export default function ShapeButtonGroup({ text }: { text: string }) {
-    const { color: { color }, shape } = useSetStyle().style
-    const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([shape])
-
-    return <ButtonWithModal_Ref ref={childNavRef} text={text} style={{ color }}
-        button={open => <StyleButtonGeneric shape={shape} onClick={open} />}>
-        <ChildNavInit init={initChildNav} />
+export default function ShapeButtonGroup() {
+    const { shape } = useSetStyle().style
+    return <ButtonWithModal portalId="shapes" text="Shape" button={open => (
+        <StyleButtonGeneric shape={shape} onClick={open} />
+    )}>
         <StyleButtonGeneric shape={Shape.Box} />
         <StyleButtonGeneric shape={Shape.Ellipse} />
         <StyleButtonGeneric shape={Shape.Bracket} />
@@ -22,7 +20,10 @@ export default function ShapeButtonGroup({ text }: { text: string }) {
         <StyleButtonGeneric shape={Shape.Line} />
         <StyleButtonGeneric shape={Shape.Counter} />
         <StyleButtonGeneric shape={Shape.Text} />
-    </ButtonWithModal_Ref>
+
+        {/* Update the portal's child nav hook when the shape changes */}
+        <PortalUpdateChildNav deps={[shape]} />
+    </ButtonWithModal>
 }
 
 type StyleButtonProps = { shape: Shape, onClick?: () => void }
@@ -68,13 +69,14 @@ function StyleButton({ shape, text, onClick, children }: StyleButtonProps & Part
     const isTarget = shape === selectedShape
 
     return text
-        ? <AnnotateButton data-target={isTarget} onClick={onClick ?? setShape}>
+        ? <AnnotateButton data-target={isTarget} onClick={onClick ?? setShape} className="m-1">
             <span style={{ backgroundColor: color }}
                 class={join(textClass(useDarkText), "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>
                 {text}
             </span>
         </AnnotateButton>
-        : <AnnotateButtonSvg data-target={isTarget} onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
+        : <AnnotateButtonSvg data-target={isTarget} style={{ color }} className="m-1"
+            onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
 }
 
 function BracketIcon() {

@@ -50,8 +50,8 @@ type RowSpans = { rowSpan1?: number, rowSpan2?: number, rowSpan3?: number }
 function Row({ col1, col2, col3, rowSpan1, rowSpan2, rowSpan3 }: Cols & RowSpans) {
     return <tr>
         {col1 && <td rowSpan={rowSpan1 ?? 1} class="p-2 whitespace-nowrap">{col1}</td>}
-        {col2 && <td rowSpan={rowSpan2 ?? 1} class="p-2 whitespace-nowrap">{col2}</td>
-        {col3 && <td rowSpan={rowSpan3 ?? 1} class="p-2 whitespace-nowrap">{col3}</td>
+        {col2 && <td rowSpan={rowSpan2 ?? 1} class="p-2 whitespace-nowrap">{col2}</td>}
+        {col3 && <td rowSpan={rowSpan3 ?? 1} class="p-2 whitespace-nowrap">{col3}</td>}
     </tr>
 }
 
