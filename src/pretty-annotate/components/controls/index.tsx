@@ -14,7 +14,7 @@ export default function Controls(props: Exports) {
     const hasEdits = !!useAnnotateStore(s => s.undos.length || s.redos.length)
 
     return <>
-        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-x-3">
+        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-x-3 z-10">
             {hasEdits && <ButtonRowWithAnim>
                 <HistoryButtonGroup />
             </ButtonRowWithAnim>}
