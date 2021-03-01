@@ -1,4 +1,5 @@
 import { Fragment, h } from 'preact';
+import FadeInContainer from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../misc/constants';
@@ -10,7 +11,7 @@ export default function Controls(props: Exports) {
     const hasImage = !!useOptionsStore(s => s.foreground)
     return <>
         <ExportError {...props} />
-        <section class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
+        <FadeInContainer class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
             <PositionButtonGroup />
             <PaddingSlider />
 
@@ -18,7 +19,7 @@ export default function Controls(props: Exports) {
             <div class="row space-x-3 text-primary">
                 <ExportButtons {...props} notReady={!hasImage} class="outline-primary" />
             </div>
-        </section>
+        </FadeInContainer>
     </>
 }
 

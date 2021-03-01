@@ -1,20 +1,16 @@
 import { Fragment, h } from 'preact';
 import { forwardRef, Ref, useEffect } from 'preact/compat';
 import { useState } from 'react';
-import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
+import { animated, AnimatedValue, ForwardedProps } from 'react-spring';
+import FadeInContainer from '../../../common/components/anim-container';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { Children, CssStyle } from '../../../common/misc/types';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 
 export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
-    const rowTransition = useTransition(true, null, {
-        from: { transform: 'scale(0)', opacity: 1 },
-        enter: { transform: 'scale(1)' },
-    })
-    return rowTransition.map(({ item, props }) => item && <animated.div style={{ ...props, ...style as any }}
-        className="relative z-0 flex space-x-3 p-3 rounded-lg bg-white shadow-md">
+    return <FadeInContainer class="relative z-0 flex space-x-3 p-3 rounded-lg bg-white shadow-md" style={style}>
         {children}
-    </animated.div>) as any
+    </FadeInContainer>
 }
 
 export function AnnotateButtonSvg({ children, ...props }: AnimatedValue<ForwardedProps<any>>) {
