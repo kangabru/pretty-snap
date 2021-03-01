@@ -1,12 +1,14 @@
 import { createContext, Fragment, h } from 'preact';
-import { createPortal, forwardRef, Ref, useContext, useEffect, useRef } from 'preact/compat';
+import { createPortal, forwardRef, Ref, useContext, useEffect, useMemo, useRef } from 'preact/compat';
 import { useState } from 'react';
+import { animated, useSpring } from 'react-spring';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { ScreenWidth, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
 import { IsEnter, IsEscape } from '../../../common/misc/keyboard';
 import { Children, ChildrenWithProps } from '../../../common/misc/types';
-import { join } from '../../../common/misc/utils';
+import { join, remToPixels } from '../../../common/misc/utils';
+import { ModalId } from './buttons';
 
 /** These components create a react 'portal' that allows components to render children in DOM nodes outside of their component structure.
  * @see https://reactjs.org/docs/portals.html
@@ -23,8 +25,8 @@ import { join } from '../../../common/misc/utils';
  */
 
 const PortalContext = createContext<{
-    portal?: HTMLElement, activePortal?: string,
-    setPortal?: (id: string) => void, updateChildNav?: () => void,
+    portal?: HTMLElement, activePortal?: number,
+    setPortal?: (portalIndex: number) => void, updateChildNav?: () => void,
 }>({})
 
 /** Creates the portal context provider that enabled portal functionality inside its children.
@@ -33,7 +35,7 @@ const PortalContext = createContext<{
 export default function ControlsPortalContext({ children }: ChildrenWithProps<JSX.Element>) {
 
     // Control which portal is showing
-    const [activePortal, setPortal] = useState<string | undefined>(undefined)
+    const [activePortal, setPortal] = useState<number | undefined>(undefined)
     const resetPortal = () => setPortal(undefined)
 
     // Add global events to hide the portal
@@ -46,38 +48,50 @@ export default function ControlsPortalContext({ children }: ChildrenWithProps<JS
 
     return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, setPortal, updateChildNav }}>
         {/* Pass the modal to the children so they can render it wherever they want */}
-        {children(<ModalPortal_Ref showPortal={!!activePortal} ref={portalRef} />)}
+        {children(<ModalPortal_Ref ref={portalRef} />)}
     </PortalContext.Provider>
 }
 
 /** Renders children inside the portal is the given portal ID is active. */
-export function ControlsPortalContent({ portalId, children }: { portalId: string } & Children) {
-    const { portal, activePortal } = useContext(PortalContext)
-    return <>{activePortal === portalId && portal && createPortal(<>{children}</>, portal)}</>
+export function ControlsPortalContent({ children }: Children) {
+    const { portal } = useContext(PortalContext)
+    return <>{portal && createPortal(<>{children}</>, portal)}</>
 }
 
-type ModalPortalProps = { showPortal: boolean }
+type ModalPortalProps = Record<string, unknown>
 export const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPortal)
 
 /** The shared modal where portal contents will be rendered.
  * On mobile the modal renders 'inline' with other content, and on desktop it 'hovers' above content like a modal.
  */
-function ModalPortal({ showPortal: show }: ModalPortalProps, portalRef: Ref<HTMLElement>) {
+function ModalPortal(_: ModalPortalProps, portalRef: Ref<HTMLElement>) {
+    const [show, style] = useContentAnimtion()
 
     const isMobile = useWindowSmallerThan(ScreenWidth.md)
     return isMobile
-        ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
-            class={join(!show && "hidden", "flex justify-center flex-wrap p-2")} />
+        ? <animated.div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any} style={style}
+            className={join(!show && "hidden", "flex justify-center flex-wrap p-2")} />
 
         : <div onMouseDown={e => show && e.stopPropagation()}
             class={join(!show && "hidden", "z-50 absolute left-1/2 transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
             <Triangle />
-            <div ref={portalRef as any} class="relative flex rounded-lg bg-white p-2" />
+            <animated.div ref={portalRef as any} style={style} className="relative flex rounded-lg bg-white p-2" />
         </div>
 }
 
 function Triangle() {
-    return <>
+    const { activePortal } = useContext(PortalContext)
+
+    const left = useMemo(() => ({
+        [ModalId.Shape]: -3.65,
+        [ModalId.Colour]: 0,
+        [ModalId.ShapeStyle]: 3.65,
+    } as { [_: number]: number })
+    [activePortal as any] ?? 0, [activePortal])
+
+    const style = useSpring({ left: `calc(50% + ${left}rem)` })
+
+    return <animated.div style={style} className="absolute top-0 transform -translate-x-1/2 -translate-y-full">
         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full -mt-px" style={{
             borderLeft: '1rem solid transparent',
             borderRight: '1rem solid transparent',
@@ -89,15 +103,40 @@ function Triangle() {
             borderRight: '1rem solid transparent',
             borderBottom: '1rem solid white',
         }} />
-    </>
+    </animated.div>
 }
+
+function useContentAnimtion(): [boolean, any] {
+    const { activePortal, portal } = useContext(PortalContext)
+    const show = !!activePortal
+
+    const [size, setSize] = useState({ width: 0, height: remToPixels(3.5) })
+    const update = () => {
+        if (!portal?.children.length) return
+        const elem = portal.children[portal.children.length - 1]
+        if (elem) setSize({
+            width: elem.clientWidth,
+            height: elem.clientHeight,
+        })
+    }
+    useEffect(() => {
+        update()
+        setTimeout(update, 250)
+        setTimeout(update, 500)
+    }, [portal, activePortal])
+
+    const style = useSpring({ ...size })
+
+    return [show, style]
+}
+
 
 /** Returns whether the given portal is active and and a method to active it.
  * @return [<portal is active>, <activate portal>]
  */
-export function usePortal(portalId: string): [boolean, () => void] {
+export function usePortal(portalIndex: number): [boolean, () => void] {
     const { activePortal, setPortal } = useContext(PortalContext)
-    return [portalId === activePortal, () => setPortal?.(portalId)]
+    return [portalIndex === activePortal, () => setPortal?.(portalIndex)]
 }
 
 /** A component soley used to update the 'useChidlNavigate' hook used with the portal.

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { AnimatedValue, ForwardedProps } from 'react-spring';
-import FadeInContainer from '../../../common/components/anim-container';
+import FadeInContainer, { SlideInOutContainer } from '../../../common/components/anim-container';
 import { Children, CssStyle } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
@@ -26,16 +26,27 @@ export function AnnotateButton({ children, style, className, ...props }: Animate
     </button>
 }
 
-type ButtonWithModalProps = Children & { portalId: string, text: string, button: (open: () => void) => JSX.Element }
+/** These numbers define the animation direction of portal content changes */
+export enum ModalId {
+    Shape = 1,
+    Colour = 2,
+    ShapeStyle = 3,
+}
+
+type ButtonWithModalProps = Children & { portalIndex: number, text: string, button: (open: () => void) => JSX.Element }
 
 /** Renders the provided activation button, then renders children inside the modal portal when the given portal ID is active. */
-export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps) {
-    const [isActive, activate] = usePortal(portalId)
+export function ButtonWithModal({ portalIndex, text, button, children }: ButtonWithModalProps) {
+    const [isActive, activate] = usePortal(portalIndex)
     return <div class="flex relative" onMouseDown={e => !isActive && e.stopPropagation()}>
         <div class="col">
             {button(activate)}
             <span class="text-sm text-gray-600">{text}</span>
         </div>
-        <ControlsPortalContent portalId={portalId}>{children}</ControlsPortalContent>
+        <ControlsPortalContent>
+            <SlideInOutContainer show={isActive}>
+                <div class="flex">{children}</div>
+            </SlideInOutContainer>
+        </ControlsPortalContent>
     </div>
 }

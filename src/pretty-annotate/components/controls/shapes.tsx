@@ -5,12 +5,12 @@ import { useSetStyle } from '../../hooks/use-styles';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
-import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal, ModalId } from './buttons';
 import { PortalUpdateChildNav } from './portal';
 
 export default function ShapeButtonGroup() {
     const { shape } = useSetStyle().style
-    return <ButtonWithModal portalId="shapes" text="Shape" button={open => (
+    return <ButtonWithModal portalIndex={ModalId.Shape} text="Shape" button={open => (
         <StyleButtonGeneric shape={shape} onClick={open} />
     )}>
         <StyleButtonGeneric shape={Shape.Box} />
