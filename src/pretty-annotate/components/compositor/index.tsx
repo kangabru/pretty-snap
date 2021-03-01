@@ -3,18 +3,17 @@ import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
-import useExport from '../../../common/hooks/use-export';
+import useExport, { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
-import { ForegroundImage } from '../../../common/misc/types';
+import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
-import Controls from '../controls';
 import Editor, { Viewer } from './editor';
 import logo from './title.svg';
 
 /** Renders the main image composition preview component. */
-export default function Compositor() {
+export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     const image = useOptionsStore(s => s.image)
     const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
@@ -26,7 +25,7 @@ export default function Compositor() {
 
     const outerRadiusRender = useRenderBorderRadius(renderScale)
 
-    return <main class="flex-1 px-4 space-y-6">
+    return <main class="flex-1 col px-4 space-y-6">
         <section ref={editorRef} style={{ borderRadius: OUTER_BORDER_RADIUS }}
             class="block w-full max-w-screen-md mx-auto overflow-hidden shadow-md">
             {image
@@ -46,7 +45,7 @@ export default function Compositor() {
             </section>
         </div>}
 
-        {image && <Controls {...{ download, copy }} />}
+        {image && children({ download, copy })}
     </main>
 }
 

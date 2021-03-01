@@ -8,7 +8,7 @@ import PatternSelector from '../pattern-selector';
 enum Screen { Pattern, Image }
 
 /** Combines the pattern and image controls into a single panel under the main compositor. */
-export default function CompositorBackgroundControls() {
+export default function BackgroundControls() {
     const [screen, setScreen] = useState(Screen.Pattern)
     const switchScreen = (screen: Screen) => () => setScreen(screen)
 

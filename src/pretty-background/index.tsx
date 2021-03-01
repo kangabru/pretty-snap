@@ -1,19 +1,28 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import srcPreview from '../../assets/preview.jpg';
 import Advanced from '../common/components/advanced';
+import NotSupportedWarning from '../common/components/not-supported';
 import { ToggleRenderTransparent, ToggleRoundedImageCorners } from '../common/components/stored-settings';
 import Compositor from './components/compositor';
+import Controls from './components/controls/controls';
+import BackgroundControls from './components/controls/controls-bg';
 
 export default function PrettyBackground() {
     return <main class="col px-4 space-y-6">
-        <Compositor />
+        <Compositor>
+            {exportProps => <>
+                <Controls {...exportProps} />
+                <NotSupportedWarning />
+                <BackgroundControls />
 
-        <Advanced>
-            <div class="space-y-3">
-                <ToggleRenderTransparent />
-                <ToggleRoundedImageCorners />
-            </div>
-        </Advanced>
+                <Advanced>
+                    <div class="space-y-3">
+                        <ToggleRenderTransparent />
+                        <ToggleRoundedImageCorners />
+                    </div>
+                </Advanced>
+            </>}
+        </Compositor>
 
         <Info />
         <PH />

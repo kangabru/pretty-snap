@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { onInputChange, SetImage, useImageDrop, useImagePaste } from '../hooks/use-import';
-import { CssClass, CssStyle } from '../misc/types';
+import { ChildrenWithProps, CssClass, CssStyle } from '../misc/types';
 import { join } from '../misc/utils';
 import ImportDetails from './import-info';
 
@@ -14,9 +14,8 @@ export default function DropZone(props: DropZoneProps) {
 }
 
 type InnerDropZoneProps = { isDropping: boolean, isError: boolean, setImage: SetImage, title: string | JSX.Element }
-type DropZoneChildren = { children: (_: InnerDropZoneProps) => JSX.Element }
 
-export function DropZoneWrap({ contentProps, ...props }: DropZoneChildren & DropZoneProps) {
+export function DropZoneWrap({ contentProps, ...props }: ChildrenWithProps<InnerDropZoneProps> & DropZoneProps) {
     const { title, setImage, children } = props
 
     useImagePaste(setImage)
@@ -25,7 +24,7 @@ export function DropZoneWrap({ contentProps, ...props }: DropZoneChildren & Drop
 
     return <div ref={dropZone} class={join(props.class, "w-full")}>
         <label style={contentProps?.style}
-            class={join(contentProps?.class, "cursor-pointer block overflow-hidden shadow-lg outline-ring group")}>
+            class={join(contentProps?.class, "cursor-pointer block overflow-hidden shadow-lg group")}>
             <input hidden type="file" accept="image/x-png,image/jpeg" onChange={onInputChange(setImage)} />
             {children(innerProps)}
         </label>

@@ -6,7 +6,7 @@ import useOptionsStore from '../../stores/options';
 import PositionButtonGroup from './positions';
 
 /** Renders the image compositional control component. */
-export default function CompositorControls(props: Exports) {
+export default function Controls(props: Exports) {
     const hasImage = !!useOptionsStore(s => s.foreground)
     return <>
         <ExportError {...props} />
