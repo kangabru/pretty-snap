@@ -49,9 +49,3 @@ export function useWarningOnClose(active: boolean) {
         return () => setWarningOnClose(false)
     }, [active])
 }
-
-export function useWindowWidth() {
-    const [width, setWidth] = useState(window.innerWidth)
-    useWindowListener('resize', () => setWidth(window.innerWidth))
-    return width
-}
