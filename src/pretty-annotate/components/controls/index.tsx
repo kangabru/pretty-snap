@@ -3,7 +3,7 @@ import FadeInContainer from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
-import { ScreenWidth, useWindowLargerThan, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
+import { ScreenWidth, useWindowLargerThan } from '../../../common/hooks/use-screen-width';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';

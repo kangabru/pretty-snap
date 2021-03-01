@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { forwardRef, Ref, useEffect } from 'preact/compat';
 import { AnimatedValue, ForwardedProps } from 'react-spring';
 import FadeInContainer from '../../../common/components/anim-container';
 import { Children, CssStyle } from '../../../common/misc/types';
@@ -28,10 +27,9 @@ export function AnnotateButton({ children, style, className, ...props }: Animate
 }
 
 type ButtonWithModalProps = Children & { portalId: string, text: string, button: (open: () => void) => JSX.Element }
-export const ButtonWithModal_Ref = forwardRef<HTMLElement, ButtonWithModalProps>(ButtonWithModal)
 
 /** Renders the provided activation button, then renders children inside the modal portal when the given portal ID is active. */
-export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps, ref?: Ref<any>) {
+export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps) {
     const [isActive, activate] = usePortal(portalId)
     return <div class="flex relative" onMouseDown={e => !isActive && e.stopPropagation()}>
         <div class="col">
@@ -40,11 +38,4 @@ export function ButtonWithModal({ portalId, text, button, children }: ButtonWith
         </div>
         <ControlsPortalContent portalId={portalId}>{children}</ControlsPortalContent>
     </div>
-}
-
-/** A function soley used to initialise the 'useChidlNavigate' hook in a parent component. */
-export function ChildNavInit({ init }: { init: () => void }) {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(init, [])
-    return null
 }

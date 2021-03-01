@@ -1,6 +1,7 @@
 import { createContext, Fragment, h } from 'preact';
-import { createPortal, forwardRef, Ref, useContext, useRef } from 'preact/compat';
+import { createPortal, forwardRef, Ref, useContext, useEffect, useRef } from 'preact/compat';
 import { useState } from 'react';
+import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { ScreenWidth, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
 import { Children, ChildrenWithProps } from '../../../common/misc/types';
@@ -16,10 +17,14 @@ import { join } from '../../../common/misc/utils';
  * - Wrap everything that requires the portal in the <ControlPortalContext> component.
  *   A 'portal' element (containing the portal root) is passed to its children so it can be rendered in a custom location.
  * - The <ControlsPortalContent> component will render the given children inside the portal root when the given portal ID is active.
+ * - The <PortalUpdateChildNav> component provides the ability to refresh the child nav hook when portal controls are refreshes
  * - The hooks expose access to the context provider such as activating a portal etc.
  */
 
-const PortalContext = createContext<{ portal?: HTMLElement, activePortal?: string, setPortal?: (id: string) => void }>({})
+const PortalContext = createContext<{
+    portal?: HTMLElement, activePortal?: string,
+    setPortal?: (id: string) => void, updateChildNav?: () => void,
+}>({})
 
 /** Creates the portal context provider that enabled portal functionality inside its children.
  * A 'portal' element (containing the portal root) is passed to its children so it can be rendered in a custom location.
@@ -34,9 +39,11 @@ export default function ControlsPortalContext({ children }: ChildrenWithProps<JS
     useDocumentListener('mousedown', resetPortal)
     useDocumentListener('keydown', e => (e.key === "Escape" || e.key === "Enter") && resetPortal())
 
-    const portalRef = useRef<HTMLElement>() // Portal content will be rendered inside this
+    // Portal content will be rendered inside this ref
+    // Also add child navigation support so the user can navigate controls with the arrow keys
+    const [portalRef, updateChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([], useRef<HTMLElement>() as any)
 
-    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, setPortal }}>
+    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, setPortal, updateChildNav }}>
         {/* Pass the modal to the children so they can render it wherever they want */}
         {children(<ModalPortal_Ref showPortal={!!activePortal} ref={portalRef} />)}
     </PortalContext.Provider>
@@ -48,14 +55,6 @@ export function ControlsPortalContent({ portalId, children }: { portalId: string
     return <>{activePortal === portalId && portal && createPortal(<>{children}</>, portal)}</>
 }
 
-/** Returns whether the given portal is active and and a method to active it.
- * @return [<portal is active>, <activate portal>]
- */
-export function usePortal(portalId: string): [boolean, () => void] {
-    const { activePortal, setPortal } = useContext(PortalContext)
-    return [portalId === activePortal, () => setPortal?.(portalId)]
-}
-
 type ModalPortalProps = { showPortal: boolean }
 export const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPortal)
 
@@ -63,6 +62,7 @@ export const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPo
  * On mobile the modal renders 'inline' with other content, and on desktop it 'hovers' above content like a modal.
  */
 function ModalPortal({ showPortal: show }: ModalPortalProps, portalRef: Ref<HTMLElement>) {
+
     const isMobile = useWindowSmallerThan(ScreenWidth.md)
     return isMobile
         ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
@@ -89,4 +89,21 @@ function Triangle() {
             borderBottom: '1rem solid white',
         }} />
     </>
+}
+
+/** Returns whether the given portal is active and and a method to active it.
+ * @return [<portal is active>, <activate portal>]
+ */
+export function usePortal(portalId: string): [boolean, () => void] {
+    const { activePortal, setPortal } = useContext(PortalContext)
+    return [portalId === activePortal, () => setPortal?.(portalId)]
+}
+
+/** A component soley used to update the 'useChidlNavigate' hook used with the portal.
+ * @param deps - An array of hook dependencies that will update the child nav hook when changed. */
+export function PortalUpdateChildNav({ deps }: { deps: any[] }) {
+    const { updateChildNav } = useContext(PortalContext)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(updateChildNav as any, deps)
+    return null
 }

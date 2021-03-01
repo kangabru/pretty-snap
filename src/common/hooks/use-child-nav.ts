@@ -39,13 +39,15 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
 
         const children = getResetChildren()
         const initIndex = Math.max(0, children.findIndex(x => x.dataset && x.dataset['target'] == 'true'))
-        children[initIndex].tabIndex = 0
+        if (children[initIndex]) {
+            children[initIndex].tabIndex = 0
 
-        // Scroll the target to the center of the scrollable container
-        const rectCont = containerRef.current.getBoundingClientRect()
-        const rectElem = children[initIndex].getBoundingClientRect()
-        const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
-        containerRef.current.scrollTo({ left, behavior: 'smooth' })
+            // Scroll the target to the center of the scrollable container
+            const rectCont = containerRef.current.getBoundingClientRect()
+            const rectElem = children[initIndex].getBoundingClientRect()
+            const left = rectElem.left - rectCont.left + containerRef.current.scrollLeft - rectCont.width / 2
+            containerRef.current.scrollTo({ left, behavior: 'smooth' })
+        }
 
         current.addEventListener('keydown', onKeyDown)
         return () => current.removeEventListener('keydown', onKeyDown)

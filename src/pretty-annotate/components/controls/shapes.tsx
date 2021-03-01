@@ -1,20 +1,18 @@
 import { Fragment, h } from 'preact';
-import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { Children } from '../../../common/misc/types';
 import { join, textClass } from '../../../common/misc/utils';
 import { useSetStyle } from '../../hooks/use-styles';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
-import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
+import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { PortalUpdateChildNav } from './portal';
 
 export default function ShapeButtonGroup() {
     const { shape } = useSetStyle().style
-    const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([shape])
-
-    return <ButtonWithModal_Ref portalId="shapes" text="Shape" ref={childNavRef}
-        button={open => <StyleButtonGeneric shape={shape} onClick={open} />}>
-        <ChildNavInit init={initChildNav} />
+    return <ButtonWithModal portalId="shapes" text="Shape" button={open => (
+        <StyleButtonGeneric shape={shape} onClick={open} />
+    )}>
         <StyleButtonGeneric shape={Shape.Box} />
         <StyleButtonGeneric shape={Shape.Ellipse} />
         <StyleButtonGeneric shape={Shape.Bracket} />
@@ -22,7 +20,10 @@ export default function ShapeButtonGroup() {
         <StyleButtonGeneric shape={Shape.Line} />
         <StyleButtonGeneric shape={Shape.Counter} />
         <StyleButtonGeneric shape={Shape.Text} />
-    </ButtonWithModal_Ref>
+
+        {/* Update the portal's child nav hook when the shape changes */}
+        <PortalUpdateChildNav deps={[shape]} />
+    </ButtonWithModal>
 }
 
 type StyleButtonProps = { shape: Shape, onClick?: () => void }
