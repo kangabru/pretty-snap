@@ -2,9 +2,12 @@ import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport from '../../../common/hooks/use-export';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ForegroundImage } from '../../../common/misc/types';
+import { getRenderScale } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
 import Controls from '../controls';
 import Editor, { Viewer } from './editor';
@@ -19,10 +22,13 @@ export default function Compositor() {
 
     useWarningOnClose(!!image) // Assume they're editing if they've add an image
     const [editorRef, { width }] = useMeasure()
-    const renderScale = image && width ? image?.width / width : 1
+    const renderScale = getRenderScale(width, image?.width)
+
+    const outerRadiusRender = useRenderBorderRadius(renderScale)
 
     return <main class="flex-1 px-4 space-y-6">
-        <section ref={editorRef} class="block w-full max-w-screen-md mx-auto rounded-xl overflow-hidden shadow-md">
+        <section ref={editorRef} style={{ borderRadius: OUTER_BORDER_RADIUS }}
+            class="block w-full max-w-screen-md mx-auto overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
                 : <DropZone class="bg-blue-200 p-10 pb-0 rounded-t-lg" setImage={setImage}
@@ -33,7 +39,8 @@ export default function Compositor() {
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
         {image && <div class="hidden">
-            <section ref={exportRef} class="relative" style={{ width: image?.width, height: image?.height }}>
+            <section ref={exportRef} class="relative overflow-hidden"
+                style={{ width: image?.width, height: image?.height, borderRadius: outerRadiusRender }}>
                 <Image />
                 <Viewer scale={renderScale} />
             </section>

@@ -1,13 +1,16 @@
 import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
+import useMeasure from 'react-use-measure';
 import { DropZoneWrap } from '../../../common/components/drop-zone';
 import ImportDetails from '../../../common/components/import-info';
 import NotSupportedWarning from '../../../common/components/not-supported';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport from '../../../common/hooks/use-export';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { CssStyle, ForegroundImage } from '../../../common/misc/types';
-import { join } from '../../../common/misc/utils';
+import { getRenderScale, join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
@@ -36,13 +39,18 @@ export default function CompositorViewer() {
     useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
 
     // Get the styles for the preview and hidden render components
-    const [refPreviewContainer, stylesScreen, stylesRender] = useAnimatedCompositionStyles()
+    const [refCont, { width: contWidth }] = useMeasure()
+    const [stylesScreen, stylesRender] = useAnimatedCompositionStyles(contWidth)
+
+    // Get the outer border radius as the user can set the settings to render the image with transparent corners
+    const outerRadiusRender = useRenderBorderRadius(getRenderScale(contWidth, stylesRender.outer?.width as number))
 
     const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
     return <>
         {/* Renders the preview */}
-        <animated.section ref={refPreviewContainer as any} className={join(backgroundClasses, "inline-block max-w-screen-lg rounded-xl overflow-hidden shadow-md")} style={stylesScreen.outer}>
+        <animated.section ref={refCont as any} style={{ ...stylesScreen.outer, borderRadius: OUTER_BORDER_RADIUS }}
+            className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
             <DropZoneWrap setImage={setForeground} title="Add a pretty background to your screenshots">
                 {innerProps => foreground?.src
                     ? <Image style={stylesScreen.inner as any} />
@@ -55,7 +63,7 @@ export default function CompositorViewer() {
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
         {foreground && <div class="hidden">
-            <section ref={ref} class={backgroundClasses} style={stylesRender.outer as any}>
+            <section ref={ref} class={backgroundClasses} style={{ ...stylesRender.outer, borderRadius: outerRadiusRender } as any}>
                 <Image style={stylesRender.inner as any} />
             </section>
         </div>}

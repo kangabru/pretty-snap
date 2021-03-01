@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useCallback } from 'react';
-import useStoredSettings, { SettingRenderTransparent, SettingRoundedImageCorners, StoredSetting } from '../hooks/use-stored-settings';
+import useStoredSettings, { SettingRenderTransparentCorners, SettingRoundedImageCorners, StoredSetting } from '../hooks/use-stored-settings';
 
 function SettingToggle({ setting, text }: { setting: StoredSetting, text: string }) {
     const setStoredSetting = useStoredSettings(s => s.setStoredSetting)
@@ -21,5 +21,5 @@ function Toggle({ id, checked, onToggle }: { id: string, checked: boolean, onTog
     </div>
 }
 
-export const ToggleRenderTransparent = () => <SettingToggle setting={SettingRenderTransparent} text="Render transparent corners" />
+export const ToggleRenderTransparent = () => <SettingToggle setting={SettingRenderTransparentCorners} text="Render transparent corners" />
 export const ToggleRoundedImageCorners = () => <SettingToggle setting={SettingRoundedImageCorners} text="Rounded image corners" />

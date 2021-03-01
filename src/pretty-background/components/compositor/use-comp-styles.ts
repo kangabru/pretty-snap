@@ -1,12 +1,10 @@
-import { Ref } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { CSSProperties } from 'react';
 import { useSpring } from 'react-spring';
-import useMeasure from 'react-use-measure';
-import useStoredSettings, { SettingRoundedImageCorners, } from '../../../common/hooks/use-stored-settings';
+import { INNER_BORDER_RADIUS } from '../../../common/constants';
+import useStoredSettings, { SettingRoundedImageCorners } from '../../../common/hooks/use-stored-settings';
 import { ForegroundImage } from '../../../common/misc/types';
 import { srcToUrl, srcToUrlSvg } from '../../../common/misc/utils';
-import { BORDER_RADIUS } from '../../misc/constants';
 import { Position, Settings } from '../../misc/types';
 import { getImageSrc } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
@@ -26,17 +24,16 @@ type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
  *
  * These elements need similar but slightly different styles that that viewing and rendering behave as expected.
  */
-export function useCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
+export function useCompositionStyles(width: number): [CompositionStyles, CompositionStyles] {
     const settings = useOptionsStore() // Not this refreshes on every external option update
-    const [contRefScreen, { width }] = useMeasure()
     const stylesScreen = useStylesPreview(settings, width)
     const stylesRender = useStylesRender(settings, width)
-    return [contRefScreen, stylesScreen, stylesRender]
+    return [stylesScreen, stylesRender]
 }
 
 /** Like useCompositionStyles but all properties are animated using react-spring. Must be rendered with animated components. */
-export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionStyles, CompositionStyles] {
-    const [contRefScreen, stylesScreen, stylesRender] = useCompositionStyles()
+export function useAnimatedCompositionStyles(width: number): [CompositionStyles, CompositionStyles] {
+    const [stylesScreen, stylesRender] = useCompositionStyles(width)
 
     const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesScreenInner } = stylesScreen.inner as CSSProperties
     const animStylesScreenInner = useSpring({ borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius })
@@ -49,7 +46,7 @@ export function useAnimatedCompositionStyles(): [Ref<HTMLElement>, CompositionSt
         outer: { ...animStylesScreenOuter, ...restStylesScreenOuter },
     }
 
-    return [contRefScreen, stylesScreenAnim, stylesRender]
+    return [stylesScreenAnim, stylesRender]
 }
 
 /** Returns styles for the compositor visible on screen.
@@ -157,7 +154,7 @@ function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings, b
  */
 function usePositionStyles(padding: number, position: Position, scale: number): [CSSProperties, CSSProperties] {
     const useImageBorderRadius = useStoredSettings(s => s[SettingRoundedImageCorners])
-    const rad = useImageBorderRadius ? BORDER_RADIUS * scale : 0
+    const rad = useImageBorderRadius ? INNER_BORDER_RADIUS * scale : 0
 
     const stylesForeground: Partial<CSSProperties> = {
         borderTopLeftRadius: rad, borderTopRightRadius: rad,

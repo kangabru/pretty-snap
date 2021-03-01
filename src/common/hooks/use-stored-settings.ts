@@ -2,7 +2,7 @@ import create from "zustand"
 import { devtools } from 'zustand/middleware'
 
 // The stored setting keys
-export const SettingRenderTransparent = "render_transparent"
+export const SettingRenderTransparentCorners = "render_transparent"
 export const SettingRoundedImageCorners = "rounded_image_corners"
 
 // Wrap up the keys into a type
@@ -18,7 +18,7 @@ export type StoredSettingStore = {
 /** zustand state for state management  */
 const useStoredSettings = create<StoredSettingStore>(devtools(set => ({
 
-    [SettingRenderTransparent]: getLocalValue(SettingRenderTransparent, false),
+    [SettingRenderTransparentCorners]: getLocalValue(SettingRenderTransparentCorners, false),
     [SettingRoundedImageCorners]: getLocalValue(SettingRoundedImageCorners, true),
 
     setStoredSetting(setting: StoredSetting, value: boolean) {
