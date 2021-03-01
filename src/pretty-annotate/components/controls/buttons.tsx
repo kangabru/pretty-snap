@@ -1,10 +1,11 @@
-import { Fragment, h } from 'preact';
-import { forwardRef, Ref, useEffect } from 'preact/compat';
+import { createContext, Fragment, h } from 'preact';
+import { createPortal, forwardRef, Ref, useContext, useEffect, useRef } from 'preact/compat';
 import { useState } from 'react';
 import { animated, AnimatedValue, ForwardedProps } from 'react-spring';
 import FadeInContainer from '../../../common/components/anim-container';
-import { useDocumentListener } from '../../../common/hooks/use-misc';
-import { Children, CssStyle } from '../../../common/misc/types';
+import { useDocumentListener, useWindowWidth } from '../../../common/hooks/use-misc';
+import { Children, ChildrenWithProps, CssStyle } from '../../../common/misc/types';
+import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 
 export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
@@ -27,42 +28,30 @@ export function AnnotateButton({ children, style, ...props }: AnimatedValue<Forw
     </animated.button>
 }
 
-type ButtonWithModalProps = CssStyle & Children & { text: string, button: (open: () => void) => JSX.Element }
+type ButtonWithModalProps = Children & { portalId: string, text: string, button: (open: () => void) => JSX.Element }
 export const ButtonWithModal_Ref = forwardRef<HTMLElement, ButtonWithModalProps>(ButtonWithModal)
 
-export function ButtonWithModal({ text, button, children, style }: ButtonWithModalProps, ref?: Ref<any>) {
-    const [showModal, setShowModal] = useState(false)
-    useDocumentListener('mousedown', () => setShowModal(false), [showModal])
-    useDocumentListener('keydown', e => (e.key === "Escape" || e.key === "Enter") && setShowModal(false), [showModal])
+export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps, ref?: Ref<any>) {
+    const { portal, activePortal, setPortal } = useContext(PortalContext)
 
-    return <div class="flex relative" style={style} onMouseDown={e => showModal && e.stopPropagation()}>
+    return <div class="flex relative" onMouseDown={e => activePortal && e.stopPropagation()}>
         <div class="col space-y-1">
-            {button(() => setShowModal(true))}
+            {button(() => setPortal?.(portalId))}
             <span class="text-sm text-gray-600">{text}</span>
         </div>
-        <ButtonRowModal_Ref ref={ref} show={showModal}>{children}</ButtonRowModal_Ref>
+        {activePortal === portalId && portal && createPortal(<>{children}</>, portal)}
     </div>
 }
 
-type ButtonRowModalProps = Children & { show: boolean }
-const ButtonRowModal_Ref = forwardRef<HTMLElement, ButtonRowModalProps>(ButtonRowModal)
-
-export function ButtonRowModal({ show, children }: ButtonRowModalProps, ref?: Ref<any>) {
-    return show ? <div class="z-50 absolute top-full mt-2 -ml-2 shadow rounded-lg">
-        <Triangle />
-        <div ref={ref} class="relative flex space-x-2 rounded-lg bg-white p-3">{children}</div>
-    </div> : null
-}
-
-function Triangle() {
+export function Triangle() {
     return <>
-        <div class="absolute top-0 left-4 transform -translate-y-full -mt-px" style={{
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full -mt-px" style={{
             borderLeft: '1rem solid transparent',
             borderRight: '1rem solid transparent',
             borderBottom: '1rem solid rgba(0, 0, 0, 0.2)',
             filter: 'blur(2px)',
         }} />
-        <div class="absolute top-0 left-4 transform -translate-y-full" style={{
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full" style={{
             borderLeft: '1rem solid transparent',
             borderRight: '1rem solid transparent',
             borderBottom: '1rem solid white',
@@ -75,4 +64,30 @@ export function ChildNavInit({ init }: { init: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(init, [])
     return null
+}
+
+export const PortalContext = createContext<{ portal?: HTMLElement, activePortal?: string, setPortal?: (id: string) => void }>({})
+
+export function ButtonRowPortal({ children }: ChildrenWithProps<JSX.Element>) {
+
+    const [activePortal, setPortal] = useState<string | undefined>(undefined)
+    const resetPortal = () => setPortal(undefined)
+
+    useDocumentListener('mousedown', resetPortal)
+    useDocumentListener('keydown', e => (e.key === "Escape" || e.key === "Enter") && resetPortal())
+
+    const show = !!activePortal
+    const isMobile = useWindowWidth() < 768
+    const portalRef = useRef<HTMLDivElement>()
+
+    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, setPortal }}>
+        {children(<>
+            {isMobile
+                ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any} class={join(!show && "hidden", "flex justify-center flex-wrap space-x-2 p-3")} />
+                : <div onMouseDown={e => show && e.stopPropagation()} class={join(!show && "hidden", "z-50 absolute left-1/2 transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
+                    <Triangle />
+                    <div ref={portalRef as any} class="relative flex space-x-2 rounded-lg bg-white p-3" />
+                </div>}
+        </>)}
+    </PortalContext.Provider>
 }

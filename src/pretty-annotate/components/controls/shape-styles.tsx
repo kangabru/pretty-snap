@@ -5,13 +5,13 @@ import { useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
 import { AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
 
-export default function ShapeStyleButtonGroup({ text }: { text: string }) {
-    const { shape, shapeStyle, color: { color } } = useSetStyle().style
+export default function ShapeStyleButtonGroup() {
+    const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
     const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([shape, shapeStyle])
 
-    return <ButtonWithModal_Ref ref={childNavRef} text={text} style={{ color }}
+    return <ButtonWithModal_Ref portalId="shape-styles" text="Style" ref={childNavRef}
         button={open => <CurrentShape onClick={open} />}>
         <ChildNavInit init={initChildNav} />
 
@@ -63,12 +63,12 @@ function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
 
 function ShapeStyleButton({ shapeStyle, disabled, onClick, children }: Children & ShapeStyleButtonProps) {
     const { style, setStyle } = useSetStyle()
+    const { color: { color }, shape } = style
     const setShapeStyle = () => setStyle({ shapeStyle })
 
-    const currentShapeStyle = getRealShape(style.shape, style.shapeStyle)
+    const currentShapeStyle = getRealShape(shape, shapeStyle)
     const isTarget = shapeStyle === currentShapeStyle
 
-    return <AnnotateButtonSvg data-target={isTarget} disabled={disabled} onClick={onClick ?? setShapeStyle}>
-        {children}
-    </AnnotateButtonSvg>
+    return <AnnotateButtonSvg data-target={isTarget} disabled={disabled} style={{ color }}
+        onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
 }

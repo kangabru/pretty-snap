@@ -8,11 +8,11 @@ import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal_Ref, ChildNavInit } from './buttons';
 
-export default function ShapeButtonGroup({ text }: { text: string }) {
-    const { color: { color }, shape } = useSetStyle().style
+export default function ShapeButtonGroup() {
+    const { shape } = useSetStyle().style
     const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([shape])
 
-    return <ButtonWithModal_Ref ref={childNavRef} text={text} style={{ color }}
+    return <ButtonWithModal_Ref portalId="shapes" text="Shape" ref={childNavRef}
         button={open => <StyleButtonGeneric shape={shape} onClick={open} />}>
         <ChildNavInit init={initChildNav} />
         <StyleButtonGeneric shape={Shape.Box} />
@@ -74,7 +74,8 @@ function StyleButton({ shape, text, onClick, children }: StyleButtonProps & Part
                 {text}
             </span>
         </AnnotateButton>
-        : <AnnotateButtonSvg data-target={isTarget} onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
+        : <AnnotateButtonSvg data-target={isTarget} style={{ color }}
+            onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
 }
 
 function BracketIcon() {

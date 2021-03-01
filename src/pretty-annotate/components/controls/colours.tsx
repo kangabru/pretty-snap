@@ -1,7 +1,5 @@
 import { h } from 'preact';
 import { forwardRef, Ref } from 'preact/compat';
-import { useState } from 'react';
-import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/use-styles';
@@ -9,17 +7,13 @@ import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
 import { ButtonWithModal_Ref, ChildNavInit } from './buttons';
 
-export default function ColorButtonGroup({ text }: { text: string }) {
-    const [showColours, setShowColours] = useState(false)
-    useDocumentListener('mousedown', () => setShowColours(false), [showColours])
-    useDocumentListener('keydown', e => e.key === "Escape" && setShowColours(false), [showColours])
-
+export default function ColorButtonGroup() {
     const { color, useDarkText } = useAnnotateStore(s => s.style.color)
     const [buttonRef, ringColor] = useRingColourStyle()
 
     const [childNavRef, initChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([color, useDarkText])
 
-    return <ButtonWithModal_Ref ref={childNavRef} text={text}
+    return <ButtonWithModal_Ref portalId="colors" text="Colour" ref={childNavRef}
         button={open => <InnerButton_Ref ref={buttonRef} onClick={open} {...{ color, ringColor, useDarkText }} />}>
         <ChildNavInit init={initChildNav} />
         <ColorButton color={colors.blue} />

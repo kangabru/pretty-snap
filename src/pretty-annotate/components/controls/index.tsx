@@ -1,11 +1,12 @@
 import { Fragment, h } from 'preact';
+import FadeInContainer from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
-import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { Exports } from '../../../common/hooks/use-export';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
-import { AnnotateButtonSvg, ButtonRowWithAnim } from './buttons';
+import { AnnotateButtonSvg, ButtonRowPortal, ButtonRowWithAnim } from './buttons';
 import ColorButtonGroup from './colours';
 import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
@@ -19,17 +20,23 @@ export default function Controls(props: Exports) {
                 <HistoryButtonGroup />
             </ButtonRowWithAnim>}
 
-            <ButtonRowWithAnim>
-                <ShapeButtonGroup text="Shape" />
-                <ColorButtonGroup text="Colour" />
-                <ShapeStyleButtonGroup text="Style" />
-            </ButtonRowWithAnim>
+            <ButtonRowPortal>
+                {portal => <FadeInContainer class="col relative p-3 space-y-2 rounded-lg bg-white shadow-md">
+                    <div class="relative z-0 flex space-x-3">
+                        <ShapeButtonGroup />
+                        <ColorButtonGroup />
+                        <ShapeStyleButtonGroup />
+                    </div>
+                    {portal}
+                </FadeInContainer>}
+            </ButtonRowPortal>
 
             {hasEdits && <ButtonRowWithAnim>
                 <ExportButtonGroup {...props} />
             </ButtonRowWithAnim>}
 
         </section>
+
         <ExportError {...props} />
     </>
 }

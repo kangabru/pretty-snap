@@ -4,7 +4,14 @@ export function useDocumentListener<K extends keyof DocumentEventMap>(type: K, l
     useEffect(() => {
         document.addEventListener(type, listener)
         return () => document.removeEventListener(type, listener)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [type, listener, ...(inputs ?? [])])
+}
 
+export function useWindowListener<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, inputs?: Inputs) {
+    useEffect(() => {
+        window.addEventListener(type, listener)
+        return () => window.removeEventListener(type, listener)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type, listener, ...(inputs ?? [])])
 }
@@ -41,4 +48,10 @@ export function useWarningOnClose(active: boolean) {
         setWarningOnClose(active)
         return () => setWarningOnClose(false)
     }, [active])
+}
+
+export function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth)
+    useWindowListener('resize', () => setWidth(window.innerWidth))
+    return width
 }
