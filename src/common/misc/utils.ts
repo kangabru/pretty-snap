@@ -25,3 +25,11 @@ export function onKeys(callbackMap: { [key: string]: (e: KeyboardEvent) => void 
 export function textClass(useDarkText: boolean | undefined) {
     return useDarkText ? "text-gray-800" : "text-white"
 }
+
+export function remToPixels(rem: number) {
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize)
+}
+
+export function getRenderScale(screenContWidth: number, renderContWidth: number | undefined) {
+    return screenContWidth > 1 ? (renderContWidth ?? 0) / screenContWidth : 1
+}

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'react';
-import { useDocumentListener } from '../../../common/hooks/misc';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { join, onKeys, textClass, useRandomItem } from '../../../common/misc/utils';
 import { Annotation, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';

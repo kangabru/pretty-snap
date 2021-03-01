@@ -15,7 +15,7 @@ export default function CompositorControls(props: Exports) {
             <PaddingSlider />
 
             {/* Export buttons */}
-            <div class="row space-x-3 text-primary-base">
+            <div class="row space-x-3 text-primary">
                 <ExportButtons {...props} notReady={!hasImage} class="outline-primary" />
             </div>
         </section>

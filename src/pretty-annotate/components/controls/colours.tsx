@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import { forwardRef, Ref } from 'preact/compat';
 import { useState } from 'react';
-import { useDocumentListener } from '../../../common/hooks/misc';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { join } from '../../../common/misc/utils';
-import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/styles';
+import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/use-styles';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
 import { ButtonWithModal_Ref, ChildNavInit } from './buttons';

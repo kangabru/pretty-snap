@@ -2,11 +2,11 @@ import { Fragment, h } from 'preact';
 import { forwardRef, Ref, useEffect } from 'preact/compat';
 import { useState } from 'react';
 import { animated, AnimatedValue, ForwardedProps, useTransition } from 'react-spring';
-import { useDocumentListener } from '../../../common/hooks/misc';
-import { Children, CSSProps } from '../../../common/misc/types';
-import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/styles';
+import { useDocumentListener } from '../../../common/hooks/use-misc';
+import { Children, CssStyle } from '../../../common/misc/types';
+import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 
-export function ButtonRowWithAnim({ children, style }: Children & CSSProps) {
+export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
     const rowTransition = useTransition(true, null, {
         from: { transform: 'scale(0)', opacity: 1 },
         enter: { transform: 'scale(1)' },
@@ -31,7 +31,7 @@ export function AnnotateButton({ children, style, ...props }: AnimatedValue<Forw
     </animated.button>
 }
 
-type ButtonWithModalProps = CSSProps & Children & { text: string, button: (open: () => void) => JSX.Element }
+type ButtonWithModalProps = CssStyle & Children & { text: string, button: (open: () => void) => JSX.Element }
 export const ButtonWithModal_Ref = forwardRef<HTMLElement, ButtonWithModalProps>(ButtonWithModal)
 
 export function ButtonWithModal({ text, button, children, style }: ButtonWithModalProps, ref?: Ref<any>) {

@@ -36,7 +36,7 @@ function PositionButton(props: { position: Position }) {
 
     return <button ref={ref} title={title} onClick={setPosition} onKeyDown={onKeyDown} tabIndex={position == positionActual ? 0 : -1}
         class={join("flex-1 sm:flex-auto p-2 outline-primary text-center transition rounded",
-            isSelected ? "bg-primary-base hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
+            isSelected ? "bg-primary hover:bg-primary-dark text-gray-100 z-10" : "text-gray-700 hover:bg-gray-300",
             position == Position.Center && "rounded-l",
             position == Position.Right && "rounded-r")}>
         <svg class="inline w-6 h-6" viewBox="1 1 22 22" xmlns="http://www.w3.org/2000/svg">

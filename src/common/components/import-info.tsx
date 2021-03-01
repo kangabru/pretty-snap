@@ -9,7 +9,7 @@ type Props = { title: string | JSX.Element, isDropping: boolean, isError: boolea
 /** Renders the initial info section within the compositor before the user has selected an image. */
 export default function ImportDetails({ title, isDropping, isError, setImage }: Props) {
     return <>
-        <div class="w-full px-4 pt-4 sm:pt-8 sm:px-12 space-y-5 bg-white">
+        <div class="w-full px-4 pt-4 sm:pt-8 sm:px-12 space-y-5">
             <h2 class="max-w-md mx-auto space-x-1 text-xl sm:text-3xl text-center font-open font-semibold select-none">
                 {title}
             </h2>
