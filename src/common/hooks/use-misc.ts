@@ -1,4 +1,5 @@
 import { Inputs, useCallback, useEffect, useState } from "preact/hooks"
+import { IsAlt } from "../misc/keyboard"
 
 export function useDocumentListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, inputs?: Inputs) {
     useEffect(() => {
@@ -26,7 +27,7 @@ export function useKeysHeld(): KeysHeld {
     useDocumentListener('mouseup', () => setMouseDown(false), [mouseDown])
 
     const updateKeys = useCallback((e: KeyboardEvent) => {
-        if (mouseDown && e.key.toLowerCase() == 'alt') e.preventDefault() // Stop alt from opening the address bar when drawing
+        if (mouseDown && IsAlt(e)) e.preventDefault() // Stop alt from opening the address bar when drawing
         setKeysHeld(s => {
             const isEqual = (s.alt === e.altKey) && (s.ctrl === e.ctrlKey) && (s.shift === e.shiftKey)
             return isEqual ? s : { alt: e.altKey, ctrl: e.ctrlKey, shift: e.shiftKey }

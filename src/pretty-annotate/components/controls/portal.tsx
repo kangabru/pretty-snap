@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { ScreenWidth, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
+import { IsEnter, IsEscape } from '../../../common/misc/keyboard';
 import { Children, ChildrenWithProps } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 
@@ -37,7 +38,7 @@ export default function ControlsPortalContext({ children }: ChildrenWithProps<JS
 
     // Add global events to hide the portal
     useDocumentListener('mousedown', resetPortal)
-    useDocumentListener('keydown', e => (e.key === "Escape" || e.key === "Enter") && resetPortal())
+    useDocumentListener('keydown', e => (IsEscape(e) || IsEnter(e)) && resetPortal())
 
     // Portal content will be rendered inside this ref
     // Also add child navigation support so the user can navigate controls with the arrow keys

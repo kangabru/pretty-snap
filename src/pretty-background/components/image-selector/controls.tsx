@@ -6,6 +6,7 @@ import { join, srcToUrl } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
 import useUnsplashStore from '../../stores/unsplash';
 import { ImagePreset, ImagePresets, RandButton } from './presets';
+import { IsEnter } from '../../../common/misc/keyboard';
 
 /** Renders the search bar and quick search button controls used to select unsplash images. */
 export default function ImageControls() {
@@ -25,7 +26,7 @@ function SearchInput() {
     useEffect(() => useUnsplashStore.subscribe(setInputValue, state => state.searchTerm), [])
 
     // Update the inernal value on keyboard presses, and submit a new search on enter
-    const update = (e: KeyboardEvent) => e.key == "Enter"
+    const update = (e: KeyboardEvent) => IsEnter(e)
         ? useUnsplashStore.setState({ searchTerm: inputValue ?? "" })
         : setInputValue((e.target as HTMLInputElement).value)
 

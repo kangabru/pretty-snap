@@ -3,6 +3,7 @@ import { Ref, useEffect, useRef } from 'preact/hooks';
 import { Position } from '../../misc/types';
 import { join } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
+import { IsLeft, IsRight } from '../../../common/misc/keyboard';
 
 const positions = [
     Position.Center,
@@ -55,8 +56,8 @@ function useLeftRightActionWhenFocused(isSelected: boolean): [Ref<HTMLButtonElem
     const index = positions.indexOf(currentPosition)
     const onKeyDown = (e: KeyboardEvent) => {
         let newIndex = index
-        if (e.key == 'ArrowLeft') newIndex = Math.max(0, index - 1)
-        if (e.key == 'ArrowRight') newIndex = Math.min(index + 1, positions.length - 1)
+        if (IsLeft(e)) newIndex = Math.max(0, index - 1)
+        if (IsRight(e)) newIndex = Math.min(index + 1, positions.length - 1)
         if (index != newIndex) useOptionsStore.setState({ position: positions[newIndex] })
     }
 

@@ -1,4 +1,5 @@
 import { Ref, useEffect, useRef, useState } from "preact/hooks"
+import { IsLeft, IsRight } from "../misc/keyboard"
 
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
@@ -21,8 +22,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         }
 
         const onKeyDown = (e: KeyboardEvent) => {
-            const isLeft = e.key == "ArrowLeft" || e.key == "Left"
-            const isRight = e.key == "ArrowRight" || e.key == "Right"
+            const isLeft = IsLeft(e), isRight = IsRight(e)
             if (!(isLeft || isRight)) return
 
             const children = getResetChildren()

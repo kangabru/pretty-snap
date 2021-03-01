@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
+import { KEYS } from '../../../common/misc/keyboard';
 import { join, onKeys, textClass, useRandomItem } from '../../../common/misc/utils';
 import { Annotation, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
@@ -58,7 +59,7 @@ function TextInput(props: Props) {
         <input ref={ref as any} value={textEdits} style={{ backgroundColor: colour }}
             class={join(CLASS_STYLE, textClass(useDarkText), "ring-4 ring-gray-300 ring-opacity-60 outline-none focus:outline-none pointer-events-auto")}
             onMouseDown={e => e.stopPropagation()}
-            onKeyDown={onKeys({ 'Escape': cancel, 'Enter': save })}
+            onKeyDown={onKeys({ [KEYS.Escape]: cancel, [KEYS.Enter]: save })}
             onInput={e => setTextEdits(e.currentTarget.value)} />
 
         <span class="text-xs text-gray-800 font-bold bg-gray-200 px-1 rounded whitespace-nowrap">Enter to save</span>
