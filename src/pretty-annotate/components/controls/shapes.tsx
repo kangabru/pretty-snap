@@ -68,13 +68,13 @@ function StyleButton({ shape, text, onClick, children }: StyleButtonProps & Part
     const isTarget = shape === selectedShape
 
     return text
-        ? <AnnotateButton data-target={isTarget} onClick={onClick ?? setShape}>
+        ? <AnnotateButton data-target={isTarget} onClick={onClick ?? setShape} className="m-1">
             <span style={{ backgroundColor: color }}
                 class={join(textClass(useDarkText), "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>
                 {text}
             </span>
         </AnnotateButton>
-        : <AnnotateButtonSvg data-target={isTarget} style={{ color }}
+        : <AnnotateButtonSvg data-target={isTarget} style={{ color }} className="m-1"
             onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
 }
 

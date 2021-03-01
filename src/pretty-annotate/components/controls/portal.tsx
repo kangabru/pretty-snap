@@ -66,12 +66,12 @@ function ModalPortal({ showPortal: show }: ModalPortalProps, portalRef: Ref<HTML
     const isMobile = useWindowSmallerThan(ScreenWidth.md)
     return isMobile
         ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
-            class={join(!show && "hidden", "flex justify-center flex-wrap space-x-2 p-3")} />
+            class={join(!show && "hidden", "flex justify-center flex-wrap p-2")} />
 
         : <div onMouseDown={e => show && e.stopPropagation()}
             class={join(!show && "hidden", "z-50 absolute left-1/2 transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
             <Triangle />
-            <div ref={portalRef as any} class="relative flex space-x-2 rounded-lg bg-white p-3" />
+            <div ref={portalRef as any} class="relative flex rounded-lg bg-white p-2" />
         </div>
 }
 

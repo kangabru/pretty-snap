@@ -69,6 +69,7 @@ function ShapeStyleButton({ shapeStyle, disabled, onClick, children }: Children 
     const currentShapeStyle = getRealShape(shape, shapeStyle)
     const isTarget = shapeStyle === currentShapeStyle
 
-    return <AnnotateButtonSvg data-target={isTarget} disabled={disabled} style={{ color }}
+    return <AnnotateButtonSvg data-target={isTarget} disabled={disabled}
+        style={{ color }} className="m-1"
         onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
 }

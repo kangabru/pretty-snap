@@ -44,6 +44,6 @@ const InnerButton_Ref = forwardRef<HTMLButtonElement, InnerProps>(InnerButton)
 
 function InnerButton({ color, ringColor, useDarkText, ...props }: InnerProps, ref?: Ref<any>) {
     return <button ref={ref} {...props} style={{ backgroundColor: color, [VAR_RING_COLOR]: ringColor }}
-        class={join("w-12 h-12 relative rounded-md grid place-items-center outline-ring border-2",
+        class={join("w-12 h-12 m-1 relative rounded-md grid place-items-center outline-ring border-2",
             useDarkText ? "border-gray-400" : "border-transparent")} />
 }

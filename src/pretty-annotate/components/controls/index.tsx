@@ -3,6 +3,7 @@ import FadeInContainer from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
+import { ScreenWidth, useWindowLargerThan, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
@@ -13,18 +14,21 @@ import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
 
 export default function Controls(props: Exports) {
+    const isWide = useWindowLargerThan(ScreenWidth.sm)
+
     const hasEdits = !!useAnnotateStore(s => s.undos.length || s.redos.length)
+    const history = hasEdits && <ButtonRowWithAnim><HistoryButtonGroup /></ButtonRowWithAnim>
+    const exports = hasEdits && <ButtonRowWithAnim><ExportButtonGroup {...props} /></ButtonRowWithAnim>
 
     return <>
-        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-x-3 z-10">
-            {hasEdits && <ButtonRowWithAnim>
-                <HistoryButtonGroup />
-            </ButtonRowWithAnim>}
+        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-y-3 sm:space-y-0 sm:space-x-3 z-10">
+
+            {isWide && history}
 
             <ControlsPortalContext>
                 {portal => (
-                    <FadeInContainer class="col relative p-3 space-y-2 rounded-lg bg-white shadow-md">
-                        <div class="relative z-0 flex space-x-3">
+                    <FadeInContainer class="col relative p-2 space-y-2 rounded-lg bg-white shadow-md">
+                        <div class="relative z-0 flex space-x-1">
                             <ShapeButtonGroup />
                             <ColorButtonGroup />
                             <ShapeStyleButtonGroup />
@@ -34,9 +38,12 @@ export default function Controls(props: Exports) {
                 )}
             </ControlsPortalContext>
 
-            {hasEdits && <ButtonRowWithAnim>
-                <ExportButtonGroup {...props} />
-            </ButtonRowWithAnim>}
+            {isWide && exports}
+
+            {!isWide && <div class="row flex-wrap justify-center">
+                <div class="p-1">{history}</div>
+                <div class="p-1">{exports}</div>
+            </div>}
 
         </section>
 

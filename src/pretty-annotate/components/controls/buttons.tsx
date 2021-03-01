@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import { forwardRef, Ref, useEffect } from 'preact/compat';
-import { animated, AnimatedValue, ForwardedProps } from 'react-spring';
+import { AnimatedValue, ForwardedProps } from 'react-spring';
 import FadeInContainer from '../../../common/components/anim-container';
 import { Children, CssStyle } from '../../../common/misc/types';
+import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import { ControlsPortalContent, usePortal } from './portal';
 
@@ -18,12 +19,12 @@ export function AnnotateButtonSvg({ children, ...props }: AnimatedValue<Forwarde
     </AnnotateButton>
 }
 
-export function AnnotateButton({ children, style, ...props }: AnimatedValue<ForwardedProps<any>>) {
+export function AnnotateButton({ children, style, className, ...props }: AnimatedValue<ForwardedProps<any>>) {
     const [ref, ringColor] = useRingColourStyle()
-    return <animated.button ref={ref} {...props} style={{ ...style, [VAR_RING_COLOR]: ringColor }}
-        className="button w-12 h-12 grid place-items-center outline-ring">
+    return <button ref={ref} {...props} style={{ ...style, [VAR_RING_COLOR]: ringColor }}
+        className={join(className, "button w-12 h-12 grid place-items-center outline-ring")}>
         {children}
-    </animated.button>
+    </button>
 }
 
 type ButtonWithModalProps = Children & { portalId: string, text: string, button: (open: () => void) => JSX.Element }
@@ -33,7 +34,7 @@ export const ButtonWithModal_Ref = forwardRef<HTMLElement, ButtonWithModalProps>
 export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps, ref?: Ref<any>) {
     const [isActive, activate] = usePortal(portalId)
     return <div class="flex relative" onMouseDown={e => !isActive && e.stopPropagation()}>
-        <div class="col space-y-1">
+        <div class="col">
             {button(activate)}
             <span class="text-sm text-gray-600">{text}</span>
         </div>
