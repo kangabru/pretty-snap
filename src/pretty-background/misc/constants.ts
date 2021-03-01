@@ -74,7 +74,7 @@ export const quickPatterns = [
     getQuickPattern(patterns.stripes, colours.purple200, colours.white, 0.5, 0.75),
     getQuickPattern(patterns.polka, colours.red400, colours.white, 0.75, 0.75),
     getQuickPattern(patterns.random, colours.teal400, colours.white, 0.5, 2.5),
-    getQuickPattern(patterns.leaf, colours.green400, colours.black, 0.25, 1.5),
+    getQuickPattern(patterns.leaf, colours.green200, colours.black, 0.25, 1.5),
     getQuickPattern(patterns.triangles, colours.pink200, colours.black, 0.25, 1),
 ]
 
