@@ -9,40 +9,49 @@ export default function Shortcuts() {
                 <td class="px-2 font-semibold">Shapes</td>
             </thead>
             <tbody class="space-y-2 divide-y">
+
+                {/* Drag + Shift */}
+                <Row rowSpan1={2}
+                    col1={<><Command text="DRAG" /> + <Shift /></>}
+                    col2="Fix aspect ratio"
+                    col3={<><Shape text="Box" /> <Shape text="Ellipse" /></>} />
                 <Row
-                    command={<><Command text="DRAG" /> + <Shift /></>}
-                    description="Fix aspect ratio"
-                    info={<><Shape text="Box" /> <Shape text="Ellipse" /></>} />
+                    col2="Snap to 45° lines"
+                    col3={<><Shape text="Line" /> <Shape text="Arrow" /> <Shape text="Bracket" /></>} />
+
+                {/* Drag + Alt */}
+                <Row rowSpan1={2}
+                    col1={<><Command text="DRAG" /> + <Alt /></>}
+                    col2="Flip bracket direction"
+                    col3={<Shape text="Bracket" />} />
                 <Row
-                    command={<><Command text="DRAG" /> + <Shift /></>}
-                    description="Snap to 45° lines"
-                    info={<><Shape text="Line" /> <Shape text="Arrow" /> <Shape text="Bracket" /></>} />
+                    col2="Draw inside bounds"
+                    col3={<Shape text="Ellipse" />} />
+
+                {/* Undo */}
                 <Row
-                    command={<><Command text="DRAG" /> + <Alt /></>}
-                    description="Flip bracket direction"
-                    info={<Shape text="Bracket" />} />
+                    col1={<><Ctrl /> + <Command text="Z" /></>}
+                    col2={<p class="text-center">Undo</p>} />
+
+                {/* Redo */}
                 <Row
-                    command={<><Ctrl /> + <Command text="Z" /></>}
-                    description="Undo"
-                    info="-" />
+                    col1={<><Ctrl /> + <Command text="Y" /></>}
+                    col2={<p class="text-center">Redo</p>} rowSpan2={2} />
                 <Row
-                    command={<><Ctrl /> + <Command text="Y" /></>}
-                    description="Redo"
-                    info="-" />
-                <Row
-                    command={<><Ctrl /> + <Shift /> + <Command text="Z" /></>}
-                    description="Redo"
-                    info="-" />
+                    col1={<><Ctrl /> + <Shift /> + <Command text="Z" /></>} />
             </tbody>
         </table>
     </div>
 }
 
-function Row({ command, description, info }: { command: any, description: any, info: any }) {
+type Cols = { col1?: any, col2?: any, col3?: any }
+type RowSpans = { rowSpan1?: number, rowSpan2?: number, rowSpan3?: number }
+
+function Row({ col1, col2, col3, rowSpan1, rowSpan2, rowSpan3 }: Cols & RowSpans) {
     return <tr>
-        <td class="p-2 whitespace-nowrap">{command}</td>
-        <td class="p-2 whitespace-nowrap">{description}</td>
-        <td class="p-2 whitespace-nowrap">{info}</td>
+        {col1 && <td rowSpan={rowSpan1 ?? 1} class="p-2 whitespace-nowrap">{col1}</td>}
+        {col2 && <td rowSpan={rowSpan2 ?? 1} class="p-2 whitespace-nowrap">{col2}</td>}
+        {col3 && <td rowSpan={rowSpan3 ?? 1} class="p-2 whitespace-nowrap">{col3}</td>}
     </tr>
 }
 
