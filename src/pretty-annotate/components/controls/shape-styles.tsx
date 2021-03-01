@@ -63,13 +63,12 @@ function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
 
 function ShapeStyleButton({ shapeStyle, disabled, onClick, children }: Children & ShapeStyleButtonProps) {
     const { style, setStyle } = useSetStyle()
-    const { color: { color }, shape } = style
     const setShapeStyle = () => setStyle({ shapeStyle })
 
-    const currentShapeStyle = getRealShape(shape, shapeStyle)
+    const currentShapeStyle = getRealShape(style.shape, style.shapeStyle)
     const isTarget = shapeStyle === currentShapeStyle
 
     return <AnnotateButtonSvg data-target={isTarget} disabled={disabled}
-        style={{ color }} className="m-1"
+        style={{ color: style.color.color }} className="m-1"
         onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
 }
