@@ -3,6 +3,7 @@ import { animated, config, useTransition } from "react-spring"
 import { Children, CssClass, CssStyle } from "../misc/types"
 import { join } from "../misc/utils"
 
+/** Fades and scales the container in view. */
 export default function FadeInContainer({ class: cls, style, children }: Children & CssStyle & CssClass) {
 
     const rowTransition = useTransition(true, null, {
@@ -17,6 +18,7 @@ export default function FadeInContainer({ class: cls, style, children }: Childre
     )) as any
 }
 
+/** Fades contents in and out from the sizes. */
 export function SlideInOutContainer({ show, fromLeft, children }: Children & { show: boolean, fromLeft: boolean }) {
 
     const transition = useTransition(show, null, {
