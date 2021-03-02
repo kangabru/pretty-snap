@@ -22,7 +22,7 @@ export default function ColorButtonGroup() {
         <ColorButton color={colors.light} useDarkText />
 
         {/* Update the portal's child nav hook when the colour changes */}
-        <PortalUpdateChildNav modalId={ModalId.Colour} deps={[color, useDarkText]} />
+        <PortalUpdateChildNav deps={[color, useDarkText]} />
     </ButtonWithModal>
 }
 

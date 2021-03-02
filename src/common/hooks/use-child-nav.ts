@@ -20,14 +20,8 @@ export function useChildNavigate<T extends HTMLElement>(...[refocusInputs, ref, 
         const current = containerRef.current
         if (!current) return
 
-        function getNode() {
-            if (!containerRef.current) return null
-            if (!nodeDepth) return containerRef.current
-            return containerRef.current.firstElementChild
-        }
-
         function getResetChildren(): HTMLElement[] {
-            const node = getNode()
+            const node = getNode(containerRef, nodeDepth)
             if (!node) return []
             const children = [...node.childNodes.values()] as HTMLElement[]
             children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
@@ -71,6 +65,19 @@ export function useChildNavigate<T extends HTMLElement>(...[refocusInputs, ref, 
     }, [...refocusInputs ?? [], nodeDepth])
 
     return containerRef
+}
+
+export function getNode(ref: Ref<HTMLElement>, nodeDepth?: 0 | 1) {
+    if (!ref.current) return null
+    if (!nodeDepth) return ref.current
+    return ref.current.firstElementChild
+}
+
+export function focusActive(node: Element | null) {
+    if (node == null) return
+    const children = [...node.childNodes.values()] as HTMLElement[]
+    const target = children.find(x => x.dataset && x.dataset['target'] == 'true')
+    target?.focus()
 }
 
 function GetNavKey(e: KeyboardEvent): NavKey | null {

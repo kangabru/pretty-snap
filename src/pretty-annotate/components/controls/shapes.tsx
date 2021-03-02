@@ -22,7 +22,7 @@ export default function ShapeButtonGroup() {
         <StyleButtonGeneric shape={Shape.Text} />
 
         {/* Update the portal's child nav hook when the shape changes */}
-        <PortalUpdateChildNav modalId={ModalId.Shape} deps={[shape]} />
+        <PortalUpdateChildNav deps={[shape]} />
     </ButtonWithModal>
 }
 

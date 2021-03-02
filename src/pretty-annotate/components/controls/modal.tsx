@@ -2,7 +2,7 @@ import { createContext, Fragment, h } from 'preact';
 import { createPortal, forwardRef, Ref, useContext, useEffect, useRef } from 'preact/compat';
 import { useState } from 'react';
 import { animated, config, useSpring, useTransition } from 'react-spring';
-import { useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
+import { focusActive, getNode, useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { ScreenWidth, useWindowSmallerThan } from '../../../common/hooks/use-screen-width';
 import { IsEnter, IsEscape } from '../../../common/misc/keyboard';
@@ -59,15 +59,24 @@ export default function ControlModalContext({ children }: ChildrenWithProps<JSX.
     useDocumentListener('mousedown', resetPortal)
     useDocumentListener('keydown', e => (IsEscape(e) || IsEnter(e)) && resetPortal())
 
-    // Portal content will be rendered inside this ref. This hook adds child
-    // navigation support so the user can navigate controls with the arrow keys
+    // Portal content will be rendered inside this ref
     const _portalRef = useRef<HTMLElement>()
-    const childDepth = useIsMobile() ? 0 : 1 // We render an extra div for animations on desktop
-    const [portalRef, updateChildNav] = useChildNavigateWithTrigger([], _portalRef, undefined, childDepth)
+    const [portalRef, updateChildNav] = usePortalChildNav(_portalRef)
 
     return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, lastPortal, setPortal, updateChildNav }}>
         {children(<ModalPortal_Ref ref={portalRef} />)} {/* Pass the modal to the children so they can render it wherever they want */}
     </PortalContext.Provider>
+}
+
+/** This hook adds child navigation support to all portal contents so the user can navigate controls via arrow keys. */
+function usePortalChildNav(_portalRef: Ref<HTMLElement>): [Ref<HTMLElement>, () => void] {
+    const childDepth = useIsMobile() ? 0 : 1 // We render an extra div for animations on desktop
+    const [portalRef, _updateChildNav] = useChildNavigateWithTrigger([], _portalRef, undefined, childDepth)
+
+    return [portalRef, () => {
+        _updateChildNav()
+        focusActive(getNode(portalRef, childDepth)) // Focus upon open
+    }]
 }
 
 type ModalPortalProps = Record<string, unknown>
@@ -83,7 +92,7 @@ function ModalPortal(_: ModalPortalProps, portalRef: Ref<HTMLElement>) {
     const contStyle = useContainerAnimation()
 
     // The portal contents are dynamic so animate the content container to fit them
-    const [show, style] = useContentAnimtion(!isMobile)
+    const [show, style] = useContentAnimation(!isMobile)
 
     return isMobile // Render stuff inline on mobile
         ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
@@ -138,7 +147,7 @@ function useContainerAnimation() {
 }
 
 /** Returns a spring which animates the modal contents. */
-function useContentAnimtion(animate: boolean): [boolean, any] {
+function useContentAnimation(animate: boolean): [boolean, any] {
     const { activePortal, portal } = useContext(PortalContext)
 
     const [size, setSize] = useState({ width: 0, height: remToPixels(3.5) })
@@ -212,10 +221,9 @@ export function usePortalActivate(modalId: ModalId): () => void {
 
 /** A component soley used to update the 'useChidlNavigate' hook used within the portal.
  * @param deps - An array of hook dependencies that will update the child nav hook when changed. */
-export function PortalUpdateChildNav({ modalId, deps }: Id & { deps: any[] }) {
-    const { activePortal, updateChildNav } = useContext(PortalContext)
-    const isActive = modalId === activePortal
+export function PortalUpdateChildNav({ deps }: { deps: any[] }) {
+    const { updateChildNav } = useContext(PortalContext)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => { if (isActive) updateChildNav?.() }, [isActive, ...deps])
+    useEffect(updateChildNav as any, deps)
     return null // treat as JSX element
 }
