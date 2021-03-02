@@ -1,5 +1,5 @@
 import { h } from "preact"
-import { animated, useTransition } from "react-spring"
+import { animated, config, useTransition } from "react-spring"
 import { Children, CssClass, CssStyle } from "../misc/types"
 import { join } from "../misc/utils"
 
@@ -17,15 +17,16 @@ export default function FadeInContainer({ class: cls, style, children }: Childre
     )) as any
 }
 
-export function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
+export function SlideInOutContainer({ show, fromLeft, children }: Children & { show: boolean, fromLeft: boolean }) {
 
     const transition = useTransition(show, null, {
-        from: { left: '80%', opacity: 0 },
+        config: config.wobbly,
+        from: { left: fromLeft ? '30%' : '80%', opacity: 0 },
         enter: { left: '50%', opacity: 1 },
-        leave: { left: '30%', opacity: 0 },
+        leave: { left: fromLeft ? '80%' : '30%', opacity: 0 },
     })
 
     return transition.map(({ item, props }) => item && (
-        <animated.div className="absolute left-1/2 top-0 p-1 transform -translate-x-1/2" style={props}>{children}</animated.div>
+        <animated.div className="absolute left-1/2 top-0 p-1 transform -translate-x-1/2 bg-white" style={props}>{children}</animated.div>
     )) as any
 }

@@ -25,7 +25,7 @@ import { ModalId } from './buttons';
  */
 
 const PortalContext = createContext<{
-    portal?: HTMLElement, activePortal?: number,
+    portal?: HTMLElement, activePortal?: number, lastPortal?: number,
     setPortal?: (portalIndex: number) => void, updateChildNav?: () => void,
 }>({})
 
@@ -35,8 +35,13 @@ const PortalContext = createContext<{
 export default function ControlsPortalContext({ children }: ChildrenWithProps<JSX.Element>) {
 
     // Control which portal is showing
-    const [activePortal, setPortal] = useState<number | undefined>(undefined)
-    const resetPortal = () => setPortal(undefined)
+    const [activePortal, setActivePortal] = useState<number | undefined>(undefined)
+    const [lastPortal, setLastPortal] = useState<number | undefined>(undefined)
+    const resetPortal = () => { setActivePortal(undefined); setLastPortal(undefined) }
+    const setPortal = (newPortal: number) => {
+        setLastPortal(activePortal)
+        setActivePortal(newPortal)
+    }
 
     // Add global events to hide the portal
     useDocumentListener('mousedown', resetPortal)
@@ -46,7 +51,7 @@ export default function ControlsPortalContext({ children }: ChildrenWithProps<JS
     // Also add child navigation support so the user can navigate controls with the arrow keys
     const [portalRef, updateChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([], useRef<HTMLElement>() as any)
 
-    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, setPortal, updateChildNav }}>
+    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, lastPortal, setPortal, updateChildNav }}>
         {/* Pass the modal to the children so they can render it wherever they want */}
         {children(<ModalPortal_Ref ref={portalRef} />)}
     </PortalContext.Provider>
@@ -65,33 +70,23 @@ export const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPo
  * On mobile the modal renders 'inline' with other content, and on desktop it 'hovers' above content like a modal.
  */
 function ModalPortal(_: ModalPortalProps, portalRef: Ref<HTMLElement>) {
-    const [show, style] = useContentAnimtion()
-
     const isMobile = useWindowSmallerThan(ScreenWidth.md)
+    const [show, style] = useContentAnimtion(!isMobile)
+    const contStyle = useContentContAnimation()
+
     return isMobile
-        ? <animated.div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any} style={style}
+        ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
             className={join(!show && "hidden", "flex justify-center flex-wrap p-2")} />
 
-        : <div onMouseDown={e => show && e.stopPropagation()}
-            class={join(!show && "hidden", "z-50 absolute left-1/2 transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
+        : <animated.div onMouseDown={e => show && e.stopPropagation()} style={contStyle}
+            className={join(!show && "hidden", "z-50 absolute transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
             <Triangle />
-            <animated.div ref={portalRef as any} style={style} className="relative flex rounded-lg bg-white p-2" />
-        </div>
+            <animated.div ref={portalRef as any} style={style} className="relative flex rounded-lg bg-white p-2 overflow-hidden" />
+        </animated.div>
 }
 
 function Triangle() {
-    const { activePortal } = useContext(PortalContext)
-
-    const left = useMemo(() => ({
-        [ModalId.Shape]: -3.65,
-        [ModalId.Colour]: 0,
-        [ModalId.ShapeStyle]: 3.65,
-    } as { [_: number]: number })
-    [activePortal as any] ?? 0, [activePortal])
-
-    const style = useSpring({ left: `calc(50% + ${left}rem)` })
-
-    return <animated.div style={style} className="absolute top-0 transform -translate-x-1/2 -translate-y-full">
+    return <>
         <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full -mt-px" style={{
             borderLeft: '1rem solid transparent',
             borderRight: '1rem solid transparent',
@@ -103,10 +98,25 @@ function Triangle() {
             borderRight: '1rem solid transparent',
             borderBottom: '1rem solid white',
         }} />
-    </animated.div>
+    </>
 }
 
-function useContentAnimtion(): [boolean, any] {
+function useContentContAnimation() {
+    const { activePortal } = useContext(PortalContext)
+    const left = useMemo(() => ({
+        [ModalId.Shape]: -3.65,
+        [ModalId.Colour]: 0,
+        [ModalId.ShapeStyle]: 3.65,
+    } as { [_: number]: number })[activePortal as any] ?? 0, [activePortal])
+
+    return useSpring({
+        from: { opacity: 0 },
+        opacity: 1,
+        left: `calc(50% + ${left}rem)`,
+    })
+}
+
+function useContentAnimtion(animate: boolean): [boolean, any] {
     const { activePortal, portal } = useContext(PortalContext)
     const show = !!activePortal
 
@@ -120,13 +130,18 @@ function useContentAnimtion(): [boolean, any] {
         })
     }
     useEffect(() => {
+        if (!animate) return
         update()
-        setTimeout(update, 250)
-        setTimeout(update, 500)
-    }, [portal, activePortal])
+        const t1 = setTimeout(update, 500)
+        const t2 = setTimeout(update, 1000)
+        return () => {
+            clearTimeout(t1)
+            clearTimeout(t2)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [animate, portal, activePortal])
 
     const style = useSpring({ ...size })
-
     return [show, style]
 }
 
@@ -134,10 +149,12 @@ function useContentAnimtion(): [boolean, any] {
 /** Returns whether the given portal is active and and a method to active it.
  * @return [<portal is active>, <activate portal>]
  */
-export function usePortal(portalIndex: number): [boolean, () => void] {
-    const { activePortal, setPortal } = useContext(PortalContext)
-    return [portalIndex === activePortal, () => setPortal?.(portalIndex)]
+export function usePortal(portalIndex: number): [boolean, () => void, number] {
+    const { activePortal, lastPortal, setPortal } = useContext(PortalContext)
+    const portalDirection = (activePortal ?? 0) - (lastPortal ?? 0)
+    return [portalIndex === activePortal, () => setPortal?.(portalIndex), portalDirection]
 }
+
 
 /** A component soley used to update the 'useChidlNavigate' hook used with the portal.
  * @param deps - An array of hook dependencies that will update the child nav hook when changed. */
