@@ -61,7 +61,9 @@ export default function ControlModalContext({ children }: ChildrenWithProps<JSX.
 
     // Portal content will be rendered inside this ref. This hook adds child
     // navigation support so the user can navigate controls with the arrow keys
-    const [portalRef, updateChildNav] = useChildNavigateWithTrigger<HTMLDivElement>([], useRef<HTMLElement>() as any)
+    const _portalRef = useRef<HTMLElement>()
+    const childDepth = useIsMobile() ? 0 : 1 // We render an extra div for animations on desktop
+    const [portalRef, updateChildNav] = useChildNavigateWithTrigger([], _portalRef, undefined, childDepth)
 
     return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, lastPortal, setPortal, updateChildNav }}>
         {children(<ModalPortal_Ref ref={portalRef} />)} {/* Pass the modal to the children so they can render it wherever they want */}
@@ -179,9 +181,7 @@ export function ControlModalContent({ modalId, children }: Children & Id) {
     return <>{portal && createPortal(
         isMobile
             ? <>{isActive && children}</>
-            : <SlideInOutContainer show={isActive}>
-                <div class="flex">{children}</div>
-            </SlideInOutContainer>
+            : <SlideInOutContainer show={isActive}>{children}</SlideInOutContainer>
         , portal)}</>
 }
 
@@ -200,7 +200,7 @@ function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
     })
 
     return transition.map(({ item, props }) => item && (
-        <animated.div className="absolute left-1/2 top-0 p-1 transform -translate-x-1/2 bg-white" style={props}>{children}</animated.div>
+        <animated.div className="flex absolute left-1/2 top-0 p-1 transform -translate-x-1/2 bg-white" style={props}>{children}</animated.div>
     )) as any
 }
 

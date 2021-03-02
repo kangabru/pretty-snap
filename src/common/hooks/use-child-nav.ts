@@ -3,6 +3,9 @@ import { IsDown, IsLeft, IsRight, IsUp } from "../misc/keyboard"
 
 export enum NavKey { up, down, left, right }
 
+// These map to function arguments, not an array. This Typescript syntax allows us to type dynamic function arguments.
+type Args<T> = [refocusInputs?: any[], ref?: Ref<T>, keyNavCallback?: KeyNavCallback, nodeDepth?: 0 | 1]
+
 /** Enables keyboard navigation of a group of elements using left and right arrows.
  * Only one element is focusable at a time which allows for quick group navigation via the keyboard.
  * Child elements can set the 'data-target' property to set the initial focus element.
@@ -10,16 +13,23 @@ export enum NavKey { up, down, left, right }
  * @param keyNavCallback - Allows containers to control how many places to move upon keyboard press.
  * @returns A ref to be used as the group container. Children directly underneath will be used for targetting.
  */
-export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], ref?: Ref<T>, keyNavCallback?: KeyNavCallback) {
+export function useChildNavigate<T extends HTMLElement>(...[refocusInputs, ref, keyNavCallback, nodeDepth]: Args<T>) {
     const containerRef = useRef<T>(ref?.current)
 
     useEffect(() => {
         const current = containerRef.current
         if (!current) return
 
+        function getNode() {
+            if (!containerRef.current) return null
+            if (!nodeDepth) return containerRef.current
+            return containerRef.current.firstElementChild
+        }
+
         function getResetChildren(): HTMLElement[] {
-            if (!containerRef.current) return []
-            const children = [...containerRef.current.childNodes.values()] as HTMLElement[]
+            const node = getNode()
+            if (!node) return []
+            const children = [...node.childNodes.values()] as HTMLElement[]
             children.forEach(x => x.tabIndex = -1) // Make children unfocusabled
             return children
         }
@@ -58,7 +68,7 @@ export function useChildNavigate<T extends HTMLElement>(refocusInputs?: any[], r
         return () => current.removeEventListener('keydown', onKeyDown)
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, refocusInputs ?? [])
+    }, [...refocusInputs ?? [], nodeDepth])
 
     return containerRef
 }
@@ -82,9 +92,9 @@ const DefaultKeyNav: KeyNavCallback = (key: NavKey) => key === NavKey.left ? -1 
  * initialise and thus keyboard navigation won't work.
  * @returns The group container ref and an initialise function.
  */
-export function useChildNavigateWithTrigger<T extends HTMLElement>(refocusInputs?: any[], _ref?: Ref<T>):
+export function useChildNavigateWithTrigger<T extends HTMLElement>(...[refocusInputs, ...args]: Args<T>):
     [Ref<T>, () => void] {
     const [init, setInit] = useState(false)
-    const ref = useChildNavigate([...refocusInputs ?? [], init], _ref)
+    const ref = useChildNavigate([...refocusInputs ?? [], init], ...args)
     return [ref, () => setInit(s => !s)]
 }
