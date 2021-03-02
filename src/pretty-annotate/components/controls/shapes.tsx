@@ -5,12 +5,12 @@ import { useSetStyle } from '../../hooks/use-styles';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
-import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal, ModalId } from './buttons';
-import { PortalUpdateChildNav } from './portal';
+import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { ModalId, PortalUpdateChildNav } from './modal';
 
 export default function ShapeButtonGroup() {
     const { shape } = useSetStyle().style
-    return <ButtonWithModal portalIndex={ModalId.Shape} text="Shape" button={open => (
+    return <ButtonWithModal modalId={ModalId.Shape} text="Shape" button={open => (
         <StyleButtonGeneric shape={shape} onClick={open} />
     )}>
         <StyleButtonGeneric shape={Shape.Box} />
@@ -22,7 +22,7 @@ export default function ShapeButtonGroup() {
         <StyleButtonGeneric shape={Shape.Text} />
 
         {/* Update the portal's child nav hook when the shape changes */}
-        <PortalUpdateChildNav deps={[shape]} />
+        <PortalUpdateChildNav modalId={ModalId.Shape} deps={[shape]} />
     </ButtonWithModal>
 }
 

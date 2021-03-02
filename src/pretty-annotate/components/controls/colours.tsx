@@ -4,14 +4,14 @@ import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/use-styles';
 import { colors } from '../../misc/constants';
 import useAnnotateStore from '../../stores/annotation';
-import { ButtonWithModal, ModalId } from './buttons';
-import { PortalUpdateChildNav } from './portal';
+import { ButtonWithModal } from './buttons';
+import { ModalId, PortalUpdateChildNav } from './modal';
 
 export default function ColorButtonGroup() {
     const { color, useDarkText } = useAnnotateStore(s => s.style.color)
     const [buttonRef, ringColor] = useRingColourStyle()
 
-    return <ButtonWithModal portalIndex={ModalId.Colour} text="Colour" button={open => (
+    return <ButtonWithModal modalId={ModalId.Colour} text="Colour" button={open => (
         <InnerButton_Ref ref={buttonRef} onClick={open} {...{ color, ringColor, useDarkText }} />
     )}>
         <ColorButton color={colors.blue} />
@@ -22,7 +22,7 @@ export default function ColorButtonGroup() {
         <ColorButton color={colors.light} useDarkText />
 
         {/* Update the portal's child nav hook when the colour changes */}
-        <PortalUpdateChildNav deps={[color, useDarkText]} />
+        <PortalUpdateChildNav modalId={ModalId.Colour} deps={[color, useDarkText]} />
     </ButtonWithModal>
 }
 

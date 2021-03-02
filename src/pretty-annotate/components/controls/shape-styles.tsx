@@ -2,14 +2,14 @@ import { Fragment, h } from 'preact';
 import { Children } from '../../../common/misc/types';
 import { useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
-import { AnnotateButtonSvg, ButtonWithModal, ModalId } from './buttons';
-import { PortalUpdateChildNav } from './portal';
+import { AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { ModalId, PortalUpdateChildNav } from './modal';
 
 export default function ShapeStyleButtonGroup() {
     const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
-    return <ButtonWithModal portalIndex={ModalId.ShapeStyle} text="Style" button={open => (
+    return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" button={open => (
         <CurrentShape onClick={open} />
     )}>
         {canUseLine && <>
@@ -22,7 +22,7 @@ export default function ShapeStyleButtonGroup() {
         </>}
 
         {/* Update the portal's child nav hook when the shape style changes */}
-        <PortalUpdateChildNav deps={[shape, shapeStyle]} />
+        <PortalUpdateChildNav modalId={ModalId.ShapeStyle} deps={[shape, shapeStyle]} />
     </ButtonWithModal>
 }
 

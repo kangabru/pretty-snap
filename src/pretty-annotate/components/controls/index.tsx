@@ -9,7 +9,7 @@ import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
 import { AnnotateButtonSvg, ButtonRowWithAnim } from './buttons';
 import ColorButtonGroup from './colours';
-import ControlsPortalContext from './portal';
+import ControlModalContext from './modal';
 import ShapeStyleButtonGroup from './shape-styles';
 import ShapeButtonGroup from './shapes';
 
@@ -25,7 +25,7 @@ export default function Controls(props: Exports) {
 
             {isWide && history}
 
-            <ControlsPortalContext>
+            <ControlModalContext>
                 {portal => (
                     <FadeInContainer class="col relative p-2 rounded-lg bg-white shadow-md">
                         <div class="relative z-0 flex space-x-1">
@@ -36,7 +36,7 @@ export default function Controls(props: Exports) {
                         {portal}
                     </FadeInContainer>
                 )}
-            </ControlsPortalContext>
+            </ControlModalContext>
 
             {isWide && exports}
 
