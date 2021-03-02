@@ -2,14 +2,14 @@ import { Fragment, h } from 'preact';
 import { Children } from '../../../common/misc/types';
 import { useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
-import { AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { AnnotateButtonSvg, ButtonWithModal, ModalId } from './buttons';
 import { PortalUpdateChildNav } from './portal';
 
 export default function ShapeStyleButtonGroup() {
     const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
-    return <ButtonWithModal portalId="shape-styles" text="Style" button={open => (
+    return <ButtonWithModal portalIndex={ModalId.ShapeStyle} text="Style" button={open => (
         <CurrentShape onClick={open} />
     )}>
         {canUseLine && <>

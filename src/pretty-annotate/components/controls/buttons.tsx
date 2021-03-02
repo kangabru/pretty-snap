@@ -4,7 +4,7 @@ import FadeInContainer from '../../../common/components/anim-container';
 import { Children, CssStyle } from '../../../common/misc/types';
 import { join } from '../../../common/misc/utils';
 import { useRingColourStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
-import { ControlsPortalContent, usePortal } from './portal';
+import { ControlsPortalContent, usePortalActivate } from './portal';
 
 export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
     return <FadeInContainer class="relative z-0 flex space-x-3 p-3 rounded-lg bg-white shadow-md" style={style}>
@@ -26,16 +26,23 @@ export function AnnotateButton({ children, style, className, ...props }: Animate
     </button>
 }
 
-type ButtonWithModalProps = Children & { portalId: string, text: string, button: (open: () => void) => JSX.Element }
+/** These numbers define the animation direction of portal content changes */
+export enum ModalId {
+    Shape = 1,
+    Colour = 2,
+    ShapeStyle = 3,
+}
+
+type ButtonWithModalProps = Children & { portalIndex: number, text: string, button: (open: () => void) => JSX.Element }
 
 /** Renders the provided activation button, then renders children inside the modal portal when the given portal ID is active. */
-export function ButtonWithModal({ portalId, text, button, children }: ButtonWithModalProps) {
-    const [isActive, activate] = usePortal(portalId)
-    return <div class="flex relative" onMouseDown={e => !isActive && e.stopPropagation()}>
+export function ButtonWithModal({ portalIndex, text, button, children }: ButtonWithModalProps) {
+    const activate = usePortalActivate(portalIndex)
+    return <div class="flex relative" onMouseDown={e => e.stopPropagation()}>
         <div class="col">
             {button(activate)}
             <span class="text-sm text-gray-600">{text}</span>
         </div>
-        <ControlsPortalContent portalId={portalId}>{children}</ControlsPortalContent>
+        <ControlsPortalContent portalIndex={portalIndex}>{children}</ControlsPortalContent>
     </div>
 }

@@ -27,7 +27,7 @@ export default function Controls(props: Exports) {
 
             <ControlsPortalContext>
                 {portal => (
-                    <FadeInContainer class="col relative p-2 space-y-2 rounded-lg bg-white shadow-md">
+                    <FadeInContainer class="col relative p-2 rounded-lg bg-white shadow-md">
                         <div class="relative z-0 flex space-x-1">
                             <ShapeButtonGroup />
                             <ColorButtonGroup />
