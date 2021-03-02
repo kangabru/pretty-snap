@@ -40,6 +40,7 @@ export default function Controls(props: Exports) {
 
             {isWide && exports}
 
+            {/* Render the history and export sections underneath the shapes on mobile */}
             {!isWide && <div class="row flex-wrap justify-center">
                 <div class="p-1">{history}</div>
                 <div class="p-1">{exports}</div>

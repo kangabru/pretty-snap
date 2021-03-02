@@ -13,9 +13,9 @@ export default function PrettyAnnotate() {
             <NotSupportedWarning />
             <Advanced>
                 <div class="col space-y-5">
-                    <ToggleRenderTransparent />
-                    <hr class="w-4/5 border-t border-gray-300" />
                     <Shortcuts />
+                    <hr class="w-4/5 border-t border-gray-300" />
+                    <ToggleRenderTransparent />
                 </div>
             </Advanced>
         </>}
