@@ -26,14 +26,17 @@ export function AnnotateButton({ children, style, className, ...props }: Animate
     </button>
 }
 
-type ButtonWithModalProps = Children & { modalId: ModalId, text: string, button: (open: () => void) => JSX.Element }
+type ButtonWithModalProps = Children & {
+    modalId: ModalId, text: string,
+    button: (isActive: boolean, activate: () => void) => JSX.Element
+}
 
 /** Renders the provided activation button, then renders children inside the modal portal when the given portal ID is active. */
 export function ButtonWithModal({ modalId, text, button, children }: ButtonWithModalProps) {
-    const activate = usePortalActivate(modalId)
+    const [isActive, activate] = usePortalActivate(modalId)
     return <div class="flex relative" onMouseDown={e => e.stopPropagation()}>
         <div class="col">
-            {button(activate)}
+            {button(isActive, activate)}
             <span class="text-sm text-gray-600">{text}</span>
         </div>
         <ControlModalContent modalId={modalId}>{children}</ControlModalContent>

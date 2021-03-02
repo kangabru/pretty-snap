@@ -10,8 +10,8 @@ import { ModalId, PortalUpdateChildNav } from './modal';
 
 export default function ShapeButtonGroup() {
     const { shape } = useSetStyle().style
-    return <ButtonWithModal modalId={ModalId.Shape} text="Shape" button={open => (
-        <StyleButtonGeneric shape={shape} onClick={open} />
+    return <ButtonWithModal modalId={ModalId.Shape} text="Shape" button={(active, open) => (
+        <StyleButtonGeneric shape={shape} onClick={open} refocus={active} />
     )}>
         <StyleButtonGeneric shape={Shape.Box} />
         <StyleButtonGeneric shape={Shape.Ellipse} />
@@ -26,7 +26,7 @@ export default function ShapeButtonGroup() {
     </ButtonWithModal>
 }
 
-type StyleButtonProps = { shape: Shape, onClick?: () => void }
+type StyleButtonProps = { shape: Shape, onClick?: () => void, refocus?: boolean }
 
 function StyleButtonGeneric(props: StyleButtonProps) {
     const { count } = useSetStyle().style
@@ -59,7 +59,7 @@ function StyleButtonGeneric(props: StyleButtonProps) {
     </>
 }
 
-function StyleButton({ shape, text, onClick, children }: StyleButtonProps & Partial<Children> & { text?: string | number }) {
+function StyleButton({ shape, text, onClick, refocus, children }: StyleButtonProps & Partial<Children> & { text?: string | number }) {
 
     const { style, setStyle } = useSetStyle()
     const setShape = () => setStyle({ shape })
@@ -69,13 +69,13 @@ function StyleButton({ shape, text, onClick, children }: StyleButtonProps & Part
     const isTarget = shape === selectedShape
 
     return text
-        ? <AnnotateButton data-target={isTarget} onClick={onClick ?? setShape} className="m-1">
+        ? <AnnotateButton data-target={isTarget} data-refocus={refocus} onClick={onClick ?? setShape} className="m-1">
             <span style={{ backgroundColor: color }}
                 class={join(textClass(useDarkText), "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>
                 {text}
             </span>
         </AnnotateButton>
-        : <AnnotateButtonSvg data-target={isTarget} style={{ color }} className="m-1"
+        : <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} style={{ color }} className="m-1"
             onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
 }
 

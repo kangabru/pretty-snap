@@ -39,7 +39,7 @@ const ModalOffsets: { [_: number]: number } = {
 }
 
 const PortalContext = createContext<{
-    portal?: HTMLElement, activePortal?: number, lastPortal?: number,
+    portal?: HTMLElement, activeId?: ModalId, lastActiveId?: ModalId,
     setPortal?: (modalId: ModalId) => void, updateChildNav?: () => void,
 }>({})
 
@@ -49,11 +49,11 @@ const PortalContext = createContext<{
 export default function ControlModalContext({ children }: ChildrenWithProps<JSX.Element>) {
 
     // Control which portal is showing. Track the last portal for directional animations.
-    const [activePortal, setActivePortal] = useState<ModalId | undefined>(undefined)
-    const [lastPortal, setLastPortal] = useState<ModalId | undefined>(undefined)
+    const [activeId, setactiveId] = useState<ModalId | undefined>(undefined)
+    const [lastActiveId, setlastActiveId] = useState<ModalId | undefined>(undefined)
 
-    const resetPortal = () => { setActivePortal(undefined); setLastPortal(undefined) }
-    const setPortal = (newPortal: number) => { setLastPortal(activePortal); setActivePortal(newPortal) }
+    const resetPortal = () => { RefocusElement(); setactiveId(undefined); setlastActiveId(undefined) }
+    const setPortal = (newPortal: number) => { setlastActiveId(activeId); setactiveId(newPortal) }
 
     // Add global events to hide the portal
     useDocumentListener('mousedown', resetPortal)
@@ -63,7 +63,7 @@ export default function ControlModalContext({ children }: ChildrenWithProps<JSX.
     const _portalRef = useRef<HTMLElement>()
     const [portalRef, updateChildNav] = usePortalChildNav(_portalRef)
 
-    return <PortalContext.Provider value={{ portal: portalRef.current, activePortal, lastPortal, setPortal, updateChildNav }}>
+    return <PortalContext.Provider value={{ portal: portalRef.current, activeId, lastActiveId, setPortal, updateChildNav }}>
         {children(<ModalPortal_Ref ref={portalRef} />)} {/* Pass the modal to the children so they can render it wherever they want */}
     </PortalContext.Provider>
 }
@@ -135,10 +135,10 @@ function useIsMobile() {
 
 /** Returns a spring which animates the modal container. */
 function useContainerAnimation() {
-    const { activePortal } = useContext(PortalContext)
+    const { activeId } = useContext(PortalContext)
 
     // Shift the container to align to the selected button
-    const left = ModalOffsets[activePortal ?? -1] ?? 0
+    const left = ModalOffsets[activeId ?? -1] ?? 0
 
     return useSpring({
         from: { opacity: 0 }, opacity: 1,
@@ -148,7 +148,7 @@ function useContainerAnimation() {
 
 /** Returns a spring which animates the modal contents. */
 function useContentAnimation(animate: boolean): [boolean, any] {
-    const { activePortal, portal } = useContext(PortalContext)
+    const { activeId, portal } = useContext(PortalContext)
 
     const [size, setSize] = useState({ width: 0, height: remToPixels(3.5) })
 
@@ -174,17 +174,17 @@ function useContentAnimation(animate: boolean): [boolean, any] {
             clearTimeout(t2)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [animate, portal, activePortal])
+    }, [animate, portal, activeId])
 
     const style = useSpring({ ...size })
-    return [!!activePortal, style]
+    return [!!activeId, style]
 }
 
 /** Renders children inside the portal is the given portal ID is active. */
 export function ControlModalContent({ modalId, children }: Children & Id) {
     const isMobile = useIsMobile()
-    const { portal, activePortal } = useContext(PortalContext)
-    const isActive = activePortal === modalId
+    const { portal, activeId } = useContext(PortalContext)
+    const isActive = activeId === modalId
 
     // Render children in the portal and add some tasty animations in hover mode on desktop
     return <>{portal && createPortal(
@@ -196,9 +196,9 @@ export function ControlModalContent({ modalId, children }: Children & Id) {
 
 /** Fades contents in and out from the sides. */
 function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
-    const { activePortal, lastPortal } = useContext(PortalContext)
+    const { activeId, lastActiveId } = useContext(PortalContext)
 
-    const portalDirection = (activePortal ?? 0) - (lastPortal ?? 0)
+    const portalDirection = (activeId ?? 0) - (lastActiveId ?? 0)
     const fromLeft = portalDirection < 0
 
     const transition = useTransition(show, null, {
@@ -214,9 +214,9 @@ function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
 }
 
 /** Returns a function to activate the given portal. */
-export function usePortalActivate(modalId: ModalId): () => void {
-    const { setPortal } = useContext(PortalContext)
-    return () => setPortal?.(modalId)
+export function usePortalActivate(modalId: ModalId): [boolean, () => void] {
+    const { activeId, setPortal } = useContext(PortalContext)
+    return [activeId === modalId, () => setPortal?.(modalId)]
 }
 
 /** A component soley used to update the 'useChidlNavigate' hook used within the portal.
@@ -226,4 +226,9 @@ export function PortalUpdateChildNav({ deps }: { deps: any[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(updateChildNav as any, deps)
     return null // treat as JSX element
+}
+
+/** Refocuses the last control group button to be used when the modal is closed via the keyboard. */
+function RefocusElement() {
+    (document.querySelector('[data-refocus]') as HTMLElement)?.focus()
 }

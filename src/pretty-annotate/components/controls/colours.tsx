@@ -11,8 +11,8 @@ export default function ColorButtonGroup() {
     const { color, useDarkText } = useAnnotateStore(s => s.style.color)
     const [buttonRef, ringColor] = useRingColourStyle()
 
-    return <ButtonWithModal modalId={ModalId.Colour} text="Colour" button={open => (
-        <InnerButton_Ref ref={buttonRef} onClick={open} {...{ color, ringColor, useDarkText }} />
+    return <ButtonWithModal modalId={ModalId.Colour} text="Colour" button={(active, open) => (
+        <InnerButton_Ref ref={buttonRef} data-refocus={active} onClick={open} {...{ color, ringColor, useDarkText }} />
     )}>
         <ColorButton color={colors.blue} />
         <ColorButton color={colors.red} />

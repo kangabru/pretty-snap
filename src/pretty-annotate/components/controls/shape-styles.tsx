@@ -9,8 +9,8 @@ export default function ShapeStyleButtonGroup() {
     const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
-    return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" button={open => (
-        <CurrentShape onClick={open} />
+    return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" button={(active, open) => (
+        <CurrentShape onClick={open} refocus={active} />
     )}>
         {canUseLine && <>
             <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.Outline} />
@@ -26,11 +26,11 @@ export default function ShapeStyleButtonGroup() {
     </ButtonWithModal>
 }
 
-function CurrentShape({ onClick }: { onClick: () => void }) {
+function CurrentShape(props: Pick<ShapeStyleButtonProps, 'onClick' | 'refocus'>) {
     const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
     const _shapeStyle = getRealShape(shape, shapeStyle)
-    return <ShapeStyleButtonGeneric disabled={!(canUseFill || canUseLine)} shapeStyle={_shapeStyle} onClick={onClick} />
+    return <ShapeStyleButtonGeneric {...props} disabled={!(canUseFill || canUseLine)} shapeStyle={_shapeStyle} />
 }
 
 function getRealShape(shape: Shape, shapeStyle: ShapeStyle): ShapeStyle {
@@ -38,7 +38,7 @@ function getRealShape(shape: Shape, shapeStyle: ShapeStyle): ShapeStyle {
     return !canUseFill && (shapeStyle == ShapeStyle.Solid || shapeStyle == ShapeStyle.Transparent) ? ShapeStyle.Outline : shapeStyle
 }
 
-type ShapeStyleButtonProps = { shapeStyle: ShapeStyle, onClick?: () => void, disabled?: boolean }
+type ShapeStyleButtonProps = { shapeStyle: ShapeStyle, onClick?: () => void, disabled?: boolean, refocus?: boolean }
 
 function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
     const { shapeStyle } = props
@@ -61,14 +61,14 @@ function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
     </>
 }
 
-function ShapeStyleButton({ shapeStyle, disabled, onClick, children }: Children & ShapeStyleButtonProps) {
+function ShapeStyleButton({ shapeStyle, disabled, onClick, refocus, children }: Children & ShapeStyleButtonProps) {
     const { style, setStyle } = useSetStyle()
     const setShapeStyle = () => setStyle({ shapeStyle })
 
     const currentShapeStyle = getRealShape(style.shape, style.shapeStyle)
     const isTarget = shapeStyle === currentShapeStyle
 
-    return <AnnotateButtonSvg data-target={isTarget} disabled={disabled}
+    return <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} disabled={disabled}
         style={{ color: style.color.color }} className="m-1"
         onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
 }
