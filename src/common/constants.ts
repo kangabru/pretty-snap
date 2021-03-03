@@ -17,7 +17,7 @@ export const routes = {
 }
 
 /** Border radius in pixels for the outer image. Should be scale when rendered. */
-export const OUTER_BORDER_RADIUS = remToPixels(0.75) // rounded-xl = ~12 pixels
+export const OUTER_BORDER_RADIUS = remToPixels(1)
 
 /** Border radius in pixels for the inner image. Should be scale when rendered. */
-export const INNER_BORDER_RADIUS = remToPixels(0.5) // rounded-lg = ~8 pixels
+export const INNER_BORDER_RADIUS = remToPixels(0.75)
