@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
@@ -7,7 +7,7 @@ import useExport, { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
-import { getRenderScale } from '../../../common/misc/utils';
+import { getRenderScale, join } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
 import Editor, { Viewer } from './editor';
 import logo from './title.svg';
@@ -25,9 +25,9 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     const outerRadiusRender = useRenderBorderRadius(renderScale)
 
-    return <main class="flex-1 col px-4 space-y-6">
+    return <>
         <section ref={editorRef} style={{ borderRadius: OUTER_BORDER_RADIUS }}
-            class="block w-full max-w-screen-md mx-auto overflow-hidden shadow-md">
+            class={join(image ? "max-w-screen-md" : "max-w-screen-md", "block w-full mx-auto overflow-hidden shadow-md")}>
             {image
                 ? <ViewerEditor />
                 : <DropZone class="bg-blue-200 p-10 pb-0 rounded-t-lg" setImage={setImage}
@@ -46,7 +46,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
         </div>}
 
         {image && children({ download, copy })}
-    </main>
+    </>
 }
 
 function ViewerEditor() {

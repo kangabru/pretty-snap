@@ -1,6 +1,7 @@
 import { Fragment, h } from 'preact';
 import srcPreview from '../../assets/images/preview-app-background.jpg';
 import Advanced from '../common/components/advanced';
+import AppInfo from '../common/components/app-info';
 import NotSupportedWarning from '../common/components/not-supported';
 import { ToggleRenderTransparent, ToggleRoundedImageCorners } from '../common/components/stored-settings';
 import Compositor from './components/compositor';
@@ -8,7 +9,7 @@ import Controls from './components/controls/controls';
 import BackgroundControls from './components/controls/controls-bg';
 
 export default function PrettyBackground() {
-    return <main class="col px-4 space-y-6">
+    return <>
         <Compositor>
             {exportProps => <>
                 <Controls {...exportProps} />
@@ -26,23 +27,20 @@ export default function PrettyBackground() {
 
         <Info />
         <PH />
-    </main>
+    </>
 }
 
 function Info() {
-    return <section class="pt-5 grid md:grid-cols-2 gap-5">
-        <div class="text-gray-600">
-            <h2 class="text-2xl mb-6 font-semibold">What can I use this for?</h2>
-            <p>To make boring screenshots awesome! Use them for:</p>
-            <ul class="bullets py-5 space-y-3.5">
-                <li>Product screenshots on landing pages</li>
-                <li>Eye catching website <a class="text-gray-900 underline" href="https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary">summary cards</a></li>
-                <li>Better screenshot posts on social media</li>
-            </ul>
-            <p>Found an issue or have a suggestion? <a class="text-gray-900 underline" href="https://github.com/kangabru/pretty-snap/issues/new">Let me know here!</a></p>
-        </div>
-        <img class="rounded-lg shadow w-full max-w-md" src={srcPreview} alt="Example output" />
-    </section>
+    return <AppInfo image={srcPreview}>
+        <h2 class="text-2xl mb-6 font-semibold">What can I use this for?</h2>
+        <p>To make boring screenshots awesome! Use them for:</p>
+        <ul class="bullets py-5 space-y-3.5">
+            <li>Product screenshots on landing pages</li>
+            <li>Making a splash on your Github readme</li>
+            <li>Eye catching posts on social media</li>
+            <li>Standout website <a class="text-gray-900 underline" href="https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary">summary cards</a></li>
+        </ul>
+    </AppInfo>
 }
 
 function PH() {
