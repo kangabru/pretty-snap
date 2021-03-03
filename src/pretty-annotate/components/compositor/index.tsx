@@ -25,9 +25,9 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     const outerRadiusRender = useRenderBorderRadius(renderScale)
 
-    return <>
+    return <div class="col w-full space-y-6">
         <section ref={editorRef} style={{ borderRadius: OUTER_BORDER_RADIUS }}
-            class={join(image ? "max-w-screen-md" : "max-w-screen-md", "block w-full mx-auto overflow-hidden shadow-md")}>
+            class="max-w-screen-md block w-full mx-auto overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
                 : <DropZone class="bg-blue-200 p-10 pb-0 rounded-t-lg" setImage={setImage}
@@ -46,7 +46,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
         </div>}
 
         {image && children({ download, copy })}
-    </>
+    </div>
 }
 
 function ViewerEditor() {

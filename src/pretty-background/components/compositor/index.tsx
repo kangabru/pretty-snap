@@ -45,7 +45,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
-    return <>
+    return <div class="col w-full space-y-6">
         {/* Renders the preview */}
         <animated.section ref={refCont as any} style={{ ...stylesScreen.outer, borderRadius: OUTER_BORDER_RADIUS }}
             className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
@@ -67,7 +67,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
         </div>}
 
         {foreground && children({ download, copy })}
-    </>
+    </div>
 }
 
 function Image({ style }: CssStyle) {
