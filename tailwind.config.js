@@ -43,7 +43,7 @@ module.exports = {
             },
             fontFamily: {
                 open: ["'Open Sans'", "sans-serif"],
-                cursive: ["'Pacifico'", 'cursive'],
+                cursive: ["'Pacifico'", 'sans-serif'],
             },
             inset: (theme) => ({
                 ...theme('spacing'),

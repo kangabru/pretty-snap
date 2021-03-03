@@ -21,7 +21,7 @@
 
 @layer components {
     .button-blank {
-        @apply p-2 rounded hover:bg-gray-200 outline-primary;
+        @apply p-2 rounded hover:bg-gray-200 focus:z-10 outline-primary;
     }
 
     .button {
