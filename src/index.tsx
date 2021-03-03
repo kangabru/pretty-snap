@@ -1,8 +1,8 @@
 import { createHashHistory } from 'history';
 import { h, render } from 'preact';
 import { Route, Router } from 'preact-router';
-import backgroundApp from '../assets/apps/prettysnap-bg.jpg';
-import srcPandaSnap from '../assets/pandasnap.jpg';
+import srcBackground from '../assets/images/preview-app-background.jpg';
+import srcLogo from '../assets/images/thumb.jpg';
 import { routes, urls } from './common/constants';
 import './index.css';
 import PrettyAnnotateApp from './pretty-annotate/index';
@@ -25,11 +25,11 @@ function PrettySnap() {
 function AppSelector() {
     return <div class="flex-1 row flex-wrap justify-center items-center">
         <a href={routes.background} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
-            <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
+            <img src={srcBackground} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
             <span class="group-hover:underline font-cursive text-4xl">Pretty Background</span>
         </a>
         <a href={routes.annotate} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
-            <img src={backgroundApp} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
+            <img src={srcBackground} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
             <span class="group-hover:underline font-cursive text-4xl">Pretty Annotate</span>
         </a>
     </div>
@@ -39,7 +39,7 @@ function Header() {
     return <header class="w-full max-w-screen-xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 justify-center items-center text-md pt-5 px-3">
 
         <div class="row space-x-2 row-start-2 md:row-start-1">
-            <a class="hidden sm:inline-block w-12 h-12 sm:w-12 sm:h-12 outline-primary hover:shadow rounded-md overflow-hidden transition" href={urls.pandasnap}><img src={srcPandaSnap} alt="Panda Snap Logo" class="pointer-events-none" /></a>
+            <a class="hidden sm:inline-block w-12 h-12 sm:w-12 sm:h-12 outline-primary hover:shadow rounded-md overflow-hidden transition" href={urls.pandasnap}><img src={srcLogo} alt="Panda Snap Logo" class="pointer-events-none" /></a>
             <div class="flex flex-col whitespace-nowrap">
                 <span>by &nbsp;<a class="outline-link font-semibold" href={urls.kangabru}>kangabru</a></span>
                 <span>for <a class="outline-link font-semibold" href={urls.pandasnap}>pandasnap.io</a></span>

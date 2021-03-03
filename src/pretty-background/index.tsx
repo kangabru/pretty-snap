@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import srcPreview from '../../assets/preview.jpg';
+import srcPreview from '../../assets/images/preview-app-background.jpg';
 import Advanced from '../common/components/advanced';
 import NotSupportedWarning from '../common/components/not-supported';
 import { ToggleRenderTransparent, ToggleRoundedImageCorners } from '../common/components/stored-settings';

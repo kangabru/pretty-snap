@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import DemoImage from '../../../assets/apps/demo.png';
+import srcDemoImage from '../../../assets/images/demo.png';
 import { loadImageFromDataUrl } from '../hooks/use-import';
 import { ForegroundImage } from '../misc/types';
 import { join } from '../misc/utils';
@@ -36,7 +36,7 @@ export default function ImportDetails({ title, isDropping, isError, setImage }: 
 }
 
 export function DemoImageButton({ setImage }: { setImage: (image: ForegroundImage) => void }) {
-    const onClick = () => loadImageFromDataUrl(DemoImage).then(setImage)
+    const onClick = () => loadImageFromDataUrl(srcDemoImage).then(setImage)
     return <button class="block w-full max-w-md mx-auto pt-5 px-5 -mt-5 group  outline-none focus:outline-none" onClick={onClick}>
         <div class="transition-all duration-300 transform translate-y-5 shadow-xl hover:-translate-y-0 group-focus:-translate-y-0 hover:shadow-2xl group-focus:shadow-2xl">
             <div class="flex items-center justify-end p-2 rounded-t-lg bg-gray-700">
