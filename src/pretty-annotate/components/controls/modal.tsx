@@ -67,7 +67,7 @@ export default function ControlModalContext({ children }: ChildrenWithProps<Chil
     const [modalRef, updateChildNav] = useModalChildNav(_modalRef)
 
     return <ModalContext.Provider value={{ modal: modalRef.current, activeId, lastActiveId, setModal, updateChildNav }}>
-        {children(<ModalModal_Ref ref={modalRef} />)}
+        {children(<ModalPortal_Ref ref={modalRef} />)}
     </ModalContext.Provider>
 }
 
@@ -83,13 +83,13 @@ function useModalChildNav(_modalRef: Ref<HTMLElement>): [Ref<HTMLElement>, () =>
     }]
 }
 
-type ModalModalProps = Record<string, unknown>
-const ModalModal_Ref = forwardRef<HTMLElement, ModalModalProps>(ModalModal)
+type ModalPortalProps = Record<string, unknown>
+const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPortal)
 
-/** The shared modal where modal contents will be rendered.
+/** The shared react portal where modal contents will be rendered.
  * On mobile the modal renders inline while on desktop it hovers above content.
  */
-function ModalModal(_: ModalModalProps, modalRef: Ref<HTMLElement>) {
+function ModalPortal(_: ModalPortalProps, modalRef: Ref<HTMLElement>) {
     const isMobile = useIsMobile()
 
     // Animate the container to align with the selected shape/colour/style button
@@ -203,13 +203,13 @@ function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
     const { activeId, lastActiveId } = useContext(ModalContext)
 
     const modalDirection = (activeId ?? 0) - (lastActiveId ?? 0)
-    const fromLeft = modalDirection < 0
+    const fromLeft = modalDirection < 0, noSlide = lastActiveId === undefined
 
     const transition = useTransition(show, null, {
         config: config.wobbly,
-        from: { left: fromLeft ? '30%' : '80%', opacity: 0 },
-        enter: { left: '50%', opacity: 1 },
-        leave: { left: fromLeft ? '80%' : '30%', opacity: 0 },
+        from: { opacity: 0, left: noSlide ? '50%' : fromLeft ? '30%' : '80%' },
+        enter: { opacity: 1, left: '50%' },
+        leave: { opacity: 0, left: fromLeft ? '80%' : '30%' },
     })
 
     return transition.map(({ item, props }) => item && (
