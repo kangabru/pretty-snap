@@ -15,7 +15,7 @@ type OptionsStore = Settings & {
 /** zustand state for state management  */
 const useOptionsStore = create<OptionsStore>((set, get) => ({
     paddingPerc: PADDING_PERC_INIT,
-    position: Position.Center,
+    position: Position.Bottom,
 
     // backgroundImage: randomSearch,
     backgroundPattern: randomPattern,
