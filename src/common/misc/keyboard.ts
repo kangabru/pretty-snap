@@ -3,12 +3,15 @@ export const KEYS = {
     Escape: "Escape",
 }
 
-export const IsEnter = (e: KeyboardEvent) => e.key == KEYS.Enter
-export const IsEscape = (e: KeyboardEvent) => e.key == KEYS.Escape
+export const IsKey = (e: KeyboardEvent, ...keys: string[]) => keys.find(key => e.key.toLowerCase() === key.toLowerCase())
+export const IsKeyCallback = (...keys: string[]) => (e: KeyboardEvent) => IsKey(e, ...keys)
 
-export const IsUp = (e: KeyboardEvent) => e.key == "ArrowUp" || e.key == "Up"
-export const IsDown = (e: KeyboardEvent) => e.key == "ArrowDown" || e.key == "Down"
-export const IsLeft = (e: KeyboardEvent) => e.key == "ArrowLeft" || e.key == "Left"
-export const IsRight = (e: KeyboardEvent) => e.key == "ArrowRight" || e.key == "Right"
+export const IsEnter = IsKeyCallback(KEYS.Enter)
+export const IsEscape = IsKeyCallback(KEYS.Escape)
 
-export const IsAlt = (e: KeyboardEvent) => e.key == 'Alt'
+export const IsUp = IsKeyCallback("ArrowUp", "Up")
+export const IsDown = IsKeyCallback("ArrowDown", "Down")
+export const IsLeft = IsKeyCallback("ArrowLeft", "Left")
+export const IsRight = IsKeyCallback("ArrowRight", "Right")
+
+export const IsAlt = IsKeyCallback('Alt')

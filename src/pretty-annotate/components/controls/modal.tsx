@@ -17,11 +17,11 @@ import { join, remToPixels } from '../../../common/misc/utils';
  *
  * Usage:
  * - Wrap everything that requires the modal in the <ControlModalContext> component.
- *   A 'portal' element that renders the common controls is passed to its children so that it can be rendered in a custom location.
+ *   A 'modal' element that renders the common controls is passed to its children so that it can be rendered in a custom location.
  *
- * - The <ControlModalContent> component will render the given children inside the modal when the given portal ID is active.
+ * - The <ControlModalContent> component will render the given children inside the modal when the given modal ID is active.
  *
- * - The <PortalUpdateChildNav> component provides the ability to refresh the child nav hook when portal controls refresh.
+ * - The <ModalUpdateChildNav> component provides the ability to refresh the child nav hook when modal controls refresh.
  */
 
 export enum ModalId {
@@ -38,64 +38,68 @@ const ModalOffsets: { [_: number]: number } = {
     [ModalId.ShapeStyle]: 3.65,
 }
 
-const PortalContext = createContext<{
-    portal?: HTMLElement, activeId?: ModalId, lastActiveId?: ModalId,
-    setPortal?: (modalId: ModalId) => void, updateChildNav?: () => void,
+const ModalContext = createContext<{
+    modal?: HTMLElement, activeId?: ModalId, lastActiveId?: ModalId,
+    setModal?: (modalId: ModalId) => void, updateChildNav?: () => void,
 }>({})
 
-/** Creates the portal context provider that enabled portal functionality inside its children.
- * A 'portal' element (containing the portal root) is passed to its children so it can be rendered in a custom location.
- */
-export default function ControlModalContext({ children }: ChildrenWithProps<JSX.Element>) {
+/** Pass the modal to the children so they can render it wherever they want */
+type ChildrenCallback = JSX.Element
 
-    // Control which portal is showing. Track the last portal for directional animations.
+/** Creates the modal context provider that enabled modal functionality inside its children.
+ * A 'modal' element (containing the modal root) is passed to its children so it can be rendered in a custom location.
+ */
+export default function ControlModalContext({ children }: ChildrenWithProps<ChildrenCallback>) {
+
+    // Control which modal is showing. Track the last modal for directional animations.
     const [activeId, setactiveId] = useState<ModalId | undefined>(undefined)
     const [lastActiveId, setlastActiveId] = useState<ModalId | undefined>(undefined)
 
-    const resetPortal = () => { RefocusElement(); setactiveId(undefined); setlastActiveId(undefined) }
-    const setPortal = (newPortal: number) => { setlastActiveId(activeId); setactiveId(newPortal) }
+    const resetModal = () => { RefocusElement(); setactiveId(undefined); setlastActiveId(undefined) }
+    const setModal = (newModal: number) => { setlastActiveId(activeId); setactiveId(newModal) }
 
-    // Add global events to hide the portal
-    useDocumentListener('mousedown', resetPortal)
-    useDocumentListener('keydown', e => (IsEscape(e) || IsEnter(e)) && resetPortal())
+    // Add global events to hide the modal
+    useDocumentListener('mousedown', resetModal)
+    useDocumentListener('keydown', e => (IsEscape(e) || IsEnter(e)) && resetModal())
 
-    // Portal content will be rendered inside this ref
-    const _portalRef = useRef<HTMLElement>()
-    const [portalRef, updateChildNav] = usePortalChildNav(_portalRef)
+    // Modal content will be rendered inside this ref
+    const _modalRef = useRef<HTMLElement>()
+    const [modalRef, updateChildNav] = useModalChildNav(_modalRef)
 
-    return <PortalContext.Provider value={{ portal: portalRef.current, activeId, lastActiveId, setPortal, updateChildNav }}>
-        {children(<ModalPortal_Ref ref={portalRef} />)} {/* Pass the modal to the children so they can render it wherever they want */}
-    </PortalContext.Provider>
+    return <ModalContext.Provider value={{ modal: modalRef.current, activeId, lastActiveId, setModal, updateChildNav }}>
+        {children(<ModalModal_Ref ref={modalRef} />)}
+    </ModalContext.Provider>
 }
 
-/** This hook adds child navigation support to all portal contents so the user can navigate controls via arrow keys. */
-function usePortalChildNav(_portalRef: Ref<HTMLElement>): [Ref<HTMLElement>, () => void] {
+/** This hook adds child navigation support to all modal contents so the user can navigate controls via arrow keys. */
+function useModalChildNav(_modalRef: Ref<HTMLElement>): [Ref<HTMLElement>, () => void] {
     const childDepth = useIsMobile() ? 0 : 1 // We render an extra div for animations on desktop
-    const [portalRef, _updateChildNav] = useChildNavigateWithTrigger([], _portalRef, undefined, childDepth)
+    const [modalRef, _updateChildNav] = useChildNavigateWithTrigger([], _modalRef, undefined, childDepth)
 
-    return [portalRef, () => {
+    return [modalRef, () => {
         _updateChildNav()
-        focusActive(getNode(portalRef, childDepth)) // Focus upon open
+        const node = getNode(modalRef, childDepth)
+        node && focusActive(node) // Focus upon open
     }]
 }
 
-type ModalPortalProps = Record<string, unknown>
-const ModalPortal_Ref = forwardRef<HTMLElement, ModalPortalProps>(ModalPortal)
+type ModalModalProps = Record<string, unknown>
+const ModalModal_Ref = forwardRef<HTMLElement, ModalModalProps>(ModalModal)
 
-/** The shared modal where portal contents will be rendered.
+/** The shared modal where modal contents will be rendered.
  * On mobile the modal renders inline while on desktop it hovers above content.
  */
-function ModalPortal(_: ModalPortalProps, portalRef: Ref<HTMLElement>) {
+function ModalModal(_: ModalModalProps, modalRef: Ref<HTMLElement>) {
     const isMobile = useIsMobile()
 
     // Animate the container to align with the selected shape/colour/style button
     const contStyle = useContainerAnimation()
 
-    // The portal contents are dynamic so animate the content container to fit them
+    // The modal contents are dynamic so animate the content container to fit them
     const [show, style] = useContentAnimation(!isMobile)
 
     return isMobile // Render stuff inline on mobile
-        ? <div onMouseDown={e => show && e.stopPropagation()} ref={portalRef as any}
+        ? <div onMouseDown={e => show && e.stopPropagation()} ref={modalRef as any}
             className={join("flex justify-center flex-wrap p-2")} />
 
         // Render stuff above other content like a modal
@@ -103,7 +107,7 @@ function ModalPortal(_: ModalPortalProps, portalRef: Ref<HTMLElement>) {
             <animated.div onMouseDown={e => show && e.stopPropagation()} style={contStyle}
                 className={join("z-50 absolute transform -translate-x-1/2 top-full mt-2 shadow rounded-lg")}>
                 <Triangle />
-                <animated.div ref={portalRef as any} style={style} className="relative flex rounded-lg bg-white p-2 overflow-hidden" />
+                <animated.div ref={modalRef as any} style={style} className="relative flex rounded-lg bg-white p-2 overflow-hidden" />
             </animated.div>
         </FadeInModalContainer>
 }
@@ -135,7 +139,7 @@ function useIsMobile() {
 
 /** Returns a spring which animates the modal container. */
 function useContainerAnimation() {
-    const { activeId } = useContext(PortalContext)
+    const { activeId } = useContext(ModalContext)
 
     // Shift the container to align to the selected button
     const left = ModalOffsets[activeId ?? -1] ?? 0
@@ -148,21 +152,21 @@ function useContainerAnimation() {
 
 /** Returns a spring which animates the modal contents. */
 function useContentAnimation(animate: boolean): [boolean, any] {
-    const { activeId, portal } = useContext(PortalContext)
+    const { activeId, modal } = useContext(ModalContext)
 
     const [size, setSize] = useState({ width: 0, height: remToPixels(3.5) })
 
     // Set the size to wrap the child element
     const update = () => {
-        if (!portal?.children.length) return
-        const elem = portal.children[portal.children.length - 1]
+        if (!modal?.children.length) return
+        const elem = modal.children[modal.children.length - 1]
         if (elem) setSize({
             width: elem.clientWidth,
             height: elem.clientHeight,
         })
     }
 
-    // Update the size when the selected portal changes. Sometimes the child
+    // Update the size when the selected modal changes. Sometimes the child
     // doesn't update properly when changing quickly so use timeouts as a fallback
     useEffect(() => {
         if (!animate) return
@@ -174,32 +178,32 @@ function useContentAnimation(animate: boolean): [boolean, any] {
             clearTimeout(t2)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [animate, portal, activeId])
+    }, [animate, modal, activeId])
 
     const style = useSpring({ ...size })
     return [!!activeId, style]
 }
 
-/** Renders children inside the portal is the given portal ID is active. */
+/** Renders children inside the modal is the given modal ID is active. */
 export function ControlModalContent({ modalId, children }: Children & Id) {
     const isMobile = useIsMobile()
-    const { portal, activeId } = useContext(PortalContext)
+    const { modal, activeId } = useContext(ModalContext)
     const isActive = activeId === modalId
 
-    // Render children in the portal and add some tasty animations in hover mode on desktop
-    return <>{portal && createPortal(
+    // Render children in the modal and add some tasty animations in hover mode on desktop
+    return <>{modal && createPortal(
         isMobile
             ? <>{isActive && children}</>
             : <SlideInOutContainer show={isActive}>{children}</SlideInOutContainer>
-        , portal)}</>
+        , modal)}</>
 }
 
 /** Fades contents in and out from the sides. */
 function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
-    const { activeId, lastActiveId } = useContext(PortalContext)
+    const { activeId, lastActiveId } = useContext(ModalContext)
 
-    const portalDirection = (activeId ?? 0) - (lastActiveId ?? 0)
-    const fromLeft = portalDirection < 0
+    const modalDirection = (activeId ?? 0) - (lastActiveId ?? 0)
+    const fromLeft = modalDirection < 0
 
     const transition = useTransition(show, null, {
         config: config.wobbly,
@@ -213,16 +217,16 @@ function SlideInOutContainer({ show, children }: Children & { show: boolean }) {
     )) as any
 }
 
-/** Returns a function to activate the given portal. */
-export function usePortalActivate(modalId: ModalId): [boolean, () => void] {
-    const { activeId, setPortal } = useContext(PortalContext)
-    return [activeId === modalId, () => setPortal?.(modalId)]
+/** Returns a function to activate the given modal. */
+export function useModalActivate(modalId: ModalId): [boolean, () => void] {
+    const { activeId, setModal: setModal } = useContext(ModalContext)
+    return [activeId === modalId, () => setModal?.(modalId)]
 }
 
-/** A component soley used to update the 'useChidlNavigate' hook used within the portal.
+/** A component soley used to update the 'useChidlNavigate' hook used within the modal.
  * @param deps - An array of hook dependencies that will update the child nav hook when changed. */
-export function PortalUpdateChildNav({ deps }: { deps: any[] }) {
-    const { updateChildNav } = useContext(PortalContext)
+export function ModalUpdateChildNav({ deps }: { deps: any[] }) {
+    const { updateChildNav } = useContext(ModalContext)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(updateChildNav as any, deps)
     return null // treat as JSX element

@@ -26,14 +26,14 @@ export default function Controls(props: Exports) {
             {isWide && history}
 
             <ControlModalContext>
-                {portal => (
+                {modal => (
                     <FadeInContainer class="col relative p-2 rounded-lg bg-white shadow-md">
                         <div class="relative z-0 flex space-x-1">
-                            <ShapeButtonGroup />
-                            <ColorButtonGroup />
-                            <ShapeStyleButtonGroup />
+                            <ShapeButtonGroup command="1" />
+                            <ColorButtonGroup command="2" />
+                            <ShapeStyleButtonGroup command="3" />
                         </div>
-                        {portal}
+                        {modal}
                     </FadeInContainer>
                 )}
             </ControlModalContext>
