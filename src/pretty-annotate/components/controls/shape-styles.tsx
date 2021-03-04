@@ -3,7 +3,7 @@ import { Children } from '../../../common/misc/types';
 import { useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
 import { AnnotateButtonSvg, ButtonWithModal } from './buttons';
-import { ModalId, PortalUpdateChildNav } from './modal';
+import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeStyleButtonGroup() {
     const { shape, shapeStyle } = useSetStyle().style
@@ -21,8 +21,8 @@ export default function ShapeStyleButtonGroup() {
             <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.Transparent} />
         </>}
 
-        {/* Update the portal's child nav hook when the shape style changes */}
-        <PortalUpdateChildNav deps={[shape, shapeStyle]} />
+        {/* Update the modal's child nav hook when the shape style changes */}
+        <ModalUpdateChildNav deps={[shape, shapeStyle]} />
     </ButtonWithModal>
 }
 

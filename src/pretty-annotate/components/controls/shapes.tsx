@@ -6,7 +6,7 @@ import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
-import { ModalId, PortalUpdateChildNav } from './modal';
+import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeButtonGroup() {
     const { shape } = useSetStyle().style
@@ -21,8 +21,8 @@ export default function ShapeButtonGroup() {
         <StyleButtonGeneric shape={Shape.Counter} />
         <StyleButtonGeneric shape={Shape.Text} />
 
-        {/* Update the portal's child nav hook when the shape changes */}
-        <PortalUpdateChildNav deps={[shape]} />
+        {/* Update the modal's child nav hook when the shape changes */}
+        <ModalUpdateChildNav deps={[shape]} />
     </ButtonWithModal>
 }
 
