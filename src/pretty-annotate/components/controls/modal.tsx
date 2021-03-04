@@ -75,7 +75,8 @@ function usePortalChildNav(_portalRef: Ref<HTMLElement>): [Ref<HTMLElement>, () 
 
     return [portalRef, () => {
         _updateChildNav()
-        focusActive(getNode(portalRef, childDepth)) // Focus upon open
+        const node = getNode(portalRef, childDepth)
+        node && focusActive(node) // Focus upon open
     }]
 }
 
