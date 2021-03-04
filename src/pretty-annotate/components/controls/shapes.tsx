@@ -6,27 +6,28 @@ import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
+import { Command } from './command';
 import { ModalId, ModalUpdateChildNav } from './modal';
 
-export default function ShapeButtonGroup() {
+export default function ShapeButtonGroup({ command }: Command) {
     const { shape } = useSetStyle().style
-    return <ButtonWithModal modalId={ModalId.Shape} text="Shape" button={(active, open) => (
-        <StyleButtonGeneric shape={shape} onClick={open} refocus={active} />
+    return <ButtonWithModal modalId={ModalId.Shape} text="Shape" command={command} button={(active, open) => (
+        <StyleButtonGeneric shape={shape} onClick={open} refocus={active} command={command} />
     )}>
-        <StyleButtonGeneric shape={Shape.Box} />
-        <StyleButtonGeneric shape={Shape.Ellipse} />
-        <StyleButtonGeneric shape={Shape.Bracket} />
-        <StyleButtonGeneric shape={Shape.Arrow} />
-        <StyleButtonGeneric shape={Shape.Line} />
-        <StyleButtonGeneric shape={Shape.Counter} />
-        <StyleButtonGeneric shape={Shape.Text} />
+        <StyleButtonGeneric shape={Shape.Box} command="1" />
+        <StyleButtonGeneric shape={Shape.Ellipse} command="2" />
+        <StyleButtonGeneric shape={Shape.Bracket} command="3" />
+        <StyleButtonGeneric shape={Shape.Arrow} command="4" />
+        <StyleButtonGeneric shape={Shape.Line} command="5" />
+        <StyleButtonGeneric shape={Shape.Counter} command="6" />
+        <StyleButtonGeneric shape={Shape.Text} command="T" />
 
         {/* Update the modal's child nav hook when the shape changes */}
         <ModalUpdateChildNav deps={[shape]} />
     </ButtonWithModal>
 }
 
-type StyleButtonProps = { shape: Shape, onClick?: () => void, refocus?: boolean }
+type StyleButtonProps = Command & { shape: Shape, onClick?: () => void, refocus?: boolean }
 
 function StyleButtonGeneric(props: StyleButtonProps) {
     const { count } = useSetStyle().style
@@ -59,7 +60,7 @@ function StyleButtonGeneric(props: StyleButtonProps) {
     </>
 }
 
-function StyleButton({ shape, text, onClick, refocus, children }: StyleButtonProps & Partial<Children> & { text?: string | number }) {
+function StyleButton({ shape, text, onClick, refocus, command, children }: StyleButtonProps & Partial<Children> & { text?: string | number }) {
 
     const { style, setStyle } = useSetStyle()
     const setShape = () => setStyle({ shape })
@@ -69,14 +70,12 @@ function StyleButton({ shape, text, onClick, refocus, children }: StyleButtonPro
     const isTarget = shape === selectedShape
 
     return text
-        ? <AnnotateButton data-target={isTarget} data-refocus={refocus} onClick={onClick ?? setShape} className="m-1">
-            <span style={{ backgroundColor: color }}
-                class={join(textClass(useDarkText), "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>
-                {text}
-            </span>
+        ? <AnnotateButton data-target={isTarget} data-refocus={refocus} data-command={command} onClick={onClick ?? setShape} className="m-1">
+            <span style={{ backgroundColor: color }} class={join(textClass(useDarkText),
+                "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>{text}</span>
         </AnnotateButton>
-        : <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} style={{ color }} className="m-1"
-            onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
+        : <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} data-command={command} style={{ color }}
+            className="m-1" onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
 }
 
 function BracketIcon() {
