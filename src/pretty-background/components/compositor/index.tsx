@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
 import useMeasure from 'react-use-measure';

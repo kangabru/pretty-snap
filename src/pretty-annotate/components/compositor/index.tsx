@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
@@ -7,7 +7,7 @@ import useExport, { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
-import { getRenderScale, join } from '../../../common/misc/utils';
+import { getRenderScale } from '../../../common/misc/utils';
 import useOptionsStore from '../../stores/options';
 import Editor, { Viewer } from './editor';
 import logo from './title.svg';
