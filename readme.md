@@ -1,6 +1,6 @@
 <div align="center">
 
-![Preview video](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/demo.gif)
+![Preview video](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/preview.jpg)
 <br/>
 
 # [Pretty Snap](https://prettysnap.app)
