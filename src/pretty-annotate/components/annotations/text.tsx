@@ -36,6 +36,10 @@ export default function Text(props: Props) {
         </span>
 }
 
+/** The text component works in a two step process:
+ * - The user clicks somewhere which triggers the usual state update and puts the tet in 'edit mode'
+ * - When the users saves or cancels, the state has to updated or reset so the existing item doesn't create 2 undo events
+ */
 function TextInput(props: Props) {
     const { text, left, top, color: { color: colour, useDarkText } } = props
 

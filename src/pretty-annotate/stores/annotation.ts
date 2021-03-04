@@ -92,16 +92,22 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         redos: [],
 
         edit: idEditing => set("Edit", { idEditing }),
+
+        /** The text component works in a two step process:
+         * - The user clicks somewhere which triggers the usual state update and puts the tet in 'edit mode'
+         * - When the users saves or cancels, the state has to updated or reset so the existing item doesn't create 2 undo events
+         */
         editStop: () => {
-            const { idEditing, index, ids } = get()
+            const { idEditing, index, ids, undos } = get()
             const item = index[idEditing ?? ""]
 
             if (idEditing && item && item.shape == Shape.Text && !item.text) {
                 // Remove new text annotations that haven't been confirmed
                 set("Text cancel", {
-                    index: { ...index, [idEditing]: undefined },
-                    ids: ids.slice(0, -1),
                     idEditing: undefined,
+                    ids: ids.slice(0, -1),
+                    undos: undos.slice(0, -1),
+                    index: { ...index, [idEditing]: undefined },
                 })
             } else
                 set("Edit cancel", { idEditing: undefined })
