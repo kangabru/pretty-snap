@@ -1,20 +1,19 @@
 <div align="center">
 
-![Preview video](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/preview.jpg)
+![Pretty Snap](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/preview.jpg)
 <br/>
 
-# [Pretty Snap](https://prettysnap.app)
+# [![Pretty Snap](https://raw.githubusercontent.com/kangabru/pretty-snap/readme/logo-sm.png)](https://prettysnap.app)
 
-Make your screenshot 🔥 with a pretty background
+Awesome editing apps to make your screenshots look 🔥
 
 </div>
 
 ## 👋 Introduction
 
-Make your screenshots pop with beautiful backgrounds. Use them for:
-- Product screenshots on landing pages
-- Social media summary cards (e.g. [Twitter](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image) or [FB](https://ogp.me/))
-- Simply sharing screenshots on social media
+This is the full source code [Pretty Snap](https://prettysnap.app) which includes two free editing apps:
+- Pretty Annotate: Communicate ideas clearly by annotating images
+- Pretty Background: Add beautiful backgrounds to images to make them pop
 
 ---
 
