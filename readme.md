@@ -11,7 +11,7 @@ Awesome editing apps to make your screenshots look 🔥
 
 ## 👋 Introduction
 
-This is the full source code [Pretty Snap](https://prettysnap.app) which includes two free editing apps:
+This is the full source code for [Pretty Snap](https://prettysnap.app) which includes two image editing apps:
 - Pretty Annotate: Communicate ideas clearly by annotating images
 - Pretty Background: Add beautiful backgrounds to images to make them pop
 
