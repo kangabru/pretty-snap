@@ -4,6 +4,7 @@ import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Bounds, ColorStyle, Shape, ShapeStyle } from '../../misc/types';
+import { editAnnotationOnClick } from './util';
 
 type PaddingProps = { padding?: number }
 type LineProps = Annotation<Shape.Line> & PaddingProps
@@ -12,13 +13,13 @@ export default function Line(props: LineProps) {
     return props.shapeStyle == ShapeStyle.OutlineDashed ? <LineDashed {...props} /> : <LineSolid {...props} />
 }
 
-export function SvgLineContainer({ children, ...props }: Children & Bounds & PaddingProps & { color: ColorStyle }) {
-    const { left, top, width, height, color: { color } } = props
+export function SvgLineContainer({ children, ...props }: Children & Bounds & PaddingProps & { id?: string, color: ColorStyle }) {
+    const { id, left, top, width, height, color: { color } } = props
 
     // Expand the svg bounds to account for content extending beyond the selected width and height
     const padding = props.padding ?? STROKE / 2
 
-    return <div class="absolute" style={{ color, left: left - padding, top: top - padding }}>
+    return <div onClick={editAnnotationOnClick(id)} class="absolute" style={{ color, left: left - padding, top: top - padding }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
             width={width + 2 * padding} height={height + 2 * padding}>
             <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>

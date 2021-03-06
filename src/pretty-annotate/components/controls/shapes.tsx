@@ -1,7 +1,10 @@
 import { Fragment, h } from 'preact';
+import { useCallback } from 'react';
+import { useSuperCommand } from '../../../common/hooks/use-misc';
 import { Children } from '../../../common/misc/types';
 import { join, textClass } from '../../../common/misc/utils';
 import { useSetStyle } from '../../hooks/use-styles';
+import { colors } from '../../misc/constants';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
@@ -10,10 +13,15 @@ import { Command } from './command';
 import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeButtonGroup({ command }: Command) {
-    const { shape } = useSetStyle().style
+    const { style: { shape }, setStyle } = useSetStyle()
+
+    useSuperCommand('V', useCallback(() => setStyle({ shape: Shape.Mouse }), [setStyle]))
+    useSuperCommand('T', useCallback(() => setStyle({ shape: Shape.Text }), [setStyle]))
+
     return <ButtonWithModal modalId={ModalId.Shape} text="Shape" command={command} button={(active, open) => (
         <StyleButtonGeneric shape={shape} onClick={open} refocus={active} command={command} />
     )}>
+        <StyleButtonGeneric shape={Shape.Mouse} command="V" />
         <StyleButtonGeneric shape={Shape.Box} command="1" />
         <StyleButtonGeneric shape={Shape.Ellipse} command="2" />
         <StyleButtonGeneric shape={Shape.Bracket} command="3" />
@@ -34,6 +42,10 @@ function StyleButtonGeneric(props: StyleButtonProps) {
     const { shape } = props
 
     return <>
+        {shape === Shape.Mouse && <StyleButton {...props}>
+            <path fill={colors.dark} fill-rule="evenodd" d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" clip-rule="evenodd" />
+        </StyleButton>}
+
         {shape === Shape.Box && <StyleButton {...props}>
             <rect x="2" y="2" width="16" height="16" rx="2" stroke="currentColor" fill='none' stroke-width="2.75" />
         </StyleButton>}

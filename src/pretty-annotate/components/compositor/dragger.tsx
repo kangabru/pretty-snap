@@ -10,27 +10,8 @@ import { DragPane } from './drag-pane';
 
 const clickTypes = new Set([Shape.Counter, Shape.Text])
 
-export default function Editor() {
-    return <section class="absolute inset-0">
-        <Viewer />
-        <EditorPane />
-    </section>
-}
-
-export function Viewer({ scale }: { scale?: number }) {
-    const ids = useAnnotateStore(s => s.ids)
-    return <section class="absolute inset-0 pointer-events-none origin-top-left" style={{ transform: scale ? `scale(${scale})` : undefined }}>
-        {ids.map(id => <Annotation key={id} id={id} />)}
-    </section>
-}
-
-function Annotation({ id }: { id: string }) {
-    const editing = useAnnotateStore(s => !!s.idEditing)
-    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
-    return <GenericAnnotation id={id} {...annotation} allowEvents={!editing} />
-}
-
-function EditorPane() {
+/** TODO */
+export default function Dragger() {
     const style = useAnnotateStore(s => s.style)
     const useClick = clickTypes.has(style.shape)
     return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
@@ -44,9 +25,9 @@ function DragEdits() {
     const save = useAnnotateStore(s => s.saveAnnotation)
     const toBounds = (bounds: Bounds) => boundsToData(bounds, style, keysHeld)
 
-    return <DragPane
-        onComplete={bounds => { save(toBounds(bounds)) }}
-        onRender={bounds => <GenericAnnotation {...style} {...toBounds(bounds)} />} />
+    return <DragPane onComplete={bounds => { save(toBounds(bounds)) }}>
+        {bounds => <GenericAnnotation {...style} {...toBounds(bounds)} />}
+    </DragPane>
 }
 
 function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld): AnnotationAny {

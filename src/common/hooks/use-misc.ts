@@ -50,3 +50,10 @@ export function useWarningOnClose(active: boolean) {
         return () => setWarningOnClose(false)
     }, [active])
 }
+
+export function useSuperCommand(command: string, callback: () => void) {
+    useDocumentListener('keypress', e => {
+        if (e.key.toLowerCase() === command.toLowerCase())
+            callback()
+    }, [command])
+}

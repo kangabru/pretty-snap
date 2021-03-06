@@ -4,13 +4,17 @@ import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import { setWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
+import { Shape } from '../../misc/types';
+import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
-import Editor, { Viewer } from './editor';
+import Dragger from './dragger';
+import Mover from './mover';
 import logo from './title.svg';
+import Viewer from './viewer';
 
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
@@ -59,4 +63,12 @@ function ViewerEditor() {
 function Image() {
     const image = useOptionsStore(s => s.image)
     return <img src={image?.src} class="w-full h-full" />
+}
+
+function Editor() {
+    const isCreating = useAnnotateStore(s => s.style.shape) !== Shape.Mouse
+    return <section class="absolute inset-0">
+        <Viewer hideEditing />
+        {isCreating ? <Dragger /> : <Mover />}
+    </section>
 }

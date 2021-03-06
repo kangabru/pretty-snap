@@ -2,7 +2,7 @@ export type Size = { width: number, height: number }
 export type Position = { left: number, top: number }
 export type Bounds = Size & Position & { negX: boolean, negY: boolean }
 
-export enum Shape { Box, Ellipse, Bracket, Arrow, Line, Counter, Text }
+export enum Shape { Box, Ellipse, Bracket, Arrow, Line, Counter, Text, Mouse }
 export enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }
 
 export type StyleOptions = { id?: string, shape: Shape, color: ColorStyle, shapeStyle: ShapeStyle, count: number }
@@ -12,6 +12,7 @@ export type Annotation<S extends Shape> = StyleOptions & StyleData[S]
 export type AnnotationAny = StyleOptions & Partial<Bounds & { text: string, allowEvents: boolean }>
 
 export type StyleData = {
+    [Shape.Mouse]: never,
     [Shape.Box]: Bounds,
     [Shape.Ellipse]: Bounds,
     [Shape.Line]: Bounds,

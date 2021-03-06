@@ -2,15 +2,11 @@ import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { useMemo } from 'react';
 import useMeasure from 'react-use-measure';
+import { ChildrenWithProps } from '../../../common/misc/types';
 import { Bounds, Position } from '../../misc/types';
 
-export type DragPaneProps = {
-    onRender: (_: Bounds) => JSX.Element,
-    onComplete: (_: Bounds) => void,
-}
-
 /** A component which a user can drag onto to create shapes. */
-export function DragPane(props: DragPaneProps) {
+export function DragPane({ children, onComplete }: ChildrenWithProps<Bounds> & { onComplete: (_: Bounds) => void }) {
     const [ref, cont] = useMeasure({ scroll: true })
     const [pos1, setPos1] = useState<Position | undefined>(undefined)
     const [pos2, setPos2] = useState<Position | undefined>(undefined)
@@ -32,11 +28,11 @@ export function DragPane(props: DragPaneProps) {
 
     const onMouseMove = (ev: MouseEvent) => pos2 && setPos2({ left: ev.clientX - cont.x, top: ev.clientY - cont.y })
     const onMouseUp = () => {
-        props.onComplete?.({ left, top, width, height, negX, negY })
+        onComplete?.({ left, top, width, height, negX, negY })
         setPos1(undefined); setPos2(undefined)
     }
 
     return <div ref={ref} {...{ onMouseDown, onMouseUp, onMouseMove }} class="absolute inset-0">
-        {pos1 && pos2 && props.onRender({ left, top, width, height, negX, negY })}
+        {pos1 && pos2 && children({ left, top, width, height, negX, negY })}
     </div>
 }
