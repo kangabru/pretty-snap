@@ -1,9 +1,10 @@
 import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
+import { Bounds } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
-import { Bounds, MovePane, onResizeEvents, RenderProps } from './move-pane';
+import { MovePane, onResizeEvents, RenderProps } from './move-pane';
 
 /** TODO */
 export default function Mover() {
@@ -17,9 +18,10 @@ export default function Mover() {
 }
 
 function MoveUi({ bounds, onDrag, onResize, children }: RenderProps & ChildrenWithProps<Bounds>) {
+    const { left, top, width, height } = bounds
     return <div class="absolute inset-0" onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
         {children(bounds)}
-        <div style={bounds} class="absolute bg-black bg-opacity-20" onMouseDown={onDrag.start} />
+        <div style={{ left, top, width, height }} class="absolute bg-black bg-opacity-20" onMouseDown={onDrag.start} />
         <ResizeUi {...bounds} {...onResize} />
     </div>
 }

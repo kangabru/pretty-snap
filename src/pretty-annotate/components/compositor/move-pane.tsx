@@ -1,9 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
-import { Bounds as BoundsRaw } from '../../misc/types';
-
-export type Bounds = Pick<BoundsRaw, 'left' | 'top' | 'width' | 'height'>
+import { Bounds } from '../../misc/types';
 
 export type RenderProps = {
     bounds: Bounds,
@@ -34,7 +32,7 @@ function useMove(initBounds: Bounds): [Bounds, onDragEvents, onResizeEvents] {
     const [dragBoundsDiff, onDrag] = useDragBox(_bounds, setBounds)
     const [resizeBoundsDiff, onResize] = useResizeBox(_bounds, setBounds)
 
-    const bounds = addBounds(addBounds(_bounds, dragBoundsDiff), resizeBoundsDiff)
+    const bounds = getBoundedBounds(addBounds(addBounds(_bounds, dragBoundsDiff), resizeBoundsDiff))
 
     const callFunc = (dragFunc: MouseFunc, resizeFunc: MouseFunc) => (e: MouseEvent) => isDrag ? dragFunc(e) : resizeFunc(e)
 
@@ -53,6 +51,24 @@ function addBounds(bounds1: Bounds, bounds2: Bounds): Bounds {
         width: bounds1.width + bounds2.width,
         height: bounds1.height + bounds2.height,
     }
+}
+
+function getBoundedBounds(_bounds: Bounds): Bounds {
+    const bounds = { ..._bounds }
+
+    // Account for negative sizes
+    if (_bounds.width < 0) {
+        bounds.negX = true
+        bounds.left += _bounds.width
+        bounds.width = -_bounds.width
+    }
+    if (_bounds.height < 0) {
+        bounds.negY = true
+        bounds.top += _bounds.height
+        bounds.height = -_bounds.height
+    }
+
+    return bounds
 }
 
 type CoordsXY = { x: number, y: number }
@@ -90,7 +106,7 @@ function useDrag<TResult>(getResult: (bounds: CoordsXY) => TResult, setResult: (
 
 function useDragBox(bounds: Bounds, setBounds: (bounds: Bounds) => void): [Bounds, onDragEvents] {
     return useDrag(
-        c => ({ left: c.x, top: c.y, width: 0, height: 0 }),
+        c => ({ left: c.x, top: c.y, width: 0, height: 0, negX: false, negY: false }),
         boundsDiff => setBounds(addBounds(bounds, boundsDiff))
     )
 }
@@ -114,7 +130,7 @@ function useResizeBox(_bounds: Bounds, setBounds: BoundsFunc): [Bounds, onResize
 }
 
 function getResizedBounds(dCoords: CoordsXY, sides: { top?: boolean, right?: boolean, bottom?: boolean, left?: boolean }): Bounds {
-    const newBounds: Bounds = { left: 0, top: 0, width: 0, height: 0 }
+    const newBounds: Bounds = { left: 0, top: 0, width: 0, height: 0, negX: false, negY: false }
 
     if (sides.left) {
         newBounds.left += dCoords.x
