@@ -34,8 +34,8 @@ function Info() {
         <h2 class="text-2xl mb-6 font-semibold">What can I use this for?</h2>
         <p>To communicate quickly and clearly! Use it to:</p>
         <ul class="bullets py-5 space-y-3.5">
-            <li>Showoff recent changes you made</li>
-            <li>Describe bugs and suggestions clearly</li>
+            <li>Show-off recent changes you made</li>
+            <li>Describe bugs and suggestions</li>
             <li>Make notes about ideas you have</li>
         </ul>
     </AppInfo>

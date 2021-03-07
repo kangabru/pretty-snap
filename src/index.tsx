@@ -91,7 +91,7 @@ function Footer() {
 
 function Shortcuts() {
     return <section class="col">
-        <h2 class="text-2xl">Quickly select an area to screenshot:</h2>
+        <h2 class="text-2xl">Quickly screenshot an area:</h2>
         <div class="row justify-center flex-wrap text-gray-500">
             <ShortcutGroup title="Windows" href="https://www.bloggingtriggers.com/quickly-take-screenshot-windows/">
                 <Win />
