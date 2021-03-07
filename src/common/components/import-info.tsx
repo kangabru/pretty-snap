@@ -23,8 +23,9 @@ export default function ImportDetails({ title, isDropping, isError, setImage }: 
             </div>
         </div>
 
-        <p class="text-gray-800 text-center rounded text-lg row justify-center space-x-1 my-3">
-            <span>No screenshot? Try this one</span>
+        <p class="text-gray-800 text-center rounded sm:text-lg row flex-wrap justify-center space-x-1 my-3 px-5 sm:px-12">
+            <span>No screenshot?</span>
+            <span>Try this one</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="mt-1 w-5 h-5" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M6 6h6a3 3 0 0 1 3 3v10l-4 -4m8 0l-4 4" />
