@@ -13,21 +13,21 @@ export default function ColorButtonGroup({ command }: Command) {
     const [buttonRef, ringColor] = useRingColourStyle()
 
     return <ButtonWithModal modalId={ModalId.Colour} text="Colour" command={command} button={(active, onClick) => (
-        <InnerButton_Ref ref={buttonRef} data-refocus={active} {...{ onClick, color, ringColor, useDarkText }} command={command} />
+        <InnerButton_Ref title="Colour" ref={buttonRef} data-refocus={active} {...{ onClick, color, ringColor, useDarkText }} command={command} />
     )}>
-        <ColorButton color={colors.blue} command="1" />
-        <ColorButton color={colors.red} command="2" />
-        <ColorButton color={colors.yellow} command="3" />
-        <ColorButton color={colors.green} command="4" />
-        <ColorButton color={colors.dark} command="5" />
-        <ColorButton color={colors.light} command="6" useDarkText />
+        <ColorButton color={colors.blue} title="Blue" command="1" />
+        <ColorButton color={colors.red} title="Red" command="2" />
+        <ColorButton color={colors.yellow} title="Yellow" command="3" />
+        <ColorButton color={colors.green} title="Green" command="4" />
+        <ColorButton color={colors.dark} title="Dark" command="5" />
+        <ColorButton color={colors.light} title="Light" command="6" useDarkText />
 
         {/* Update the modal's child nav hook when the colour changes */}
         <ModalUpdateChildNav deps={[color, useDarkText]} />
     </ButtonWithModal>
 }
 
-type ColorButtonprops = Command & { color: string, useDarkText?: boolean }
+type ColorButtonprops = Command & { title: string, color: string, useDarkText?: boolean }
 
 function ColorButton(props: ColorButtonprops) {
     const { color, useDarkText } = props

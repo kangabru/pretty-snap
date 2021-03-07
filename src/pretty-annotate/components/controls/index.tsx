@@ -69,11 +69,11 @@ function HistoryButtonGroup() {
     }, [canUndo, canRedo, undo, redo])
 
     return <div class="flex space-x-3 text-gray-600">
-        <AnnotateButtonSvg onClick={undo} disabled={!canUndo}>
+        <AnnotateButtonSvg onClick={undo} disabled={!canUndo} title="Undo">
             <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M7 11 l-4 -4l4 -4" />
             <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M17 18 a11 11 0 0 0 -11 -11h-3" />
         </AnnotateButtonSvg>
-        <AnnotateButtonSvg onClick={redo} disabled={!canRedo}>
+        <AnnotateButtonSvg onClick={redo} disabled={!canRedo} title="Redo">
             <g style="transform: translateX(100%) scaleX(-100%)">
                 <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M7 11 l-4 -4l4 -4" />
                 <path stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round" d="M17 18 a11 11 0 0 0 -11 -11h-3" />

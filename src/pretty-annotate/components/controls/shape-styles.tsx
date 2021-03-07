@@ -11,15 +11,15 @@ export default function ShapeStyleButtonGroup({ command }: Command) {
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
 
     return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" command={command} button={(active, open) => (
-        <CurrentShape onClick={open} refocus={active} command={command} />
+        <CurrentShape title="Shape Style" onClick={open} refocus={active} command={command} />
     )}>
         {canUseLine && <>
-            <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.Outline} command="1" />
-            <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.OutlineDashed} command="2" />
+            <ShapeStyleButtonGeneric title="Solid line" shapeStyle={ShapeStyle.Outline} command="1" />
+            <ShapeStyleButtonGeneric title="Dashed line" shapeStyle={ShapeStyle.OutlineDashed} command="2" />
         </>}
         {canUseFill && <>
-            <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.Solid} command="3" />
-            <ShapeStyleButtonGeneric shapeStyle={ShapeStyle.Transparent} command="4" />
+            <ShapeStyleButtonGeneric title="Solid fill" shapeStyle={ShapeStyle.Solid} command="3" />
+            <ShapeStyleButtonGeneric title="Transparent fill" shapeStyle={ShapeStyle.Transparent} command="4" />
         </>}
 
         {/* Update the modal's child nav hook when the shape style changes */}
@@ -27,7 +27,7 @@ export default function ShapeStyleButtonGroup({ command }: Command) {
     </ButtonWithModal>
 }
 
-function CurrentShape(props: Pick<ShapeStyleButtonProps, 'onClick' | 'refocus' | 'command'>) {
+function CurrentShape(props: Pick<ShapeStyleButtonProps, 'onClick' | 'refocus' | 'command' | 'title'>) {
     const { shape, shapeStyle } = useSetStyle().style
     const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
     const _shapeStyle = getRealShape(shape, shapeStyle)
@@ -39,7 +39,7 @@ function getRealShape(shape: Shape, shapeStyle: ShapeStyle): ShapeStyle {
     return !canUseFill && (shapeStyle == ShapeStyle.Solid || shapeStyle == ShapeStyle.Transparent) ? ShapeStyle.Outline : shapeStyle
 }
 
-type ShapeStyleButtonProps = Command & { shapeStyle: ShapeStyle, onClick?: () => void, disabled?: boolean, refocus?: boolean }
+type ShapeStyleButtonProps = Command & { title: string, shapeStyle: ShapeStyle, onClick?: () => void, disabled?: boolean, refocus?: boolean }
 
 function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
     const { shapeStyle } = props
@@ -62,7 +62,8 @@ function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
     </>
 }
 
-function ShapeStyleButton({ shapeStyle, disabled, onClick, refocus, command, children }: Children & ShapeStyleButtonProps) {
+function ShapeStyleButton({ title, shapeStyle, disabled, onClick, refocus, command, children }:
+    Children & ShapeStyleButtonProps & { title: string }) {
     const { style, setStyle } = useSetStyle()
     const setShapeStyle = () => setStyle({ shapeStyle })
 
@@ -70,6 +71,6 @@ function ShapeStyleButton({ shapeStyle, disabled, onClick, refocus, command, chi
     const isTarget = shapeStyle === currentShapeStyle
 
     return <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} data-command={command}
-        disabled={disabled} style={{ color: style.color.color }} className="m-1"
+        title={title} disabled={disabled} style={{ color: style.color.color }} className="m-1"
         onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
 }
