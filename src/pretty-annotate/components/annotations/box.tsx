@@ -5,6 +5,7 @@ import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Shape, ShapeStyle } from '../../misc/types';
 import { editAnnotationOnClick } from './util';
+import { SelectableAreaProps } from '.';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -51,4 +52,8 @@ function BoxDashed(props: BoxProps) {
         <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Left */}
         <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Right */}
     </SvgBoxContainer>
+}
+
+export function BoxSelectableArea({ onClick, ...bounds }: SelectableAreaProps) {
+    return <div class="absolute cursor-pointer" style={bounds as any} onClick={onClick} />
 }

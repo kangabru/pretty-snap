@@ -1,21 +1,16 @@
-import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { ChildrenWithProps } from '../../../common/misc/types';
 import { Bounds } from '../../misc/types';
+
+export type MovePaneProps = {
+    initBounds: Bounds,
+    close: () => void,
+    onSave: (_: Bounds) => void,
+}
 
 export type RenderProps = {
     bounds: Bounds,
     onDrag: onDragEvents,
     onResize: onResizeEvents,
-}
-
-/** A component which a user can drag onto to create shapes. */
-export function MovePane({ initBounds, children }: ChildrenWithProps<RenderProps> & { initBounds: Bounds }) {
-    const [bounds, onDrag, onResize] = useMove(initBounds)
-
-    return <div class="absolute inset-0">
-        {children({ bounds, onDrag, onResize })}
-    </div>
 }
 
 type Func = () => void
@@ -25,7 +20,7 @@ type BoundsFunc = (bounds: Bounds) => void
 export type onDragEvents = { start: MouseFunc, move: MouseFunc, stop: Func }
 export type onResizeEvents = { start: ResizeFunc, move: MouseFunc, stop: Func }
 
-function useMove(initBounds: Bounds): [Bounds, onDragEvents, onResizeEvents] {
+export function useMove(initBounds: Bounds, onStop: (bounds: Bounds) => void): [Bounds, onDragEvents, onResizeEvents] {
     const [_bounds, setBounds] = useState<Bounds>(initBounds)
 
     const [isDrag, setIsDrag] = useState(false)
@@ -38,9 +33,23 @@ function useMove(initBounds: Bounds): [Bounds, onDragEvents, onResizeEvents] {
 
     const start = (e: MouseEvent) => { onDrag.start(e); setIsDrag(true) }
     const move = callFunc(onDrag.move, onResize.move)
-    const stop = () => { callFunc(onDrag.stop, onResize.stop)(null as any); setIsDrag(false) }
+    const stop = () => {
+        callFunc(onDrag.stop, onResize.stop)(null as any)
+        setIsDrag(false)
+        if (!areBoundsEqual(dragBoundsDiff, resizeBoundsDiff))
+            onStop(bounds)
+    }
 
     return [bounds, { start, move, stop }, onResize]
+}
+
+function areBoundsEqual(bounds1: Bounds, bounds2: Bounds): boolean {
+    return bounds1.top === bounds2.top
+        && bounds1.left === bounds2.left
+        && bounds1.width === bounds2.width
+        && bounds1.height === bounds2.height
+        && bounds1.negX === bounds2.negX
+        && bounds1.negY === bounds2.negY
 }
 
 function addBounds(bounds1: Bounds, bounds2: Bounds): Bounds {

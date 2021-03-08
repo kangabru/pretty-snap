@@ -21,7 +21,7 @@ export default function Text(props: Props) {
     const { id, text, color: { useDarkText } } = props
 
     const canEdit = useAnnotateStore(s => s.style.shape == Shape.Text)
-    const editing = useAnnotateStore(s => canEdit && id && s.idEditing === id)
+    const editing = useAnnotateStore(s => canEdit && id && s.editId === id)
 
     const edit = useAnnotateStore(s => s.edit)
     const editOnClick = (e: Event) => { if (id) { edit(id); e.stopPropagation() } }
@@ -47,11 +47,11 @@ function TextInput(props: Props) {
     const [textEdits, setTextEdits] = useState(text)
 
     const cancel = useAnnotateStore(s => s.editStop)
-    const saveText = useAnnotateStore(s => s.saveAnnotation)
+    const saveText = useAnnotateStore(s => s.save)
 
     const save = () => {
         if (textEdits == text) cancel() // Doesn't create an undo event
-        else saveText({ ...props, text: textEdits }, !text) // Creates an undo event
+        else saveText({ ...props, text: textEdits }) // Creates an undo event
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

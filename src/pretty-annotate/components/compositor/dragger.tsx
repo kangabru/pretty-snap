@@ -22,7 +22,7 @@ export default function Dragger() {
 function DragEdits() {
     const keysHeld = useKeysHeld()
     const style = useAnnotateStore(s => s.style)
-    const save = useAnnotateStore(s => s.saveAnnotation)
+    const save = useAnnotateStore(s => s.save)
     const toBounds = (bounds: Bounds) => boundsToData(bounds, style, keysHeld)
 
     return <DragPane onComplete={bounds => { save(toBounds(bounds)) }}>

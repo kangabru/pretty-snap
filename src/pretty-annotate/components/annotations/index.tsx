@@ -1,6 +1,6 @@
 import { Fragment, h } from 'preact';
-import { Annotation, AnnotationAny, Shape } from '../../misc/types';
-import Box from '../annotations/box';
+import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
+import Box, { BoxSelectableArea } from '../annotations/box';
 import Arrow from './arrow';
 import Bracket from './bracket';
 import Counter from './counter';
@@ -19,5 +19,21 @@ export default function GenericAnnotation(props: AnnotationAny) {
 
         {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />}
         {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />}
+    </>
+}
+
+export type SelectableAreaProps = Bounds & { shape: Shape, onClick: (e: MouseEvent) => void }
+
+export function GenericSelectableArea(props: SelectableAreaProps) {
+    return <>
+        {props.shape == Shape.Box && <BoxSelectableArea {...props} />}
+        {props.shape == Shape.Ellipse && <BoxSelectableArea {...props} />}
+
+        {/* {props.shape == Shape.Line && <LineMovableArea {...props} />} */}
+        {/* {props.shape == Shape.Arrow && <LineMovableArea {...props} />} */}
+        {/* {props.shape == Shape.Bracket && <LineMovableArea {...props} />} */}
+
+        {/* {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />} */}
+        {/* {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />} */}
     </>
 }

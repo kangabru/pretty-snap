@@ -8,13 +8,14 @@ type AnnotationStore = {
     index: { [id: string]: AnnotationAny | undefined },
     style: StyleOptions,
 
-    saveAnnotation(_: AnnotationAny, ignoreHistory?: boolean): string,
+    save(_: AnnotationAny): string,
+
     undo(): void,
     redo(): void,
     undos: UndoEvent[],
     redos: UndoEvent[],
 
-    idEditing?: string,
+    editId?: string,
     edit(id: string): void,
     editStop(): void,
 }
@@ -35,24 +36,21 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             count: 1,
         },
 
-        saveAnnotation: (annotation, ignoreHistory) => {
+        save: _annotation => {
             const { undos, index, ids, style } = get()
 
-            const isNew = !annotation.id
-            const id = annotation.id ?? Math.random().toString(36).slice(2)
-            const annotationItem = <AnnotationAny>{ ...annotation, ...style }
-            const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: annotationItem }
+            const id = _annotation.id ?? Math.random().toString(36).slice(2)
 
-            const newUndos = ignoreHistory ? undos.slice() : [...undos, undoEvent]
-            if (ignoreHistory && newUndos.length && newUndos.slice(-1)[0]?.id === id)
-                newUndos[newUndos.length - 1].dataNext = annotationItem
+            const annotation = <AnnotationAny>{ ..._annotation, id }
+            const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: annotation }
+
+            const newUndos = [...undos, undoEvent]
 
             set("Save", {
                 ids: AddIfNewId(ids, id),
-                index: { ...index, [id]: annotationItem },
+                index: { ...index, [id]: annotation },
                 undos: newUndos, redos: [],
-                style: { ...style, count: style.count + (annotationItem.shape == Shape.Counter ? 1 : 0) },
-                idEditing: isNew && shouldEditOnCreate(annotation.shape) ? id : undefined,
+                style: { ...style, count: style.count + (annotation.shape == Shape.Counter ? 1 : 0) },
             })
 
             return id
@@ -70,7 +68,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 ids: wasNew ? ids.slice(0, -1) : ids.slice(),
                 undos: undos.slice(0, -1), redos: [...redos, lastUndo],
                 style: { ...style, count: lastUndo.dataNext?.count ?? style.count },
-                idEditing: undefined,
+                editId: undefined,
             })
         },
         redo: () => {
@@ -85,44 +83,40 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 undos: [...undos, lastRedo],
                 redos: redos.slice(0, -1),
                 style: { ...style, count: 1 + (lastRedo.dataNext?.count ?? style.count) },
-                idEditing: undefined,
+                editId: undefined,
             })
         },
         undos: [],
         redos: [],
 
-        edit: idEditing => set("Edit", { idEditing }),
+        edit: idEditing => set("Edit", { editId: idEditing }),
 
         /** The text component works in a two step process:
          * - The user clicks somewhere which triggers the usual state update and puts the tet in 'edit mode'
          * - When the users saves or cancels, the state has to updated or reset so the existing item doesn't create 2 undo events
          */
         editStop: () => {
-            const { idEditing, index, ids, undos } = get()
+            const { editId: idEditing, index, ids, undos } = get()
             const item = index[idEditing ?? ""]
 
             if (idEditing && item && item.shape == Shape.Text && !item.text) {
                 // Remove new text annotations that haven't been confirmed
                 set("Text cancel", {
-                    idEditing: undefined,
+                    editId: undefined,
                     ids: ids.slice(0, -1),
                     undos: undos.slice(0, -1),
                     index: { ...index, [idEditing]: undefined },
                 })
             } else
-                set("Edit cancel", { idEditing: undefined })
+                set("Edit cancel", { editId: undefined })
         },
     })
 }, "Annotate"))
 
 /** Adds an ID if the ID is new */
 function AddIfNewId(ids: string[], newId: string) {
-    const isLastId = ids.slice(-1)[0] == newId
-    return isLastId ? ids.slice() : [...ids, newId]
-}
-
-function shouldEditOnCreate(style: Shape) {
-    return style == Shape.Text
+    const hasId = ids.includes(newId)
+    return hasId ? ids.slice() : [...ids, newId]
 }
 
 export default useAnnotateStore

@@ -1,5 +1,9 @@
-export const STROKE = 8
-export const DASH = 16
+import { remToPixels } from "../../common/misc/utils"
+
+export const STROKE = remToPixels(0.5)
+export const DASH = remToPixels(1)
+
+export const STROKE_MOVABLE_LINE = remToPixels(3)
 
 export const colors = {
     red: "#f87171", // red 400

@@ -1,27 +1,60 @@
 import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
-import { Bounds } from '../../misc/types';
+import { AnnotationAny, Bounds } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
-import GenericAnnotation from '../annotations';
-import { MovePane, onResizeEvents, RenderProps } from './move-pane';
+import GenericAnnotation, { GenericSelectableArea } from '../annotations';
+import { onResizeEvents, useMove } from './move-pane';
+
+export type MovePaneProps = {
+    initBounds: Bounds,
+    close: () => void,
+    onSave: (_: Bounds) => void,
+}
 
 /** TODO */
 export default function Mover() {
-    const idEditing = useAnnotateStore(s => s.idEditing)
-    const a = useAnnotateStore(useCallback(s => idEditing ? s.index[idEditing] : undefined, [idEditing]))
-    return a ? <MovePane initBounds={a as any}>
-        {props => <MoveUi {...props}>
-            {bounds => <GenericAnnotation {...a} {...bounds} />}
-        </MoveUi>}
-    </MovePane> : null
+
+    const editId = useAnnotateStore(s => s.editId)
+    const editStop = useAnnotateStore(s => s.editStop)
+
+    const annotation = useAnnotateStore(useCallback(s => s.index[editId as string], [editId]))
+    const save = (bounds: Bounds) => annotation && useAnnotateStore.getState().save({ ...annotation, ...bounds })
+
+    return annotation
+        ? <MoveUi key={editId} initBounds={annotation as any} close={editStop} onSave={save}>
+            {bounds => <>
+                <SelectableAreas />
+                <GenericAnnotation {...annotation} {...bounds} />
+            </>}
+        </MoveUi>
+        : <SelectableAreas />
 }
 
-function MoveUi({ bounds, onDrag, onResize, children }: RenderProps & ChildrenWithProps<Bounds>) {
+function SelectableAreas() {
+    const ids = useAnnotateStore(s => s.ids)
+    return <>{ids.map(id => <SelectableArea key={id} id={id} />)}</>
+}
+
+
+function SelectableArea({ id }: { id: string }) {
+    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
+    return <GenericSelectableArea {...annotation as Bounds} shape={annotation.shape} onClick={e => {
+        useAnnotateStore.getState().edit(id)
+        e.stopPropagation()
+    }} />
+}
+
+function MoveUi({ onSave, close, initBounds, children }: ChildrenWithProps<Bounds> & {
+    initBounds: Bounds, close: () => void, onSave: (_: Bounds) => void
+}) {
+    const [bounds, onDrag, onResize] = useMove(initBounds, onSave)
     const { left, top, width, height } = bounds
-    return <div class="absolute inset-0" onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
+    return <div class="absolute inset-0" onClick={close}
+        onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
         {children(bounds)}
-        <div style={{ left, top, width, height }} class="absolute bg-black bg-opacity-20" onMouseDown={onDrag.start} />
+        <div style={{ left, top, width, height }} class="absolute bg-black bg-opacity-20 cursor-move"
+            onMouseDown={onDrag.start} onClick={e => e.stopPropagation()} />
         <ResizeUi {...bounds} {...onResize} />
     </div>
 }
