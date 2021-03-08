@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
+import { SelectableAreaProps } from '.';
 import { Children } from '../../../common/misc/types';
 import useNiceDashLength from '../../hooks/use-dash';
-import { DASH, STROKE } from '../../misc/constants';
+import { DASH, STROKE, STROKE_MOVABLE_LINE } from '../../misc/constants';
 import { Annotation, Bounds, ColorStyle, Shape, ShapeStyle } from '../../misc/types';
 import { editAnnotationOnClick } from './util';
 
@@ -53,10 +54,23 @@ export function LineDashed({ children, ...props }: LineProps & { children?: JSX.
     </SvgLineContainer>
 }
 
-export function GetLineCoords({ width, height, negX, negY }: LineProps) {
+export function GetLineCoords({ width, height, negX, negY }: Pick<LineProps, 'width' | 'height' | 'negX' | 'negY'>) {
     const x1 = (negX ? width : 0)
     const y1 = (negY ? height : 0)
     const x2 = x1 + (negX ? -1 : 1) * width
     const y2 = y1 + (negY ? -1 : 1) * height
     return [x1, y1, x2, y2]
+}
+
+export function LineSelectableArea({ onClick: onMouseDown, ...bounds }: SelectableAreaProps) {
+    const { left, top, width, height } = bounds
+    const [x1, y1, x2, y2] = GetLineCoords(bounds)
+    const stroke = STROKE_MOVABLE_LINE, padding = stroke / 2
+    return <div class="absolute opacity-0" style={{ left: left - padding, top: top - padding }}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width={width + stroke} height={height + stroke}>
+            <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>
+                <line class="cursor-pointer" x1={x1} y1={y1} x2={x2} y2={y2} fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} onMouseDown={onMouseDown} />
+            </g>
+        </svg>
+    </div>
 }

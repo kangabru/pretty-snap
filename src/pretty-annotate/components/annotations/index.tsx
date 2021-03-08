@@ -5,7 +5,7 @@ import Arrow from './arrow';
 import Bracket from './bracket';
 import Counter from './counter';
 import Ellipse from './ellipse';
-import Line from './line';
+import Line, { LineSelectableArea } from './line';
 import Text from './text';
 
 export default function GenericAnnotation(props: AnnotationAny) {
@@ -29,9 +29,9 @@ export function GenericSelectableArea(props: SelectableAreaProps) {
         {props.shape == Shape.Box && <BoxSelectableArea {...props} />}
         {props.shape == Shape.Ellipse && <BoxSelectableArea {...props} />}
 
-        {/* {props.shape == Shape.Line && <LineMovableArea {...props} />} */}
-        {/* {props.shape == Shape.Arrow && <LineMovableArea {...props} />} */}
-        {/* {props.shape == Shape.Bracket && <LineMovableArea {...props} />} */}
+        {props.shape == Shape.Line && <LineSelectableArea {...props} />}
+        {props.shape == Shape.Arrow && <LineSelectableArea {...props} />}
+        {props.shape == Shape.Bracket && <LineSelectableArea {...props} />}
 
         {/* {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />} */}
         {/* {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />} */}
