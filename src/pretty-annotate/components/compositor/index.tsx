@@ -4,7 +4,7 @@ import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
-import { setWarningOnClose } from '../../../common/hooks/use-misc';
+import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
