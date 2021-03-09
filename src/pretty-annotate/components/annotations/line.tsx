@@ -69,12 +69,11 @@ export function LineSelectableArea({ bounds, shape, class: cls, ...rest }: Selec
     const [x1, y1, x2, y2] = GetLineCoords(bounds)
     const stroke = STROKE_MOVABLE_LINE, padding = stroke / 2
     const isDevMode = useDevMode()
-    return <div class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")} style={{ left: left - padding, top: top - padding }}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width={width + stroke} height={height + stroke}>
-            <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} {...rest} class={join("cursor-pointer", cls)}
-                    fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} />
-            </g>
-        </svg>
-    </div>
+    return <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+        class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")}
+        style={{ left: left - padding, top: top - padding }} width={width + stroke} height={height + stroke}>
+        <line x1={x1} y1={y1} x2={x2} y2={y2} {...rest} class={join("cursor-pointer", cls)}
+            style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}
+            fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} />
+    </svg>
 }

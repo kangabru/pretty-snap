@@ -6,7 +6,7 @@ import { MouseFunc } from '../compositor/move-pane';
 import { ResizeConfig } from '../compositor/mover';
 import Arrow from './arrow';
 import Bracket from './bracket';
-import Counter from './counter';
+import Counter, { CounterSelectableArea } from './counter';
 import Ellipse from './ellipse';
 import Line, { LineSelectableArea } from './line';
 import Text from './text';
@@ -38,8 +38,8 @@ export function GenericSelectableArea(props: SelectableAreaProps) {
         {props.shape == Shape.Arrow && <LineSelectableArea {...props} />}
         {props.shape == Shape.Bracket && <LineSelectableArea {...props} />}
 
-        {/* {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />} */}
-        {/* {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />} */}
+        {props.shape == Shape.Counter && <CounterSelectableArea {...props} />}
+        {/* {props.shape == Shape.Text && <TextSelectableArea {...props} />} */}
     </>
 }
 
