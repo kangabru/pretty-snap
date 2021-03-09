@@ -3,9 +3,9 @@ import { useCallback } from 'react';
 import { useSuperCommand } from '../../../common/hooks/use-misc';
 import { Children } from '../../../common/misc/types';
 import { join, textClass } from '../../../common/misc/utils';
-import { useSetStyle } from '../../hooks/use-styles';
+import { useCurrentStyle } from '../../hooks/use-styles';
 import { colors } from '../../misc/constants';
-import { Shape } from '../../misc/types';
+import { Shape, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { GetBracketPaths } from '../annotations/bracket';
 import { AnnotateButton, AnnotateButtonSvg, ButtonWithModal } from './buttons';
@@ -13,10 +13,10 @@ import { Command } from './command';
 import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeButtonGroup({ command }: Command) {
-    const { style: { shape }, setStyle } = useSetStyle()
+    const [{ shape }, saveStyle] = useSetShape()
 
-    useSuperCommand('V', useCallback(() => setStyle({ shape: Shape.Mouse }), [setStyle]))
-    useSuperCommand('T', useCallback(() => setStyle({ shape: Shape.Text }), [setStyle]))
+    useSuperCommand('V', useCallback(() => saveStyle(Shape.Mouse), [saveStyle]))
+    useSuperCommand('T', useCallback(() => saveStyle(Shape.Text), [saveStyle]))
 
     return <ButtonWithModal modalId={ModalId.Shape} text="Shape" command={command} button={(active, open) => (
         <StyleButtonGeneric shape={shape} onClick={open} refocus={active} command={command} />
@@ -38,7 +38,7 @@ export default function ShapeButtonGroup({ command }: Command) {
 type StyleButtonProps = Command & { shape: Shape, onClick?: () => void, refocus?: boolean }
 
 function StyleButtonGeneric(props: StyleButtonProps) {
-    const { count } = useSetStyle().style
+    const { count } = useCurrentStyle()
     const { shape } = props
 
     return <>
@@ -73,21 +73,21 @@ function StyleButtonGeneric(props: StyleButtonProps) {
 }
 
 function StyleButton({ shape, text, onClick, refocus, command, children }: StyleButtonProps & Partial<Children> & { text?: string | number }) {
+    const [style, save] = useSetShape()
 
-    const { style, setStyle } = useSetStyle()
-    const setShape = () => setStyle({ shape })
+    const selectedShape = style.shape
+    const isTarget = shape === selectedShape
     const { color, useDarkText } = style.color
 
-    const selectedShape = useAnnotateStore(s => s.style.shape)
-    const isTarget = shape === selectedShape
+    const onSave = () => onClick ? onClick() : save(shape)
 
     return text
-        ? <AnnotateButton data-target={isTarget} data-refocus={refocus} data-command={command} onClick={onClick ?? setShape} className="m-1">
+        ? <AnnotateButton data-target={isTarget} data-refocus={refocus} data-command={command} onClick={onSave} className="m-1">
             <span style={{ backgroundColor: color }} class={join(textClass(useDarkText),
                 "w-8 h-8 rounded-full font-bold text-xl font-mono grid place-items-center")}>{text}</span>
         </AnnotateButton>
         : <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} data-command={command} style={{ color }}
-            className="m-1" onClick={onClick ?? setShape}>{children}</AnnotateButtonSvg>
+            className="m-1" onClick={onSave}>{children}</AnnotateButtonSvg>
 }
 
 function BracketIcon() {
@@ -102,4 +102,16 @@ function BracketIcon() {
             <path d={d1} /><path d={d2} />
         </g>
     </g>
+}
+
+/** The shape tool uses global settings and styles because edits can only be done via the mouse shape tool.
+ *  Other styles (like colour and shape style) differ as they will update based on the current annotation being edited.
+ */
+export function useSetShape(): [StyleOptions, (_: Shape) => void] {
+    const style = useAnnotateStore(s => s.style)
+    const saveStyle = (shape: Shape) => useAnnotateStore.setState({
+        editId: undefined, // Shape changes cancel edits
+        style: { ...style, shape },
+    })
+    return [style, saveStyle]
 }

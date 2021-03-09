@@ -1,13 +1,29 @@
 import { Ref, useRef } from 'preact/hooks';
 import { useLayoutEffect, useState } from 'react';
 import { colors, SHAPE_TRANSPARENT_OPACITY } from '../misc/constants';
-import { ShapeStyle, StyleOptions } from "../misc/types";
+import { Shape, ShapeStyle, StyleOptions, SupportedStyle, supportedStyles } from "../misc/types";
 import useAnnotateStore from "../stores/annotation";
+import useEditingAnnotation from './use-annotation';
 
-export function useSetStyle() {
-    const style = useAnnotateStore(s => s.style)
-    const setStyle = (_style: Partial<StyleOptions>) => useAnnotateStore.setState({ style: { ...style, ..._style } })
-    return { style, setStyle }
+/** Returns the current annotation's style if an annotation is being editing otherwise the global style. */
+export function useCurrentStyle() {
+    const globalStyle = useAnnotateStore(s => s.style)
+    const editAnnotation = useEditingAnnotation()[1]
+    return editAnnotation ? editAnnotation : globalStyle
+}
+
+/** Returns the current annotation's style and setter functions if an annotation is being editing otherwise the global style and setter functions. */
+export function useSetStyle(): [StyleOptions, (_: Partial<StyleOptions>) => void] {
+    const style = useCurrentStyle()
+    const saveStyle = useAnnotateStore(s => s.saveStyle)
+    return [style, saveStyle]
+}
+
+/** Returns the selected annotation's shape if an annotation is being edited otherwise returns the global shape. */
+export function useCurrentShape(): [Shape, SupportedStyle] {
+    const shape = useCurrentStyle().shape
+    const supportedStyle = supportedStyles[shape] ?? {} as SupportedStyle
+    return [shape, supportedStyle]
 }
 
 /** Returns the fill opacity (value from 0 to 1) for the given shape style or undefined if no fill should be applied. */

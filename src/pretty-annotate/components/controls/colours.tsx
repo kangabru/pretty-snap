@@ -1,15 +1,14 @@
 import { h } from 'preact';
 import { forwardRef, Ref } from 'preact/compat';
 import { join } from '../../../common/misc/utils';
-import { useRingColourStyle, useRingColourWithOpacity, VAR_RING_COLOR } from '../../hooks/use-styles';
+import { useCurrentStyle, useRingColourStyle, useRingColourWithOpacity, useSetStyle, VAR_RING_COLOR } from '../../hooks/use-styles';
 import { colors } from '../../misc/constants';
-import useAnnotateStore from '../../stores/annotation';
 import { ButtonWithModal } from './buttons';
 import CommandText, { Command } from './command';
 import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ColorButtonGroup({ command }: Command) {
-    const { color, useDarkText } = useAnnotateStore(s => s.style.color)
+    const { color, useDarkText } = useCurrentStyle().color
     const [buttonRef, ringColor] = useRingColourStyle()
 
     return <ButtonWithModal modalId={ModalId.Colour} text="Colour" command={command} button={(active, onClick) => (
@@ -32,15 +31,14 @@ type ColorButtonprops = Command & { color: string, useDarkText?: boolean }
 function ColorButton(props: ColorButtonprops) {
     const { color, useDarkText } = props
     const [ref, ringColor] = useRingColourWithOpacity(useDarkText ? colors.dark : color)
-    const setColour = () => {
-        const style = useAnnotateStore.getState().style
-        useAnnotateStore.setState({ style: { ...style, color: { color: color, useDarkText } } })
-    }
 
-    const { color: _color, useDarkText: _useDarkText } = useAnnotateStore(s => s.style.color)
+    const [style, saveStyle] = useSetStyle()
+    const save = () => saveStyle({ color: { color: color, useDarkText } })
+
+    const { color: _color, useDarkText: _useDarkText } = style.color
     const isTarget = color === _color && useDarkText === _useDarkText
 
-    return <InnerButton_Ref ref={ref} onClick={setColour} {...{ ...props, ringColor, isTarget }} />
+    return <InnerButton_Ref ref={ref} onClick={save} {...{ ...props, ringColor, isTarget }} />
 }
 
 type InnerProps = h.JSX.HTMLAttributes<HTMLButtonElement> & ColorButtonprops & { ringColor: string, isTarget?: boolean }

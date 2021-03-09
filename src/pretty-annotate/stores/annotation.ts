@@ -9,6 +9,7 @@ type AnnotationStore = {
     style: StyleOptions,
 
     save(_: AnnotationAny): string,
+    saveStyle(_: Partial<StyleOptions>): void,
 
     undo(): void,
     redo(): void,
@@ -54,6 +55,23 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             })
 
             return id
+        },
+
+        saveStyle: stylePartial => {
+            const { editId, style } = get()
+
+            // debugger
+
+            // Update the global style settings
+            const styleMerged = { ...style, ...stylePartial }
+            set("Save Style", { style: styleMerged })
+
+            // Update the current annotation style if any
+            if (editId) {
+                const { index, save } = get()
+                const annotation = index[editId]
+                annotation && save({ ...annotation, ...stylePartial, id: editId })
+            }
         },
 
         undo: () => {
@@ -115,8 +133,8 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
 
 /** Adds an ID if the ID is new */
 function AddIfNewId(ids: string[], newId: string) {
-    const hasId = ids.includes(newId)
-    return hasId ? ids.slice() : [...ids, newId]
+    const _ids = ids.slice().filter(id => id !== newId)
+    return [..._ids, newId] // move updates to the top of the z-index
 }
 
 export default useAnnotateStore

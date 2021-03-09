@@ -1,6 +1,6 @@
 import { Fragment, h } from 'preact';
-import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
+import useEditingAnnotation from '../../hooks/use-annotation';
 import { AnnotationAny, Bounds, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation, { GenericSelectableArea, GetResizeUiConfig } from '../annotations';
@@ -15,10 +15,8 @@ export type MovePaneProps = {
 /** TODO */
 export default function Mover() {
 
-    const editId = useAnnotateStore(s => s.editId)
+    const [editId, annotation] = useEditingAnnotation()
     const editStop = useAnnotateStore(s => s.editStop)
-
-    const annotation = useAnnotateStore(useCallback(s => s.index[editId as string], [editId]))
     const save = (bounds: Bounds) => annotation && useAnnotateStore.getState().save({ ...annotation, ...bounds })
 
     return annotation
