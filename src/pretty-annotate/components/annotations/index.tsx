@@ -39,7 +39,7 @@ export function GenericSelectableArea(props: SelectableAreaProps) {
         {props.shape == Shape.Bracket && <LineSelectableArea {...props} />}
 
         {props.shape == Shape.Counter && <CounterSelectableArea {...props} />}
-        {/* {props.shape == Shape.Text && <TextSelectableArea {...props} />} */}
+        {props.shape == Shape.Text && <CounterSelectableArea {...props} />}
     </>
 }
 

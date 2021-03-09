@@ -66,9 +66,12 @@ function Image() {
 }
 
 function Editor() {
-    const isCreating = useAnnotateStore(s => s.style.shape) !== Shape.Mouse
+    const editId = useAnnotateStore(s => s.editId)
+    const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse
+    const isEditing = editId || isEditTool
+
     return <section class="absolute inset-0">
         <Viewer hideEditing />
-        {isCreating ? <Dragger /> : <Mover />}
+        {isEditing ? <Mover /> : <Dragger />}
     </section>
 }

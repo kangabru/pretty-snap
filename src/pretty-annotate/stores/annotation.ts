@@ -1,7 +1,7 @@
 import create from "zustand"
 import { devtools } from 'zustand/middleware'
 import { colors } from "../misc/constants"
-import { AnnotationAny, Shape, ShapeStyle, StyleOptions } from "../misc/types"
+import { Annotation, AnnotationAny, Shape, ShapeStyle, StyleOptions } from "../misc/types"
 
 type AnnotationStore = {
     ids: string[],
@@ -9,6 +9,7 @@ type AnnotationStore = {
     style: StyleOptions,
 
     save(_: AnnotationAny): string,
+    saveText(_: Annotation<Shape.Text>): string,
     saveStyle(_: Partial<StyleOptions>): void,
 
     undo(): void,
@@ -31,7 +32,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         ids: [], index: {},
 
         style: {
-            shape: Shape.Box,
+            shape: Shape.Text,
             shapeStyle: ShapeStyle.Outline,
             color: { color: colors.blue },
             count: 1,
@@ -45,22 +46,20 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             const annotation = <AnnotationAny>{ ..._annotation, id }
             const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: annotation }
 
-            const newUndos = [...undos, undoEvent]
-
             set("Save", {
                 ids: AddIfNewId(ids, id),
                 index: { ...index, [id]: annotation },
-                undos: newUndos, redos: [],
+                undos: [...undos, undoEvent],
+                redos: [],
                 style: { ...style, count: style.count + (annotation.shape == Shape.Counter ? 1 : 0) },
             })
 
             return id
         },
 
+        /** TODO */
         saveStyle: stylePartial => {
             const { editId, style } = get()
-
-            // debugger
 
             // Update the global style settings
             const styleMerged = { ...style, ...stylePartial }
@@ -72,6 +71,47 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 const annotation = index[editId]
                 annotation && save({ ...annotation, ...stylePartial, id: editId })
             }
+        },
+
+        /** Text annotations have a 2 step save process:
+         * 1. Text is placed somewhere but without a text value
+         * 2. The user enters the text and saves again
+         *
+         * The problem is that by using the normal save method we create 2 histories.
+         * If the user were to undo they would see the placement and subsequent edit events.
+         * This method handles that situation so we only save 1 history event.
+         *
+         * The 'editStop' function handles the case were the user cancels before the second save.
+         */
+        saveText: annotation => {
+            const { index, save } = get()
+            const lastSave = index[annotation.id as string] // The last save if it exists
+
+            // Save as normal
+            const id = save(annotation)
+
+            // Get the update state
+            const { undos } = get()
+
+            // Step 1: The user is placing the text without a text value
+            if (!lastSave) {
+                set("Save Text #1", {
+                    editId: id, // Immediately edit this annotation so the user can enter text
+                    undos: undos.slice(0, -1), // Don't include this in the history
+                })
+            }
+
+            // Step 2: The user has entered text
+            else if (!lastSave.text) {
+                // Copy the last undo but without the previous state (the one without text)
+                const lastUndo: UndoEvent = { ...undos.slice(-1)[0], dataPrev: undefined }
+                set("Save Text #2", {
+                    editId: undefined, // Stop editing
+                    undos: [...undos.slice(0, -1), lastUndo], // Update the last undo
+                })
+            }
+
+            return id
         },
 
         undo: () => {
@@ -109,10 +149,6 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
 
         edit: idEditing => set("Edit", { editId: idEditing }),
 
-        /** The text component works in a two step process:
-         * - The user clicks somewhere which triggers the usual state update and puts the tet in 'edit mode'
-         * - When the users saves or cancels, the state has to updated or reset so the existing item doesn't create 2 undo events
-         */
         editStop: () => {
             const { editId: idEditing, index, ids, undos } = get()
             const item = index[idEditing ?? ""]

@@ -35,7 +35,6 @@ function SelectableAreas() {
     return <>{ids.map(id => <SelectableArea key={id} id={id} />)}</>
 }
 
-
 function SelectableArea({ id }: { id: string }) {
     const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
     return <GenericSelectableArea bounds={annotation as Bounds} shape={annotation.shape}

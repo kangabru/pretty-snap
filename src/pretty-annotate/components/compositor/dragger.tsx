@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { KeysHeld, useKeysHeld } from '../../../common/hooks/use-misc';
 import { join } from '../../../common/misc/utils';
-import { AnnotationAny, Bounds, Shape, StyleOptions } from '../../misc/types';
+import { Annotation, AnnotationAny, Bounds, Shape, StyleOptions } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 import { setAltBracketBounds } from '../annotations/bracket';
@@ -23,10 +23,9 @@ export default function Dragger() {
 function DragEdits() {
     const keysHeld = useKeysHeld()
     const style = useAnnotateStore(s => s.style)
-    const save = useAnnotateStore(s => s.save)
     const toBounds = (bounds: Bounds) => boundsToData(bounds, style, keysHeld)
 
-    return <DragPane onComplete={bounds => { save(toBounds(bounds)) }}>
+    return <DragPane onComplete={bounds => onSave(toBounds(bounds))}>
         {bounds => <GenericAnnotation {...style} {...toBounds(bounds)} />}
     </DragPane>
 }
@@ -65,6 +64,14 @@ function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld)
             break
     }
     return { ...options, ...bounds }
+}
+
+function onSave(annotation: AnnotationAny) {
+    const { save, saveText } = useAnnotateStore.getState()
+
+    if (annotation.shape === Shape.Text)
+        saveText(annotation as Annotation<Shape.Text>)
+    else save(annotation)
 }
 
 /** The bounds define a box so extract the actual mouse coordinates. */

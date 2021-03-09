@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef, useState, useLayoutEffect } from 'react';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { KEYS } from '../../../common/misc/keyboard';
 import { join, onKeys, textClass, useRandomItem } from '../../../common/misc/utils';
@@ -20,18 +20,13 @@ const CLASS_STYLE = "hover:cursor-crosshair px-2 py-1 rounded-lg font-bold text-
 export default function Text(props: Props) {
     const { id, text, color: { useDarkText } } = props
 
-    const canEdit = useAnnotateStore(s => s.style.shape == Shape.Text)
-    const editing = useAnnotateStore(s => canEdit && id && s.editId === id)
-
-    const edit = useAnnotateStore(s => s.edit)
-    const editOnClick = (e: Event) => { if (id) { edit(id); e.stopPropagation() } }
-
+    const editing = useAnnotateStore(s => id && s.editId === id)
     const emptyText = useRandomItem(DEFAULT_TEXTS)
 
     return editing
         ? <TextInput {...props} />
-        : <span style={getStyle(props)} onClick={canEdit ? editOnClick : undefined}
-            class={join(CLASS_POSITION, CLASS_STYLE, textClass(useDarkText), canEdit ? "cursor-text pointer-events-auto" : "pointer-events-none")}>
+        : <span style={getStyle(props)}
+            class={join(CLASS_POSITION, CLASS_STYLE, textClass(useDarkText),)}>
             {text ?? emptyText}
         </span>
 }
@@ -47,11 +42,11 @@ function TextInput(props: Props) {
     const [textEdits, setTextEdits] = useState(text)
 
     const cancel = useAnnotateStore(s => s.editStop)
-    const saveText = useAnnotateStore(s => s.save)
 
     const save = () => {
+        const { saveText } = useAnnotateStore.getState()
         if (textEdits == text) cancel() // Doesn't create an undo event
-        else saveText({ ...props, text: textEdits }) // Creates an undo event
+        else saveText({ ...props, text: textEdits })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
