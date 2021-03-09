@@ -27,9 +27,10 @@ function EllipseSolid(props: EllipseProps) {
 }
 
 function EllipseDashed(props: EllipseProps) {
-    const ellipseProps = getEllipseProps(props)
+    const bounds = absBounds(props)
+    const ellipseProps = getEllipseProps(bounds)
 
-    const circumference = calcEllipseCircumference(props) || 0
+    const circumference = calcEllipseCircumference(bounds) || 0
     const [dashArray] = useNiceDashLength(circumference, DASH, { evenCount: true, shortCorners: true })
 
     return <SvgBoxContainer {...props}>
@@ -41,12 +42,12 @@ function EllipseDashed(props: EllipseProps) {
 /** Uses the Ramanujan approximation formula.
  * @see https://en.wikipedia.org/wiki/Ellipse#Circumference
  */
-function calcEllipseCircumference({ width: a, height: b }: EllipseProps) {
+function calcEllipseCircumference({ width: a, height: b }: Bounds) {
     return Math.PI * (3 * (a + b) - Math.sqrt(10 * a * b + 3 * (a ** 2 + b ** 2)))
 }
 
 /** Maps the selected box to svg ellipse props which are relative to the centre point. */
-function getEllipseProps(props: EllipseProps): { cx: number, cy: number, rx: number, ry: number } {
+function getEllipseProps(props: Bounds): { cx: number, cy: number, rx: number, ry: number } {
     const { width, height } = absBounds(props)
     const strokeMargin = STROKE / 2
     const x = strokeMargin + width / 2, y = strokeMargin + height / 2

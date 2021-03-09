@@ -41,7 +41,7 @@ function BoxSolid(props: BoxProps) {
 }
 
 function BoxDashed(props: BoxProps) {
-    const { width, height } = props
+    const { width, height } = absBounds(props)
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2
 
     const [dashArrayW, dashOffsetW] = useNiceDashLength(width, DASH, { shortCorners: true })

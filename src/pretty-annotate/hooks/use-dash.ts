@@ -13,8 +13,8 @@ export type DashStyle = {
 export default function useNiceDashLength(lineLength: number, targetDashLength: number, style?: DashStyle) {
 
     // Round down the dash length so they fit the line length perfectly
-    const dashes = getDashCount(lineLength, 2 * targetDashLength, style)  // dash + gap
-    const length = lineLength / Math.max(0.1, dashes) // don't divide by 0
+    const dashes = Math.abs(getDashCount(lineLength, 2 * targetDashLength, style))  // dash + gap
+    const length = Math.abs(lineLength / Math.max(0.1, dashes)) // don't divide by 0
 
     // Proxy the values through react spring for tasty animations
     const { dash, offset } = useSpring<{ dash: number, offset: number }>({
