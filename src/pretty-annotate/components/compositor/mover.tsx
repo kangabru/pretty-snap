@@ -54,7 +54,7 @@ function MoveUi({ onSave, close, initBounds, shape, children }: ChildrenWithProp
     return <div class="absolute inset-0" onClick={close}
         onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
         {children(bounds)}
-        <div style={{ left, top, width, height }} class="absolute bg-black bg-opacity-20 cursor-move"
+        <div style={{ left, top, width, height }} class="absolute cursor-move"
             onMouseDown={onDrag.start} onClick={e => e.stopPropagation()} />
         <ResizeUi {...bounds} {...onResize} shape={shape} />
     </div>
@@ -77,7 +77,7 @@ function ResizeUi({ start, move, stop, shape, ...bounds }: Bounds & onResizeEven
     function Point(ps: { style: any, top?: boolean, right?: boolean, bottom?: boolean, left?: boolean }) {
         const top = negY ? ps.bottom : ps.top, bottom = negY ? ps.top : ps.bottom
         const left = negX ? ps.right : ps.left, right = negX ? ps.left : ps.right
-        return <div style={ps.style} class="absolute bg-white w-4 h-4 -ml-2 -mt-2 rounded-full shadow"
+        return <div style={ps.style} class="absolute bg-white border-t border-gray-300 w-4 h-4 -ml-2 -mt-2 rounded-full shadow"
             onMouseDown={e => start(top, right, bottom, left)(e)}></div>
     }
 
