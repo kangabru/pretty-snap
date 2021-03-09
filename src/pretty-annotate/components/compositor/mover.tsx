@@ -68,15 +68,21 @@ export type ResizeConfig = {
 }
 
 function ResizeUi({ start, move, stop, shape, ...bounds }: Bounds & onResizeEvents & { shape: Shape }) {
-    const { negX, negY } = bounds
-    const l = bounds.left, t = bounds.top
-    const r = bounds.left + bounds.width, b = bounds.top + bounds.height
+    const _l = bounds.left, _t = bounds.top
+    const _r = bounds.left + bounds.width
+    const _b = bounds.top + bounds.height
+
+    const negX = bounds.width < 0
+    const negY = bounds.height < 0
+
+    const l = Math.min(_l, _r), t = Math.min(_t, _b)
+    const r = Math.max(_l, _r), b = Math.max(_t, _b)
 
     const mx = (l + r) / 2, my = (t + b) / 2
 
     function Point(ps: { style: any, top?: boolean, right?: boolean, bottom?: boolean, left?: boolean }) {
-        const top = negY ? ps.bottom : ps.top, bottom = negY ? ps.top : ps.bottom
         const left = negX ? ps.right : ps.left, right = negX ? ps.left : ps.right
+        const top = negY ? ps.bottom : ps.top, bottom = negY ? ps.top : ps.bottom
         return <div style={ps.style} class="absolute bg-white border-t border-gray-300 w-4 h-4 -ml-2 -mt-2 rounded-full shadow"
             onMouseDown={e => start(top, right, bottom, left)(e)}></div>
     }

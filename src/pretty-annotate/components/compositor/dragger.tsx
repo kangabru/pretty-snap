@@ -6,6 +6,7 @@ import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 import { setAltBracketBounds } from '../annotations/bracket';
 import { getEllipseBounds } from '../annotations/ellipse';
+import { absBounds } from '../annotations/util';
 import { DragPane } from './drag-pane';
 
 const clickTypes = new Set([Shape.Counter, Shape.Text])
@@ -67,40 +68,25 @@ function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld)
 }
 
 /** The bounds define a box so extract the actual mouse coordinates. */
-function toMousePosition({ left, top, width, height, negX, negY }: Bounds) {
-    const x = left + (negX ? 0 : width)
-    const y = top + (negY ? 0 : height)
-    return [x, y]
+function toMousePosition({ left, top, width, height }: Bounds) {
+    return [left + width, top + height]
 }
 
 /** Updates the bounds to the closest horizontal, diagonal, or vertial shape. */
 function fixDirection(bounds: Bounds) {
-    const { left, top, width, height, negX, negY } = bounds
-
+    const { width, height } = absBounds(bounds)
     const ratio = Math.abs(height) < 0.05 ? 5 : width / height
 
-    if (ratio < 0.5) {
-        bounds.width = 0  // vertical
-        bounds.left = left + (negX ? width : 0)
-    }
+    if (ratio < 0.5) bounds.width = 0  // vertical
     else if (ratio < 2) fixSize(bounds) // diagonal
-    else {
-        bounds.height = 0   // horizontal
-        bounds.top = top + (negY ? height : 0)
-    }
+    else bounds.height = 0   // horizontal
 }
 
 /** Updates the bounds to a square. */
 function fixSize(bounds: Bounds) {
-    const { left, top, width, height, negX, negY } = bounds
-
-    if (width < height) {
-        const dh = height - width
-        bounds.height = width
-        bounds.top = top + (negY ? dh : 0)
-    } else {
-        const dw = width - height
-        bounds.width = height
-        bounds.left = left + (negX ? dw : 0)
-    }
+    const { width, height } = bounds
+    const signW = Math.sign(width), signH = Math.sign(height)
+    const size = Math.min(Math.abs(width), Math.abs(height))
+    bounds.width = signW * size
+    bounds.height = signH * size
 }

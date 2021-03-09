@@ -1,6 +1,6 @@
 export type Size = { width: number, height: number }
 export type Position = { left: number, top: number }
-export type Bounds = Size & Position & { negX: boolean, negY: boolean }
+export type Bounds = Size & Position
 
 export enum Shape { Box, Ellipse, Bracket, Arrow, Line, Counter, Text, Mouse }
 export enum ShapeStyle { Outline, OutlineDashed, Solid, Transparent }

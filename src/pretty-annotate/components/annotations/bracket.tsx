@@ -16,7 +16,7 @@ function SvgBracketContainer({ children, ...props }: Children & BracketProps) {
     const [dx, dy, angle] = getTransformBounds(props)
     const margin = getBracketPadding(props.width, props.height)
     return <SvgLineContainer {...props} padding={margin}>
-        <g style={{ transform: `translateX(${dx}px) translateY(${dy}px) rotate(${angle}rad)` }}
+        <g style={{ transform: `translateX(${-dx}px) translateY(${-dy}px) rotate(${angle}rad)` }}
             fill="none" stroke="currentColor" strokeLinejoin="round" strokeLinecap="round" strokeWidth={STROKE}>{children}</g>
     </SvgLineContainer>
 }
@@ -61,13 +61,9 @@ export function GetBracketPaths(rad: number, span: number): [string, string] {
 
 /** The bracket svg is defined as a horizontal line so this function returns
  * the translation and rotation values necessary to render it along the drawn path. */
-function getTransformBounds({ width, height, negX, negY }: BracketProps) {
-    const sx = negX ? -1 : 1, sy = negY ? -1 : 1
-    const angle = Math.atan2(height * sy, width * sx)
-
-    const dx = (negX ? width : 0)
-    const dy = (negY ? height : 0)
-    return [dx, dy, angle]
+function getTransformBounds({ width, height }: BracketProps) {
+    const angle = Math.atan2(height, width)
+    return [Math.min(0, width), Math.min(0, height), angle]
 }
 
 function getArcRadius(width: number, height: number) {
@@ -99,6 +95,9 @@ function getBracketLength(width: number, height: number) {
  * e.g. it will render *under* a horizontal line when drawn from left to right, and *above* from right to left.
  * This function updates bounds to flips that direction. */
 export function setAltBracketBounds(bounds: Bounds) {
-    bounds.negX = !bounds.negX
-    bounds.negY = !bounds.negY
+    const { left, top, width, height } = bounds
+    bounds.left = left + width
+    bounds.top = top + height
+    bounds.width = -width
+    bounds.height = -height
 }

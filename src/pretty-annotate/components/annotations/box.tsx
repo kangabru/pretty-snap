@@ -7,7 +7,7 @@ import useNiceDashLength from '../../hooks/use-dash';
 import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Shape, ShapeStyle } from '../../misc/types';
-import { editAnnotationOnClick } from './util';
+import { absBounds, editAnnotationOnClick } from './util';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -17,9 +17,10 @@ export default function Box(props: BoxProps) {
     return props.shapeStyle == ShapeStyle.OutlineDashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
 }
 
-export function SvgBoxContainer({ id, children, left, top, width, height, color: { color } }: BoxProps & JSX.ElementChildrenAttribute) {
+export function SvgBoxContainer({ id, children, color: { color }, ...bounds }: BoxProps & JSX.ElementChildrenAttribute) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
 
+    const { left, top, width, height } = absBounds(bounds)
     return <div onMouseDown={editAnnotationOnClick(id)} class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
             {children}
@@ -28,7 +29,9 @@ export function SvgBoxContainer({ id, children, left, top, width, height, color:
 }
 
 function BoxSolid(props: BoxProps) {
-    const { width, height, shapeStyle } = props
+    const { shapeStyle } = props
+    const { width, height } = absBounds(props)
+
     const fillOpacity = useFillOpacity(shapeStyle)
     return <SvgBoxContainer {...props}>
         <rect x={strokeMargin} y={strokeMargin} width={width} height={height}
@@ -58,6 +61,6 @@ function BoxDashed(props: BoxProps) {
 
 export function BoxSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
     const isDevMode = useDevMode()
-    return <div style={bounds as any} {...rest}
+    return <div style={absBounds(bounds)} {...rest}
         class={join("absolute", cls, isDevMode && "bg-black bg-opacity-30")} />
 }

@@ -53,7 +53,7 @@ export function GetResizeUiConfig(shape: Shape, bounds: Bounds): ResizeConfig | 
         case Shape.Arrow:
         case Shape.Bracket:
             // eslint-disable-next-line no-case-declarations
-            const topLeftBottomRight = bounds.negX == bounds.negY
+            const topLeftBottomRight = Math.sign(bounds.width) == Math.sign(bounds.height)
             return {
                 topLeft: topLeftBottomRight,
                 bottomRight: topLeftBottomRight,
