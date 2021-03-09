@@ -1,6 +1,7 @@
 import { Fragment, h } from 'preact';
 import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
 import Box, { BoxSelectableArea } from '../annotations/box';
+import { ResizeConfig } from '../compositor/mover';
 import Arrow from './arrow';
 import Bracket from './bracket';
 import Counter from './counter';
@@ -36,4 +37,24 @@ export function GenericSelectableArea(props: SelectableAreaProps) {
         {/* {props.shape == Shape.Counter && <Counter {...props as Annotation<Shape.Counter>} />} */}
         {/* {props.shape == Shape.Text && <Text {...props as Annotation<Shape.Text>} />} */}
     </>
+}
+
+export function GetResizeUiConfig(shape: Shape, bounds: Bounds): ResizeConfig | undefined {
+    switch (shape) {
+        case Shape.Box:
+        case Shape.Ellipse:
+            return { top: true, left: true, right: true, bottom: true, topLeft: true, topRight: true, bottomLeft: true, bottomRight: true }
+
+        case Shape.Line:
+        case Shape.Arrow:
+        case Shape.Bracket:
+            // eslint-disable-next-line no-case-declarations
+            const topLeftBottomRight = bounds.negX == bounds.negY
+            return {
+                topLeft: topLeftBottomRight,
+                bottomRight: topLeftBottomRight,
+                topRight: !topLeftBottomRight,
+                bottomLeft: !topLeftBottomRight,
+            }
+    }
 }
