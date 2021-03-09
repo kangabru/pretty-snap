@@ -1,7 +1,9 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
 import { SelectableAreaProps } from '.';
+import useDevMode from '../../../common/hooks/use-dev-mode';
 import { Children } from '../../../common/misc/types';
+import { join } from '../../../common/misc/utils';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE, STROKE_MOVABLE_LINE } from '../../misc/constants';
 import { Annotation, Bounds, ColorStyle, Shape, ShapeStyle } from '../../misc/types';
@@ -66,10 +68,12 @@ export function LineSelectableArea({ onClick: onMouseDown, ...bounds }: Selectab
     const { left, top, width, height } = bounds
     const [x1, y1, x2, y2] = GetLineCoords(bounds)
     const stroke = STROKE_MOVABLE_LINE, padding = stroke / 2
-    return <div class="absolute opacity-0" style={{ left: left - padding, top: top - padding }}>
+    const isDevMode = useDevMode()
+    return <div class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")} style={{ left: left - padding, top: top - padding }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width={width + stroke} height={height + stroke}>
             <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>
-                <line class="cursor-pointer" x1={x1} y1={y1} x2={x2} y2={y2} fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} onMouseDown={onMouseDown} />
+                <line class="cursor-pointer" x1={x1} y1={y1} x2={x2} y2={y2} onMouseDown={onMouseDown}
+                    fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} />
             </g>
         </svg>
     </div>

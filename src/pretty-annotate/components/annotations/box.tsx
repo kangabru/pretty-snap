@@ -1,11 +1,13 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
-import { useFillOpacity } from '../../hooks/use-styles';
+import { SelectableAreaProps } from '.';
+import useDevMode from '../../../common/hooks/use-dev-mode';
+import { join } from '../../../common/misc/utils';
 import useNiceDashLength from '../../hooks/use-dash';
+import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Shape, ShapeStyle } from '../../misc/types';
 import { editAnnotationOnClick } from './util';
-import { SelectableAreaProps } from '.';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -55,5 +57,7 @@ function BoxDashed(props: BoxProps) {
 }
 
 export function BoxSelectableArea({ onClick, ...bounds }: SelectableAreaProps) {
-    return <div class="absolute cursor-pointer" style={bounds as any} onClick={onClick} />
+    const isDevMode = useDevMode()
+    return <div style={bounds as any} onClick={onClick}
+        class={join("absolute cursor-pointer", isDevMode && "bg-black bg-opacity-30")} />
 }
