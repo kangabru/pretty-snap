@@ -40,21 +40,21 @@ function SelectableAreas() {
 
 function SelectableArea({ id }: { id: string }) {
     const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
-    return <GenericSelectableArea {...annotation as Bounds} shape={annotation.shape} onClick={e => {
-        useAnnotateStore.getState().edit(id)
-        e.stopPropagation()
-    }} />
+    return <GenericSelectableArea bounds={annotation as Bounds} shape={annotation.shape}
+        class="cursor-pointer" onClick={e => {
+            useAnnotateStore.getState().edit(id)
+            e.stopPropagation()
+        }} />
 }
 
 function MoveUi({ onSave, close, initBounds, shape, children }: ChildrenWithProps<Bounds> & {
     initBounds: Bounds, close: () => void, onSave: (_: Bounds) => void, shape: Shape,
 }) {
     const [bounds, onDrag, onResize] = useMove(initBounds, onSave)
-    const { left, top, width, height } = bounds
     return <div class="absolute inset-0" onClick={close}
         onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
         {children(bounds)}
-        <div style={{ left, top, width, height }} class="absolute cursor-move"
+        <GenericSelectableArea bounds={bounds} shape={shape} class="cursor-move"
             onMouseDown={onDrag.start} onClick={e => e.stopPropagation()} />
         <ResizeUi {...bounds} {...onResize} shape={shape} />
     </div>

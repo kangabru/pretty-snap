@@ -14,7 +14,7 @@ export type RenderProps = {
 }
 
 type Func = () => void
-type MouseFunc = (e: MouseEvent) => void
+export type MouseFunc = (e: MouseEvent) => void
 type BoundsFunc = (bounds: Bounds) => void
 
 export type onDragEvents = { start: MouseFunc, move: MouseFunc, stop: Func }

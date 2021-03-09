@@ -1,6 +1,8 @@
 import { Fragment, h } from 'preact';
+import { CssClass } from '../../../common/misc/types';
 import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
 import Box, { BoxSelectableArea } from '../annotations/box';
+import { MouseFunc } from '../compositor/move-pane';
 import { ResizeConfig } from '../compositor/mover';
 import Arrow from './arrow';
 import Bracket from './bracket';
@@ -23,7 +25,9 @@ export default function GenericAnnotation(props: AnnotationAny) {
     </>
 }
 
-export type SelectableAreaProps = Bounds & { shape: Shape, onClick: (e: MouseEvent) => void }
+export type SelectableAreaProps = { bounds: Bounds, shape: Shape } & CssClass & {
+    onClick?: MouseFunc, onMouseDown?: MouseFunc, onMouseMove?: MouseFunc, onMouseUp?: MouseFunc,
+}
 
 export function GenericSelectableArea(props: SelectableAreaProps) {
     return <>

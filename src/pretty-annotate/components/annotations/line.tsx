@@ -64,7 +64,7 @@ export function GetLineCoords({ width, height, negX, negY }: Pick<LineProps, 'wi
     return [x1, y1, x2, y2]
 }
 
-export function LineSelectableArea({ onClick: onMouseDown, ...bounds }: SelectableAreaProps) {
+export function LineSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
     const { left, top, width, height } = bounds
     const [x1, y1, x2, y2] = GetLineCoords(bounds)
     const stroke = STROKE_MOVABLE_LINE, padding = stroke / 2
@@ -72,7 +72,7 @@ export function LineSelectableArea({ onClick: onMouseDown, ...bounds }: Selectab
     return <div class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")} style={{ left: left - padding, top: top - padding }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width={width + stroke} height={height + stroke}>
             <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>
-                <line class="cursor-pointer" x1={x1} y1={y1} x2={x2} y2={y2} onMouseDown={onMouseDown}
+                <line x1={x1} y1={y1} x2={x2} y2={y2} {...rest} class={join("cursor-pointer", cls)}
                     fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} />
             </g>
         </svg>

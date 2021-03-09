@@ -56,8 +56,8 @@ function BoxDashed(props: BoxProps) {
     </SvgBoxContainer>
 }
 
-export function BoxSelectableArea({ onClick, ...bounds }: SelectableAreaProps) {
+export function BoxSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
     const isDevMode = useDevMode()
-    return <div style={bounds as any} onClick={onClick}
-        class={join("absolute cursor-pointer", isDevMode && "bg-black bg-opacity-30")} />
+    return <div style={bounds as any} {...rest}
+        class={join("absolute", cls, isDevMode && "bg-black bg-opacity-30")} />
 }
