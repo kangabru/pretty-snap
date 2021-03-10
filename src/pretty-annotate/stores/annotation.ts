@@ -57,7 +57,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             return id
         },
 
-        /** TODO */
+        /** Updated the global state and currently selected annotation with the given style. */
         saveStyle: stylePartial => {
             const { editId, style } = get()
 

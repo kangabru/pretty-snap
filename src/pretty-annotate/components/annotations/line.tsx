@@ -7,7 +7,7 @@ import { join } from '../../../common/misc/utils';
 import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE, STROKE_MOVABLE_LINE } from '../../misc/constants';
 import { Annotation, Bounds, ColorStyle, Shape, ShapeStyle } from '../../misc/types';
-import { absBounds, editAnnotationOnClick } from './util';
+import { absBounds, editOnClick } from './util';
 
 type PaddingProps = { padding?: number }
 type LineProps = Annotation<Shape.Line> & PaddingProps
@@ -23,7 +23,7 @@ export function SvgLineContainer({ children, ...props }: Children & Bounds & Pad
     // Expand the svg bounds to account for content extending beyond the selected width and height
     const padding = props.padding ?? STROKE / 2
 
-    return <div onClick={editAnnotationOnClick(id)} class="absolute" style={{ color, left: left - padding, top: top - padding }}>
+    return <div onClick={editOnClick(id)} class="absolute" style={{ color, left: left - padding, top: top - padding }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
             width={width + 2 * padding} height={height + 2 * padding}>
             <g style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}>

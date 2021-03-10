@@ -11,7 +11,11 @@ import { DragPane } from './drag-pane';
 
 const clickTypes = new Set([Shape.Counter, Shape.Text])
 
-/** TODO */
+/** This components allows users to create annotations by clicking/dragging on screen.
+ *
+ * It works by abstracting a 'drag pane' which is what allows users to perform the drag action.
+ * The pane then passed the bounds to a generic annotation components which actually renders the annotation.
+ */
 export default function Dragger() {
     const style = useAnnotateStore(s => s.style)
     const useClick = clickTypes.has(style.shape)
@@ -30,11 +34,19 @@ function DragEdits() {
     </DragPane>
 }
 
+/** Performs shape-specific transformations such as:
+ * - Fixed aspect ratio sizes
+ * - Directional snaps to vertical/horizontal/diagonal axes
+ * - Alternate render directions
+ *
+ * All shapes use the 'Bounds' type which defines a position and size.
+ */
 function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld): AnnotationAny {
     switch (options.shape) {
 
         case Shape.Text:
         case Shape.Counter: {
+            // These shape don't have a size, just a fixed position.
             const [left, top] = toMousePosition(bounds)
             return { ...options, left, top }
         }
@@ -55,7 +67,6 @@ function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld)
 
         case Shape.Box:
         case Shape.Ellipse:
-
             // Make perfect square/circle on shift
             if (keysHeld.shift) fixSize(bounds)
 
@@ -66,6 +77,7 @@ function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld)
     return { ...options, ...bounds }
 }
 
+/** Performs shape-specific saving logic. */
 function onSave(annotation: AnnotationAny) {
     const { save, saveText } = useAnnotateStore.getState()
 
@@ -74,12 +86,12 @@ function onSave(annotation: AnnotationAny) {
     else save(annotation)
 }
 
-/** The bounds define a box so extract the actual mouse coordinates. */
+/** Extracts mouse coordinates from the box bounds as some shapes don't have a size. */
 function toMousePosition({ left, top, width, height }: Bounds) {
-    return [left + width, top + height]
+    return [left + width, top + height] // Note that width and height can be negative
 }
 
-/** Updates the bounds to the closest horizontal, diagonal, or vertial shape. */
+/** Updates the bounds to the closest horizontal, diagonal, or vertical shape. */
 function fixDirection(bounds: Bounds) {
     const { width, height } = absBounds(bounds)
     const ratio = Math.abs(height) < 0.05 ? 5 : width / height
@@ -89,7 +101,7 @@ function fixDirection(bounds: Bounds) {
     else bounds.height = 0   // horizontal
 }
 
-/** Updates the bounds to a square. */
+/** Updates the bounds to a square aspect ratio. */
 function fixSize(bounds: Bounds) {
     const { width, height } = bounds
     const signW = Math.sign(width), signH = Math.sign(height)

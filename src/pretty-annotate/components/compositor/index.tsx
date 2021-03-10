@@ -53,6 +53,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
     </div>
 }
 
+/** This components displays the image and allows for users to draw and edit annotations. */
 function ViewerEditor() {
     const editId = useAnnotateStore(s => s.editId)
     const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse

@@ -5,7 +5,7 @@ export function editAnnotation(id: string | undefined) {
     if (id) useAnnotateStore.getState().edit(id)
 }
 
-export function editAnnotationOnClick(id: string | undefined) {
+export function editOnClick(id: string | undefined) {
     return () => editAnnotation(id)
 }
 

@@ -4,7 +4,9 @@ import { AnnotationAny } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
 
-/** TODO */
+/** Renders all annotations saved to the global store.
+ * @param hideEditing - Set to true to hide the currently selected annotation (e.g. to display custom edits not yet saved to store)
+ */
 export default function Viewer({ scale, hideEditing }: { scale?: number, hideEditing?: boolean }) {
     const ids = useAnnotateStore(s => s.ids)
     const editingId = useAnnotateStore(s => s.editId)

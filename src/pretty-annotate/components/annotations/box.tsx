@@ -7,7 +7,7 @@ import useNiceDashLength from '../../hooks/use-dash';
 import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
-import { absBounds, editAnnotationOnClick } from './util';
+import { absBounds, editOnClick } from './util';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -21,7 +21,7 @@ export function SvgBoxContainer({ id, children, color: { color }, ...bounds }: B
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
 
     const { left, top, width, height } = absBounds(bounds)
-    return <div onMouseDown={editAnnotationOnClick(id)} class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
+    return <div onMouseDown={editOnClick(id)} class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>
