@@ -2,10 +2,10 @@ import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
 import useEditingAnnotation from '../../hooks/use-annotation';
+import { onResizeEvents, useMove } from '../../hooks/use-move';
 import { AnnotationAny, Bounds, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation, { GenericSelectableArea, GetResizeUiConfig } from '../annotations';
-import { onResizeEvents, useMove } from './move-pane';
 
 export type MovePaneProps = {
     initBounds: Bounds,

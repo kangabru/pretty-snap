@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { Bounds } from '../../misc/types';
+import { Bounds } from '../misc/types';
 
 export type MovePaneProps = {
     initBounds: Bounds,

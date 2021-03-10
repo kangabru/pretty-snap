@@ -1,9 +1,9 @@
 import { Fragment, h } from 'preact';
 import { CssClass } from '../../../common/misc/types';
+import { MouseFunc } from '../../hooks/use-move';
 import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
 import Box, { BoxSelectableArea } from '../annotations/box';
-import { MouseFunc } from '../compositor/move-pane';
-import { ResizeConfig } from '../compositor/mover';
+import { ResizeConfig } from '../compositor/editor';
 import Arrow from './arrow';
 import Bracket from './bracket';
 import Counter, { CounterSelectableArea } from './counter';

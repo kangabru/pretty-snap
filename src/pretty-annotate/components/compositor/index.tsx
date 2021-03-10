@@ -4,7 +4,7 @@ import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
-import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
+import { setWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
@@ -12,7 +12,7 @@ import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
 import Dragger from './dragger';
-import Mover from './mover';
+import Editor from './editor';
 import logo from './title.svg';
 import Viewer from './viewer';
 
@@ -54,24 +54,20 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 }
 
 function ViewerEditor() {
-    return <div class="relative">
+    const editId = useAnnotateStore(s => s.editId)
+    const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse
+    const isEditing = editId || isEditTool
+
+    return <section class="relative">
         <Image />
-        <Editor />
-    </div>
+        <div class="absolute inset-0">
+            <Viewer hideEditing />
+            {isEditing ? <Editor /> : <Dragger />}
+        </div>
+    </section>
 }
 
 function Image() {
     const image = useOptionsStore(s => s.image)
     return <img src={image?.src} class="w-full h-full" />
-}
-
-function Editor() {
-    const editId = useAnnotateStore(s => s.editId)
-    const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse
-    const isEditing = editId || isEditTool
-
-    return <section class="absolute inset-0">
-        <Viewer hideEditing />
-        {isEditing ? <Mover /> : <Dragger />}
-    </section>
 }
