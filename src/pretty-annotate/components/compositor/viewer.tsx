@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { useCallback } from 'preact/hooks';
 import { AnnotationAny } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation from '../annotations';
@@ -15,6 +16,6 @@ export default function Viewer({ scale, hideEditing }: { scale?: number, hideEdi
 
 function Annotation({ id }: { id: string }) {
     const editing = useAnnotateStore(s => !!s.editId)
-    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
+    const annotation = useAnnotateStore(useCallback(s => s.index[id], [id])) as AnnotationAny
     return <GenericAnnotation id={id} {...annotation} allowEvents={!editing} />
 }

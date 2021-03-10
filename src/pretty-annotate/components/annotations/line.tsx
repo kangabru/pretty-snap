@@ -64,15 +64,15 @@ export function GetLineCoords({ width, height }: Pick<LineProps, 'width' | 'heig
     return [x1, y1, x2, y2]
 }
 
-export function LineSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
-    const { left, top, width, height } = absBounds(bounds)
-    const [x1, y1, x2, y2] = GetLineCoords(bounds)
+export function LineSelectableArea({ annotation, events, class: cls }: SelectableAreaProps) {
+    const { left, top, width, height } = absBounds(annotation as Bounds)
+    const [x1, y1, x2, y2] = GetLineCoords(annotation as Bounds)
     const stroke = STROKE_MOVABLE_LINE, padding = stroke / 2
     const isDevMode = useDevMode()
     return <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
         class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")}
         style={{ left: left - padding, top: top - padding }} width={width + stroke} height={height + stroke}>
-        <line x1={x1} y1={y1} x2={x2} y2={y2} {...rest} class={join("cursor-pointer", cls)}
+        <line x1={x1} y1={y1} x2={x2} y2={y2} {...events} class={join("cursor-pointer", cls)}
             style={{ transform: `translateX(${padding}px) translateY(${padding}px)` }}
             fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth={stroke} />
     </svg>

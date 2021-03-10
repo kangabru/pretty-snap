@@ -6,7 +6,7 @@ import { join } from '../../../common/misc/utils';
 import useNiceDashLength from '../../hooks/use-dash';
 import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape, ShapeStyle } from '../../misc/types';
+import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
 import { absBounds, editAnnotationOnClick } from './util';
 
 type BoxProps = Annotation<Shape.Box>
@@ -59,8 +59,8 @@ function BoxDashed(props: BoxProps) {
     </SvgBoxContainer>
 }
 
-export function BoxSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
+export function BoxSelectableArea({ annotation, events, class: cls }: SelectableAreaProps) {
     const isDevMode = useDevMode()
-    return <div style={absBounds(bounds)} {...rest}
+    return <div style={absBounds(annotation as Bounds)} {...events}
         class={join("absolute", cls, isDevMode && "bg-black bg-opacity-30")} />
 }

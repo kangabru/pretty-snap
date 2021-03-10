@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { SelectableAreaProps } from '.';
 import useDevMode from '../../../common/hooks/use-dev-mode';
 import { textClass, join, remToPixels } from '../../../common/misc/utils';
-import { Shape, Annotation } from '../../misc/types';
+import { Shape, Annotation, Bounds } from '../../misc/types';
 
 const SIZE = remToPixels(2)
 const OFFSET = remToPixels(1.5) // offset so the mouse doesn't cover the number
@@ -14,8 +14,8 @@ export default function Counter({ count, left, top, color: { color, useDarkText 
     </div>
 }
 
-export function CounterSelectableArea({ bounds, shape, class: cls, ...rest }: SelectableAreaProps) {
-    const { left, top } = bounds
+export function CounterSelectableArea({ annotation, events, class: cls }: SelectableAreaProps) {
+    const { left, top } = annotation as Bounds
     const isDevMode = useDevMode()
     const diameter = SIZE * 1.5, radius = diameter / 2
     const offset = radius + OFFSET - SIZE / 2 // perfectly center the area over the counter
@@ -23,6 +23,6 @@ export function CounterSelectableArea({ bounds, shape, class: cls, ...rest }: Se
     return <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
         class={join("absolute", isDevMode ? "opacity-30" : "opacity-0")}
         style={{ left: left - offset, top: top - offset }} width={diameter} height={diameter}>
-        <circle cx={radius} cy={radius} r={radius} {...rest} class={join("cursor-pointer", cls)} />
+        <circle cx={radius} cy={radius} r={radius} {...events} class={join("cursor-pointer", cls)} />
     </svg>
 }

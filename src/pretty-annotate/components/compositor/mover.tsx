@@ -1,4 +1,5 @@
 import { Fragment, h } from 'preact';
+import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
 import useEditingAnnotation from '../../hooks/use-annotation';
 import { AnnotationAny, Bounds, Shape } from '../../misc/types';
@@ -20,8 +21,7 @@ export default function Mover() {
     const save = (bounds: Bounds) => annotation && useAnnotateStore.getState().save({ ...annotation, ...bounds })
 
     return annotation
-        ? <MoveUi key={editId} close={editStop} onSave={save}
-            initBounds={annotation as Bounds} shape={annotation.shape}>
+        ? <MoveUi key={editId} close={editStop} onSave={save} annotation={annotation}>
             {bounds => <>
                 <SelectableAreas />
                 <GenericAnnotation {...annotation} {...bounds} />
@@ -36,23 +36,36 @@ function SelectableAreas() {
 }
 
 function SelectableArea({ id }: { id: string }) {
-    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
-    return <GenericSelectableArea bounds={annotation as Bounds} shape={annotation.shape}
-        class="cursor-pointer" onClick={e => {
-            useAnnotateStore.getState().edit(id)
-            e.stopPropagation()
+    const annotation = useAnnotateStore(useCallback(s => s.index[id], [id])) as AnnotationAny
+    return <GenericSelectableArea class="cursor-pointer" annotation={annotation}
+        events={{
+            onClick: e => {
+                useAnnotateStore.getState().edit(id)
+                e.stopPropagation()
+            }
         }} />
 }
 
-function MoveUi({ onSave, close, initBounds, shape, children }: ChildrenWithProps<Bounds> & {
-    initBounds: Bounds, close: () => void, onSave: (_: Bounds) => void, shape: Shape,
-}) {
-    const [bounds, onDrag, onResize] = useMove(initBounds, onSave)
+function MoveUi({ onSave, close, annotation, children }:
+    ChildrenWithProps<Bounds> & {
+        annotation: AnnotationAny,
+        close: () => void, onSave: (_: Bounds) => void,
+    }) {
+    const [bounds, onDrag, onResize] = useMove(annotation as Bounds, onSave)
+    const movedAnnotation = { ...annotation, ...bounds }
+    const shape = annotation.shape
+
     return <div class="absolute inset-0" onClick={close}
         onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
+
         {children(bounds)}
-        <GenericSelectableArea bounds={bounds} shape={shape} class="cursor-move"
-            onMouseDown={onDrag.start} onClick={e => e.stopPropagation()} />
+
+        <GenericSelectableArea annotation={movedAnnotation}
+            class="cursor-move" events={{
+                onMouseDown: onDrag.start,
+                onClick: e => e.stopPropagation(),
+            }} />
+
         <ResizeUi {...bounds} {...onResize} shape={shape} />
     </div>
 }

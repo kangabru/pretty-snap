@@ -32,7 +32,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         ids: [], index: {},
 
         style: {
-            shape: Shape.Text,
+            shape: Shape.Box,
             shapeStyle: ShapeStyle.Outline,
             color: { color: colors.blue },
             count: 1,

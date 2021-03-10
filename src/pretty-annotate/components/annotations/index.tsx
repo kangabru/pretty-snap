@@ -9,7 +9,7 @@ import Bracket from './bracket';
 import Counter, { CounterSelectableArea } from './counter';
 import Ellipse from './ellipse';
 import Line, { LineSelectableArea } from './line';
-import Text from './text';
+import Text, { TextSelectableArea } from './text';
 
 export default function GenericAnnotation(props: AnnotationAny) {
     return <>
@@ -25,21 +25,26 @@ export default function GenericAnnotation(props: AnnotationAny) {
     </>
 }
 
-export type SelectableAreaProps = { bounds: Bounds, shape: Shape } & CssClass & {
-    onClick?: MouseFunc, onMouseDown?: MouseFunc, onMouseMove?: MouseFunc, onMouseUp?: MouseFunc,
+export type SelectableAreaProps = CssClass & {
+    annotation: AnnotationAny,
+    events?: {
+        onClick?: MouseFunc, onMouseDown?: MouseFunc,
+        onMouseMove?: MouseFunc, onMouseUp?: MouseFunc,
+    }
 }
 
 export function GenericSelectableArea(props: SelectableAreaProps) {
+    const shape = props.annotation.shape
     return <>
-        {props.shape == Shape.Box && <BoxSelectableArea {...props} />}
-        {props.shape == Shape.Ellipse && <BoxSelectableArea {...props} />}
+        {shape == Shape.Box && <BoxSelectableArea {...props} />}
+        {shape == Shape.Ellipse && <BoxSelectableArea {...props} />}
 
-        {props.shape == Shape.Line && <LineSelectableArea {...props} />}
-        {props.shape == Shape.Arrow && <LineSelectableArea {...props} />}
-        {props.shape == Shape.Bracket && <LineSelectableArea {...props} />}
+        {shape == Shape.Line && <LineSelectableArea {...props} />}
+        {shape == Shape.Arrow && <LineSelectableArea {...props} />}
+        {shape == Shape.Bracket && <LineSelectableArea {...props} />}
 
-        {props.shape == Shape.Counter && <CounterSelectableArea {...props} />}
-        {props.shape == Shape.Text && <CounterSelectableArea {...props} />}
+        {shape == Shape.Counter && <CounterSelectableArea {...props} />}
+        {shape == Shape.Text && <TextSelectableArea {...props} />}
     </>
 }
 
