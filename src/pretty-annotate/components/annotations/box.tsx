@@ -1,9 +1,13 @@
 import { h } from 'preact';
 import { animated } from 'react-spring';
-import { useFillOpacity } from '../../hooks/use-styles';
+import { SelectableAreaProps } from '.';
+import useDevMode from '../../../common/hooks/use-dev-mode';
+import { join } from '../../../common/misc/utils';
 import useNiceDashLength from '../../hooks/use-dash';
+import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
-import { Annotation, Shape, ShapeStyle } from '../../misc/types';
+import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
+import { absBounds, editOnClick } from './util';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -13,9 +17,11 @@ export default function Box(props: BoxProps) {
     return props.shapeStyle == ShapeStyle.OutlineDashed ? <BoxDashed {...props} /> : <BoxSolid {...props} />
 }
 
-export function SvgBoxContainer({ children, left, top, width, height, color: { color } }: BoxProps & JSX.ElementChildrenAttribute) {
+export function SvgBoxContainer({ id, children, color: { color }, ...bounds }: BoxProps & JSX.ElementChildrenAttribute) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
-    return <div class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
+
+    const { left, top, width, height } = absBounds(bounds)
+    return <div onMouseDown={editOnClick(id)} class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
         <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
             {children}
         </svg>
@@ -23,7 +29,9 @@ export function SvgBoxContainer({ children, left, top, width, height, color: { c
 }
 
 function BoxSolid(props: BoxProps) {
-    const { width, height, shapeStyle } = props
+    const { shapeStyle } = props
+    const { width, height } = absBounds(props)
+
     const fillOpacity = useFillOpacity(shapeStyle)
     return <SvgBoxContainer {...props}>
         <rect x={strokeMargin} y={strokeMargin} width={width} height={height}
@@ -33,7 +41,7 @@ function BoxSolid(props: BoxProps) {
 }
 
 function BoxDashed(props: BoxProps) {
-    const { width, height } = props
+    const { width, height } = absBounds(props)
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2
 
     const [dashArrayW, dashOffsetW] = useNiceDashLength(width, DASH, { shortCorners: true })
@@ -49,4 +57,10 @@ function BoxDashed(props: BoxProps) {
         <animated.line x1={x1} y1={y1} x2={x1} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Left */}
         <animated.line x1={x2} y1={y1} x2={x2} y2={y2} {...dashProps} strokeDasharray={dashArrayH} strokeDashoffset={dashOffsetH} /> {/* Right */}
     </SvgBoxContainer>
+}
+
+export function BoxSelectableArea({ annotation, events, class: cls }: SelectableAreaProps) {
+    const isDevMode = useDevMode()
+    return <div style={absBounds(annotation as Bounds)} {...events}
+        class={join("absolute", cls, isDevMode && "bg-black bg-opacity-30")} />
 }

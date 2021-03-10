@@ -1,14 +1,14 @@
 import { Fragment, h } from 'preact';
 import { Children } from '../../../common/misc/types';
-import { useSetStyle } from '../../hooks/use-styles';
+import { useCurrentShape, useCurrentStyle, useSetStyle } from '../../hooks/use-styles';
 import { Shape, ShapeStyle, SupportedStyle, supportedStyles } from '../../misc/types';
 import { AnnotateButtonSvg, ButtonWithModal } from './buttons';
 import { Command } from './command';
 import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeStyleButtonGroup({ command }: Command) {
-    const { shape, shapeStyle } = useSetStyle().style
-    const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
+    const shapeStyle = useCurrentStyle().shapeStyle
+    const [shape, { canUseFill, canUseLine }] = useCurrentShape()
 
     return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" command={command} button={(active, open) => (
         <CurrentShape title="Shape Style" onClick={open} refocus={active} command={command} />
@@ -28,13 +28,19 @@ export default function ShapeStyleButtonGroup({ command }: Command) {
 }
 
 function CurrentShape(props: Pick<ShapeStyleButtonProps, 'onClick' | 'refocus' | 'command' | 'title'>) {
-    const { shape, shapeStyle } = useSetStyle().style
-    const { canUseFill, canUseLine } = supportedStyles[shape] ?? {} as SupportedStyle
-    const _shapeStyle = getRealShape(shape, shapeStyle)
+    const shapeStyle = useCurrentStyle().shapeStyle
+    const [shape, { canUseFill, canUseLine }] = useCurrentShape()
+    const _shapeStyle = getRealShapeIcon(shape, shapeStyle)
     return <ShapeStyleButtonGeneric {...props} disabled={!(canUseFill || canUseLine)} shapeStyle={_shapeStyle} />
 }
 
-function getRealShape(shape: Shape, shapeStyle: ShapeStyle): ShapeStyle {
+/** Returns the most appropriate shape style based on the current shape.
+ * @example
+ *  - The user selects a 'box' shape with a 'fill' shape style
+ *  - The user then switches to a 'line' shape
+ *  - The 'fill' shape style doesn't make sense anymore so this function returns a 'line' shape style
+ */
+function getRealShapeIcon(shape: Shape, shapeStyle: ShapeStyle): ShapeStyle {
     const { canUseFill } = supportedStyles[shape] ?? {} as SupportedStyle
     return !canUseFill && (shapeStyle == ShapeStyle.Solid || shapeStyle == ShapeStyle.Transparent) ? ShapeStyle.Outline : shapeStyle
 }
@@ -64,13 +70,13 @@ function ShapeStyleButtonGeneric(props: ShapeStyleButtonProps) {
 
 function ShapeStyleButton({ title, shapeStyle, disabled, onClick, refocus, command, children }:
     Children & ShapeStyleButtonProps & { title: string }) {
-    const { style, setStyle } = useSetStyle()
-    const setShapeStyle = () => setStyle({ shapeStyle })
+    const [style, saveStyle] = useSetStyle()
+    const save = () => saveStyle({ shapeStyle })
 
-    const currentShapeStyle = getRealShape(style.shape, style.shapeStyle)
+    const currentShapeStyle = getRealShapeIcon(style.shape, style.shapeStyle)
     const isTarget = shapeStyle === currentShapeStyle
 
     return <AnnotateButtonSvg data-target={isTarget} data-refocus={refocus} data-command={command}
         title={title} disabled={disabled} style={{ color: style.color.color }} className="m-1"
-        onClick={onClick ?? setShapeStyle}>{children}</AnnotateButtonSvg>
+        onClick={onClick ?? save}>{children}</AnnotateButtonSvg>
 }

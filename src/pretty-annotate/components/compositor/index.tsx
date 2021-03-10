@@ -8,9 +8,13 @@ import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
+import { Shape } from '../../misc/types';
+import useAnnotateStore from '../../stores/annotation';
 import useOptionsStore from '../../stores/options';
-import Editor, { Viewer } from './editor';
+import Dragger from './dragger';
+import Editor from './editor';
 import logo from './title.svg';
+import Viewer from './viewer';
 
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
@@ -49,11 +53,19 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
     </div>
 }
 
+/** This components displays the image and allows for users to draw and edit annotations. */
 function ViewerEditor() {
-    return <div class="relative">
+    const editId = useAnnotateStore(s => s.editId)
+    const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse
+    const isEditing = editId || isEditTool
+
+    return <section class="relative">
         <Image />
-        <Editor />
-    </div>
+        <div class="absolute inset-0">
+            <Viewer hideEditing />
+            {isEditing ? <Editor /> : <Dragger />}
+        </div>
+    </section>
 }
 
 function Image() {

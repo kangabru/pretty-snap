@@ -23,8 +23,8 @@ function ArrowDashed(props: ArrowProps) {
 function ArrowHead(props: ArrowProps) {
     const [, , x2, y2] = GetLineCoords(props)
 
-    const { width, height, negX, negY } = props
-    const angle = Math.atan2(negX ? -width : width, negY ? -height : height)
+    const { width, height } = props
+    const angle = Math.atan2(width, height)
 
     const show = width ** 2 + height ** 2 > (2 * DASH) ** 2
 

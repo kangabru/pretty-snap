@@ -59,7 +59,7 @@ function HistoryButtonGroup() {
     const undo = useAnnotateStore(s => s.undo)
     const redo = useAnnotateStore(s => s.redo)
 
-    // Keyboard shortcuts
+    // Global undo/redo keyboard shortcuts
     useDocumentListener('keydown', e => {
         const key = e.key.toLowerCase()
         const stop = () => { e.stopPropagation(); e.preventDefault() }

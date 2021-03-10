@@ -1,125 +1,137 @@
-import { h } from 'preact';
-import { KeysHeld, useKeysHeld } from '../../../common/hooks/use-misc';
-import { join } from '../../../common/misc/utils';
-import { AnnotationAny, Bounds, Shape, StyleOptions } from '../../misc/types';
+import { Fragment, h } from 'preact';
+import { useCallback } from 'preact/hooks';
+import { ChildrenWithProps } from '../../../common/misc/types';
+import useEditingAnnotation from '../../hooks/use-annotation';
+import { onResizeEvents, useMove } from '../../hooks/use-move';
+import { AnnotationAny, Bounds, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
-import GenericAnnotation from '../annotations';
-import { setAltBracketBounds } from '../annotations/bracket';
-import { getEllipseBounds } from '../annotations/ellipse';
-import { DragPane } from './drag-pane';
+import GenericAnnotation, { GenericSelectableArea, GetResizeUiConfig } from '../annotations';
+import { editAnnotation } from '../annotations/util';
 
-const clickTypes = new Set([Shape.Counter, Shape.Text])
+export type MovePaneProps = {
+    initBounds: Bounds,
+    close: () => void,
+    onSave: (_: Bounds) => void,
+}
 
+/** This component allows a user to click drawn elements to start editing them.
+ * The selected component can then be moved, edited, and resized depending on its shape.
+ *
+ * The edit process works as follows:
+ * - We render 'selectable areas' which are invisible elements that surround an annotation.
+ *   They 'select' an annotation for editing when clicked on.
+ * - Once an annotation is selected we render a 'move UI' above everything that allows for
+ *   annotations to be resize/moved etc. The UI is specific to the selected shape.
+ */
 export default function Editor() {
-    return <section class="absolute inset-0">
-        <Viewer />
-        <EditorPane />
-    </section>
+
+    const [editId, annotation] = useEditingAnnotation()
+    const editStop = useAnnotateStore(s => s.editStop)
+    const save = (bounds: Bounds) => annotation && useAnnotateStore.getState().save({ ...annotation, ...bounds })
+
+    // Render the 'move UI' or the 'selectable areas' depending on if we're editing an annoation
+    return annotation
+        ? <MoveUi key={editId} close={editStop} onSave={save} annotation={annotation}>
+            {bounds => <>
+                <SelectableAreas />
+                <GenericAnnotation {...annotation} {...bounds} />
+            </>}
+        </MoveUi>
+        : <SelectableAreas />
 }
 
-export function Viewer({ scale }: { scale?: number }) {
+/** Renders all selectable areas */
+function SelectableAreas() {
     const ids = useAnnotateStore(s => s.ids)
-    return <section class="absolute inset-0 pointer-events-none origin-top-left" style={{ transform: scale ? `scale(${scale})` : undefined }}>
-        {ids.map(id => <Annotation key={id} id={id} />)}
-    </section>
+    return <>{ids.map(id => <SelectableArea key={id} id={id} />)}</>
 }
 
-function Annotation({ id }: { id: string }) {
-    const editing = useAnnotateStore(s => !!s.idEditing)
-    const annotation = useAnnotateStore(s => s.index[id] as AnnotationAny)
-    return <GenericAnnotation id={id} {...annotation} allowEvents={!editing} />
+/** Renders the shape-specific selectable area. */
+function SelectableArea({ id }: { id: string }) {
+    const annotation = useAnnotateStore(useCallback(s => s.index[id], [id])) as AnnotationAny
+    return <GenericSelectableArea class="cursor-pointer" annotation={annotation}
+        events={{
+            onClick: e => {
+                editAnnotation(id)
+                e.stopPropagation()
+            }
+        }} />
 }
 
-function EditorPane() {
-    const style = useAnnotateStore(s => s.style)
-    const useClick = clickTypes.has(style.shape)
-    return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
-        <DragEdits />
-    </section>
+/** Renders a shape-specific UI that allows the user to move/resize/edit the annotation.
+ *
+ */
+function MoveUi({ onSave, close, annotation, children }:
+    ChildrenWithProps<Bounds> & {
+        annotation: AnnotationAny,
+        close: () => void, onSave: (_: Bounds) => void,
+    }) {
+    // We pass in the initial bounds and get new bounds and event that allow for moving and resizing
+    const [bounds, onDrag, onResize] = useMove(annotation as Bounds, onSave)
+
+    // Update the annotation position so we can render the latest version
+    // The 'viewer' component hides the currently selected annotation so a double isn't shown
+    const movedAnnotation = { ...annotation, ...bounds }
+
+    return <div class="absolute inset-0" onClick={close}
+        onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
+
+        {children(bounds)}
+
+        {/* A hidden area which allow the user to drag the element */}
+        <GenericSelectableArea annotation={movedAnnotation}
+            class="cursor-move" events={{
+                onMouseDown: onDrag.start,
+                onClick: e => e.stopPropagation(),
+            }} />
+
+        {/* Renders the shape-specific resize nodes around the components. */}
+        <ResizeUi {...bounds} {...onResize} shape={annotation.shape} />
+    </div>
 }
 
-function DragEdits() {
-    const keysHeld = useKeysHeld()
-    const style = useAnnotateStore(s => s.style)
-    const save = useAnnotateStore(s => s.saveAnnotation)
-    const toBounds = (bounds: Bounds) => boundsToData(bounds, style, keysHeld)
-
-    return <DragPane
-        onComplete={bounds => { save(toBounds(bounds)) }}
-        onRender={bounds => <GenericAnnotation {...style} {...toBounds(bounds)} />} />
+export type ResizeConfig = {
+    top?: boolean, left?: boolean,
+    right?: boolean, bottom?: boolean,
+    topLeft?: boolean, topRight?: boolean,
+    bottomLeft?: boolean, bottomRight?: boolean,
 }
 
-function boundsToData(bounds: Bounds, options: StyleOptions, keysHeld: KeysHeld): AnnotationAny {
-    switch (options.shape) {
+function ResizeUi({ start, move, stop, shape, ...bounds }: Bounds & onResizeEvents & { shape: Shape }) {
+    const _l = bounds.left, _t = bounds.top
+    const _r = bounds.left + bounds.width
+    const _b = bounds.top + bounds.height
 
-        case Shape.Text:
-        case Shape.Counter: {
-            const [left, top] = toMousePosition(bounds)
-            return { ...options, left, top }
-        }
+    const negX = bounds.width < 0
+    const negY = bounds.height < 0
 
-        case Shape.Bracket:
-            // Fix horizontal/diagonal/vertial direction with shift
-            if (keysHeld.shift) fixDirection(bounds)
+    // Ensure nodes are always on the same edge/corner regardless of negative widths/heights
+    const l = Math.min(_l, _r), t = Math.min(_t, _b)
+    const r = Math.max(_l, _r), b = Math.max(_t, _b)
 
-            // Allow for alt behaviour that flips that direction
-            if (keysHeld.alt) setAltBracketBounds(bounds)
-            break
+    // Middle coordinates
+    const mx = (l + r) / 2, my = (t + b) / 2
 
-        case Shape.Line:
-        case Shape.Arrow:
-            // Fix horizontal/diagonal/vertial direction with shift
-            if (keysHeld.shift) fixDirection(bounds)
-            break
-
-        case Shape.Box:
-        case Shape.Ellipse:
-
-            // Make perfect square/circle on shift
-            if (keysHeld.shift) fixSize(bounds)
-
-            if (options.shape == Shape.Ellipse)
-                bounds = getEllipseBounds(bounds, keysHeld.alt)
-            break
+    function Point(ps: { style: any, top?: boolean, right?: boolean, bottom?: boolean, left?: boolean }) {
+        // Account for nagative width/height values so we always move the correct edge/corner
+        const left = negX ? ps.right : ps.left, right = negX ? ps.left : ps.right
+        const top = negY ? ps.bottom : ps.top, bottom = negY ? ps.top : ps.bottom
+        return <div style={ps.style} class="absolute bg-white border-t border-gray-300 w-4 h-4 -ml-2 -mt-2 rounded-full shadow"
+            onMouseDown={e => start(top, right, bottom, left)(e)}></div>
     }
-    return { ...options, ...bounds }
-}
 
-/** The bounds define a box so extract the actual mouse coordinates. */
-function toMousePosition({ left, top, width, height, negX, negY }: Bounds) {
-    const x = left + (negX ? 0 : width)
-    const y = top + (negY ? 0 : height)
-    return [x, y]
-}
+    // Get the shape-specific corners/edges as some shape don't need all nodes
+    const config = GetResizeUiConfig(shape, bounds)
 
-/** Updates the bounds to the closest horizontal, diagonal, or vertial shape. */
-function fixDirection(bounds: Bounds) {
-    const { left, top, width, height, negX, negY } = bounds
+    return <>
+        {config?.topLeft && <Point style={{ left: l, top: t, cursor: "nwse-resize" }} top left />}
+        {config?.topRight && <Point style={{ left: r, top: t, cursor: "nesw-resize" }} top right />}
+        {config?.bottomLeft && <Point style={{ left: l, top: b, cursor: "nesw-resize" }} bottom left />}
+        {config?.bottomRight && <Point style={{ left: r, top: b, cursor: "nwse-resize" }} bottom right />}
 
-    const ratio = Math.abs(height) < 0.05 ? 5 : width / height
-
-    if (ratio < 0.5) {
-        bounds.width = 0  // vertical
-        bounds.left = left + (negX ? width : 0)
-    }
-    else if (ratio < 2) fixSize(bounds) // diagonal
-    else {
-        bounds.height = 0   // horizontal
-        bounds.top = top + (negY ? height : 0)
-    }
-}
-
-/** Updates the bounds to a square. */
-function fixSize(bounds: Bounds) {
-    const { left, top, width, height, negX, negY } = bounds
-
-    if (width < height) {
-        const dh = height - width
-        bounds.height = width
-        bounds.top = top + (negY ? dh : 0)
-    } else {
-        const dw = width - height
-        bounds.width = height
-        bounds.left = left + (negX ? dw : 0)
-    }
+        {config?.top && <Point style={{ left: mx, top: t, cursor: "ns-resize" }} top />}
+        {config?.right && <Point style={{ left: r, top: my, cursor: "ew-resize" }} right />}
+        {config?.bottom && <Point style={{ left: mx, top: b, cursor: "ns-resize" }} bottom />}
+        {config?.left && <Point style={{ left: l, top: my, cursor: "ew-resize" }} left />}
+    </>
 }

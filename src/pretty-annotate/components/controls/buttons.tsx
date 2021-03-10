@@ -17,12 +17,14 @@ export function ButtonRowWithAnim({ children, style }: Children & CssStyle) {
 
 type ButtonProps = h.JSX.HTMLAttributes<HTMLButtonElement> & Command
 
+/** Renders the annotation button but with children wrapped in an SVG element. */
 export function AnnotateButtonSvg({ children, ...props }: ButtonProps & AnimatedValue<ForwardedProps<any>>) {
     return <AnnotateButton {...props}>
         <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">{children}</svg>
     </AnnotateButton>
 }
 
+/** Renders the common control button which has a distinctive style. */
 export function AnnotateButton({ children, style, className, command, ...props }: ButtonProps & AnimatedValue<ForwardedProps<any>>) {
     const [ref, ringColor] = useRingColourStyle()
     return <button ref={ref} {...props} style={{ ...style as any, [VAR_RING_COLOR]: ringColor }}
@@ -43,6 +45,7 @@ type ButtonWithModalProps = Children & Command & {
 export function ButtonWithModal({ modalId, text, button, command, children }: ButtonWithModalProps) {
     const [isActive, activate] = useModalActivate(modalId)
 
+    // Allow for key 'commands' to active the modal
     useDocumentListener('keypress', e => {
         if (command && IsKey(e, command)) {
             activate()

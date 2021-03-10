@@ -5,6 +5,7 @@ import useNiceDashLength from '../../hooks/use-dash';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
 import { SvgBoxContainer } from './box';
+import { absBounds } from './util';
 
 type EllipseProps = Annotation<Shape.Ellipse>
 
@@ -26,9 +27,10 @@ function EllipseSolid(props: EllipseProps) {
 }
 
 function EllipseDashed(props: EllipseProps) {
-    const ellipseProps = getEllipseProps(props)
+    const bounds = absBounds(props)
+    const ellipseProps = getEllipseProps(bounds)
 
-    const circumference = calcEllipseCircumference(props) || 0
+    const circumference = calcEllipseCircumference(bounds) || 0
     const [dashArray] = useNiceDashLength(circumference, DASH, { evenCount: true, shortCorners: true })
 
     return <SvgBoxContainer {...props}>
@@ -40,13 +42,13 @@ function EllipseDashed(props: EllipseProps) {
 /** Uses the Ramanujan approximation formula.
  * @see https://en.wikipedia.org/wiki/Ellipse#Circumference
  */
-function calcEllipseCircumference({ width: a, height: b }: EllipseProps) {
+function calcEllipseCircumference({ width: a, height: b }: Bounds) {
     return Math.PI * (3 * (a + b) - Math.sqrt(10 * a * b + 3 * (a ** 2 + b ** 2)))
 }
 
 /** Maps the selected box to svg ellipse props which are relative to the centre point. */
-function getEllipseProps(props: EllipseProps): { cx: number, cy: number, rx: number, ry: number } {
-    const { width, height } = props
+function getEllipseProps(props: Bounds): { cx: number, cy: number, rx: number, ry: number } {
+    const { width, height } = absBounds(props)
     const strokeMargin = STROKE / 2
     const x = strokeMargin + width / 2, y = strokeMargin + height / 2
     return { cx: x, cy: y, rx: width / 2, ry: height / 2 }
@@ -67,10 +69,10 @@ export function getEllipseBounds(bounds: Bounds, useAlt: boolean) {
     if (useAlt) return bounds
 
     // Expand the bounds so the ellipse contains the given bounds
-    const { width: w, height: h, left: l, top: t, ...rest } = bounds
+    const { width: w, height: h, left: l, top: t } = absBounds(bounds)
     const x = w / 2, y = h / 2 // Define the coordinate pair on the new ellipse assuming the centre is at (0, 0)
     const b = w < 0.05 ? 0 : Math.sqrt(h ** 2 * x ** 2 / w ** 2 + y ** 2)
     const a = h < 0.05 ? 0 : w * b / h // Assume a/b = width/height
     const dx = x - a, dy = y - b // Translate the ellipse to the real position
-    return { ...rest, left: l + dx, top: t + dy, width: 2 * a, height: 2 * b }
+    return { left: l + dx, top: t + dy, width: 2 * a, height: 2 * b }
 }

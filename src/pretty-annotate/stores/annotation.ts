@@ -1,20 +1,23 @@
 import create from "zustand"
 import { devtools } from 'zustand/middleware'
 import { colors } from "../misc/constants"
-import { AnnotationAny, Shape, ShapeStyle, StyleOptions } from "../misc/types"
+import { Annotation, AnnotationAny, Shape, ShapeStyle, StyleOptions } from "../misc/types"
 
 type AnnotationStore = {
     ids: string[],
     index: { [id: string]: AnnotationAny | undefined },
     style: StyleOptions,
 
-    saveAnnotation(_: AnnotationAny, ignoreHistory?: boolean): string,
+    save(_: AnnotationAny): string,
+    saveText(_: Annotation<Shape.Text>): string,
+    saveStyle(_: Partial<StyleOptions>): void,
+
     undo(): void,
     redo(): void,
     undos: UndoEvent[],
     redos: UndoEvent[],
 
-    idEditing?: string,
+    editId?: string,
     edit(id: string): void,
     editStop(): void,
 }
@@ -35,25 +38,78 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             count: 1,
         },
 
-        saveAnnotation: (annotation, ignoreHistory) => {
+        save: _annotation => {
             const { undos, index, ids, style } = get()
 
-            const isNew = !annotation.id
-            const id = annotation.id ?? Math.random().toString(36).slice(2)
-            const annotationItem = <AnnotationAny>{ ...annotation, ...style }
-            const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: annotationItem }
+            const id = _annotation.id ?? Math.random().toString(36).slice(2)
 
-            const newUndos = ignoreHistory ? undos.slice() : [...undos, undoEvent]
-            if (ignoreHistory && newUndos.length && newUndos.slice(-1)[0]?.id === id)
-                newUndos[newUndos.length - 1].dataNext = annotationItem
+            const annotation = <AnnotationAny>{ ..._annotation, id }
+            const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: annotation }
 
             set("Save", {
                 ids: AddIfNewId(ids, id),
-                index: { ...index, [id]: annotationItem },
-                undos: newUndos, redos: [],
-                style: { ...style, count: style.count + (annotationItem.shape == Shape.Counter ? 1 : 0) },
-                idEditing: isNew && shouldEditOnCreate(annotation.shape) ? id : undefined,
+                index: { ...index, [id]: annotation },
+                undos: [...undos, undoEvent],
+                redos: [],
+                style: { ...style, count: style.count + (annotation.shape == Shape.Counter ? 1 : 0) },
             })
+
+            return id
+        },
+
+        /** Updated the global state and currently selected annotation with the given style. */
+        saveStyle: stylePartial => {
+            const { editId, style } = get()
+
+            // Update the global style settings
+            const styleMerged = { ...style, ...stylePartial }
+            set("Save Style", { style: styleMerged })
+
+            // Update the current annotation style if any
+            if (editId) {
+                const { index, save } = get()
+                const annotation = index[editId]
+                annotation && save({ ...annotation, ...stylePartial, id: editId })
+            }
+        },
+
+        /** Text annotations have a 2 step save process:
+         * 1. Text is placed somewhere but without a text value
+         * 2. The user enters the text and saves again
+         *
+         * The problem is that by using the normal save method we create 2 histories.
+         * If the user were to undo they would see the placement and subsequent edit events.
+         * This method handles that situation so we only save 1 history event.
+         *
+         * The 'editStop' function handles the case were the user cancels before the second save.
+         */
+        saveText: annotation => {
+            const { index, save } = get()
+            const lastSave = index[annotation.id as string] // The last save if it exists
+
+            // Save as normal
+            const id = save(annotation)
+
+            // Get the update state
+            const { undos } = get()
+
+            // Step 1: The user is placing the text without a text value
+            if (!lastSave) {
+                set("Save Text #1", {
+                    editId: id, // Immediately edit this annotation so the user can enter text
+                    undos: undos.slice(0, -1), // Don't include this in the history
+                })
+            }
+
+            // Step 2: The user has entered text
+            else if (!lastSave.text) {
+                // Copy the last undo but without the previous state (the one without text)
+                const lastUndo: UndoEvent = { ...undos.slice(-1)[0], dataPrev: undefined }
+                set("Save Text #2", {
+                    editId: undefined, // Stop editing
+                    undos: [...undos.slice(0, -1), lastUndo], // Update the last undo
+                })
+            }
 
             return id
         },
@@ -70,7 +126,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 ids: wasNew ? ids.slice(0, -1) : ids.slice(),
                 undos: undos.slice(0, -1), redos: [...redos, lastUndo],
                 style: { ...style, count: lastUndo.dataNext?.count ?? style.count },
-                idEditing: undefined,
+                editId: undefined,
             })
         },
         redo: () => {
@@ -85,44 +141,36 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
                 undos: [...undos, lastRedo],
                 redos: redos.slice(0, -1),
                 style: { ...style, count: 1 + (lastRedo.dataNext?.count ?? style.count) },
-                idEditing: undefined,
+                editId: undefined,
             })
         },
         undos: [],
         redos: [],
 
-        edit: idEditing => set("Edit", { idEditing }),
+        edit: idEditing => set("Edit", { editId: idEditing }),
 
-        /** The text component works in a two step process:
-         * - The user clicks somewhere which triggers the usual state update and puts the tet in 'edit mode'
-         * - When the users saves or cancels, the state has to updated or reset so the existing item doesn't create 2 undo events
-         */
         editStop: () => {
-            const { idEditing, index, ids, undos } = get()
+            const { editId: idEditing, index, ids, undos } = get()
             const item = index[idEditing ?? ""]
 
             if (idEditing && item && item.shape == Shape.Text && !item.text) {
                 // Remove new text annotations that haven't been confirmed
                 set("Text cancel", {
-                    idEditing: undefined,
+                    editId: undefined,
                     ids: ids.slice(0, -1),
                     undos: undos.slice(0, -1),
                     index: { ...index, [idEditing]: undefined },
                 })
             } else
-                set("Edit cancel", { idEditing: undefined })
+                set("Edit cancel", { editId: undefined })
         },
     })
 }, "Annotate"))
 
 /** Adds an ID if the ID is new */
 function AddIfNewId(ids: string[], newId: string) {
-    const isLastId = ids.slice(-1)[0] == newId
-    return isLastId ? ids.slice() : [...ids, newId]
-}
-
-function shouldEditOnCreate(style: Shape) {
-    return style == Shape.Text
+    const _ids = ids.slice().filter(id => id !== newId)
+    return [..._ids, newId] // move updates to the top of the z-index
 }
 
 export default useAnnotateStore
