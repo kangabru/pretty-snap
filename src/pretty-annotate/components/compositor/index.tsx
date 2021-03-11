@@ -34,7 +34,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
             class="max-w-screen-md block w-full mx-auto overflow-hidden shadow-md">
             {image
                 ? <ViewerEditor />
-                : <DropZone class="bg-blue-200 p-5 sm:p-10 pb-0 rounded-t-lg" setImage={setImage}
+                : <DropZone class="bg-blue-200 p-5 sm:p-10 pb-0 sm:pb-0 rounded-t-lg" setImage={setImage}
                     title={<img src={logo} class="max-w-sm mx-auto -mb-1" />}
                     contentProps={{ "class": "bg-white rounded-t-lg" }} />}
         </section>
