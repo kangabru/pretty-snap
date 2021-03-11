@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { animated } from 'react-spring';
+import { animated, useSpring, useSprings } from 'react-spring';
 import { SelectableAreaProps } from '.';
 import useDevMode from '../../../common/hooks/use-dev-mode';
 import { join } from '../../../common/misc/utils';
@@ -7,7 +7,7 @@ import useNiceDashLength from '../../hooks/use-dash';
 import { useFillOpacity } from '../../hooks/use-styles';
 import { DASH, STROKE } from '../../misc/constants';
 import { Annotation, Bounds, Shape, ShapeStyle } from '../../misc/types';
-import { absBounds, editOnClick } from './util';
+import { absBounds, editOnClick, useSpringBounds } from './util';
 
 type BoxProps = Annotation<Shape.Box>
 
@@ -20,21 +20,26 @@ export default function Box(props: BoxProps) {
 export function SvgBoxContainer({ id, children, color: { color }, ...bounds }: BoxProps & JSX.ElementChildrenAttribute) {
     const strokeWidth = STROKE, strokeMargin = strokeWidth / 2 // Adjust the bounds so svg doesn't clip stroke edges
 
-    const { left, top, width, height } = absBounds(bounds)
-    return <div onMouseDown={editOnClick(id)} class="absolute" style={{ color, left: left - strokeMargin, top: top - strokeMargin }}>
-        <svg fill="currentColor" width={width + strokeWidth} height={height + strokeWidth} xmlns="http://www.w3.org/2000/svg">
+    const { left, top, width, height } = useSpringBounds(bounds)
+    return <animated.div onMouseDown={editOnClick(id)} className="absolute" style={{
+        color,
+        left: left.interpolate(l => l - strokeMargin),
+        top: top.interpolate(t => t - strokeMargin),
+    }}>
+        <animated.svg fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+            width={width.interpolate(w => w + strokeWidth)} height={height.interpolate(h => h + strokeWidth)}>
             {children}
-        </svg>
-    </div>
+        </animated.svg>
+    </animated.div>
 }
 
 function BoxSolid(props: BoxProps) {
     const { shapeStyle } = props
-    const { width, height } = absBounds(props)
+    const { width, height } = useSpringBounds(props)
 
     const fillOpacity = useFillOpacity(shapeStyle)
     return <SvgBoxContainer {...props}>
-        <rect x={strokeMargin} y={strokeMargin} width={width} height={height}
+        <animated.rect x={strokeMargin} y={strokeMargin} width={width} height={height}
             fill={fillOpacity ? "currentColor" : "none"} opacity={fillOpacity}
             stroke="currentColor" strokeLinejoin="round" strokeWidth={STROKE} />
     </SvgBoxContainer>

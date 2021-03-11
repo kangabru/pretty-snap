@@ -1,3 +1,4 @@
+import { config, OpaqueInterpolation, useSpring } from "react-spring"
 import { Bounds } from "../../misc/types"
 import useAnnotateStore from "../../stores/annotation"
 
@@ -16,5 +17,12 @@ export function absBounds({ left, top, width, height }: Bounds): Bounds {
         top: Math.min(top, top + height),
         width: Math.abs(width),
         height: Math.abs(height),
+    }
+}
+
+export function useSpringBounds(bounds: Bounds) {
+    return useSpring({ ...absBounds(bounds), config: config.stiff }) as {
+        left: OpaqueInterpolation<number>, top: OpaqueInterpolation<number>,
+        width: OpaqueInterpolation<number>, height: OpaqueInterpolation<number>,
     }
 }
