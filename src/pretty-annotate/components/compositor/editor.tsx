@@ -8,12 +8,6 @@ import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation, { GenericSelectableArea, GetResizeUiConfig } from '../annotations';
 import { editAnnotation } from '../annotations/util';
 
-export type MovePaneProps = {
-    initBounds: Bounds,
-    close: () => void,
-    onSave: (_: Bounds) => void,
-}
-
 /** This component allows a user to click drawn elements to start editing them.
  * The selected component can then be moved, edited, and resized depending on its shape.
  *
@@ -90,14 +84,7 @@ function MoveUi({ onSave, close, annotation, children }:
     </div>
 }
 
-export type ResizeConfig = {
-    top?: boolean, left?: boolean,
-    right?: boolean, bottom?: boolean,
-    topLeft?: boolean, topRight?: boolean,
-    bottomLeft?: boolean, bottomRight?: boolean,
-}
-
-function ResizeUi({ start, move, stop, shape, ...bounds }: Bounds & onResizeEvents & { shape: Shape }) {
+function ResizeUi({ start, shape, ...bounds }: Bounds & onResizeEvents & { shape: Shape }) {
     const _l = bounds.left, _t = bounds.top
     const _r = bounds.left + bounds.width
     const _b = bounds.top + bounds.height

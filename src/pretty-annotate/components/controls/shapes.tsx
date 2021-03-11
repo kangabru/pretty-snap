@@ -107,7 +107,7 @@ function BracketIcon() {
 /** The shape tool uses global settings and styles because edits can only be done via the mouse shape tool.
  *  Other styles (like colour and shape style) differ as they will update based on the current annotation being edited.
  */
-export function useSetShape(): [StyleOptions, (_: Shape) => void] {
+function useSetShape(): [StyleOptions, (_: Shape) => void] {
     const style = useAnnotateStore(s => s.style)
     const saveStyle = (shape: Shape) => useAnnotateStore.setState({
         editId: undefined, // Shape changes cancel edits

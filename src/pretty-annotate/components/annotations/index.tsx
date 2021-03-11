@@ -3,7 +3,6 @@ import { CssClass } from '../../../common/misc/types';
 import { MouseFunc } from '../../hooks/use-move';
 import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
 import Box, { BoxSelectableArea } from '../annotations/box';
-import { ResizeConfig } from '../compositor/editor';
 import Arrow from './arrow';
 import Bracket from './bracket';
 import Counter, { CounterSelectableArea } from './counter';
@@ -46,6 +45,13 @@ export function GenericSelectableArea(props: SelectableAreaProps) {
         {shape == Shape.Counter && <CounterSelectableArea {...props} />}
         {shape == Shape.Text && <TextSelectableArea {...props} />}
     </>
+}
+
+type ResizeConfig = {
+    top?: boolean, left?: boolean,
+    right?: boolean, bottom?: boolean,
+    topLeft?: boolean, topRight?: boolean,
+    bottomLeft?: boolean, bottomRight?: boolean,
 }
 
 export function GetResizeUiConfig(shape: Shape, bounds: Bounds): ResizeConfig | undefined {

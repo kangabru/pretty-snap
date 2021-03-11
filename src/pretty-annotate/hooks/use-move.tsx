@@ -7,18 +7,11 @@ export type MovePaneProps = {
     onSave: (_: Bounds) => void,
 }
 
-export type RenderProps = {
-    bounds: Bounds,
-    onDrag: onDragEvents,
-    onResize: onResizeEvents,
-}
-
-type Func = () => void
 export type MouseFunc = (e: MouseEvent) => void
 type BoundsFunc = (bounds: Bounds) => void
 
-export type onDragEvents = { start: MouseFunc, move: MouseFunc, stop: Func }
-export type onResizeEvents = { start: ResizeFunc, move: MouseFunc, stop: Func }
+export type onDragEvents = { start: MouseFunc, move: MouseFunc, stop: () => void }
+export type onResizeEvents = { start: ResizeFunc, move: MouseFunc, stop: () => void }
 
 export function useMove(initBounds: Bounds, onStop: (bounds: Bounds) => void): [Bounds, onDragEvents, onResizeEvents] {
     const [_bounds, setBounds] = useState<Bounds>(initBounds)
