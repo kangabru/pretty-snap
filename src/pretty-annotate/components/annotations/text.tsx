@@ -1,6 +1,7 @@
 import { h } from 'preact';
-import { useRef, useState, useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { SelectableAreaProps } from '.';
+import AnimContainer from '../../../common/components/anim-container';
 import useDevMode from '../../../common/hooks/use-dev-mode';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { KEYS } from '../../../common/misc/keyboard';
@@ -50,6 +51,7 @@ function TextInput(props: Props) {
         const { saveText } = useAnnotateStore.getState()
         if (textEdits == text) cancel() // Doesn't create an undo event
         else saveText({ ...props, text: textEdits })
+        cancel()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,7 +78,13 @@ function TextInput(props: Props) {
             onKeyDown={onKeys({ [KEYS.Escape]: cancel, [KEYS.Enter]: save })}
             onInput={e => setTextEdits(e.currentTarget.value)} />
 
-        <span class="text-xs text-gray-800 font-bold bg-gray-200 mt-2 px-1 rounded whitespace-nowrap">Enter to save</span>
+        <AnimContainer show={!!textEdits && text != textEdits} config={{
+            from: { transform: 'scale(0)', opacity: 0 },
+            enter: { transform: 'scale(1)', opacity: 1 },
+            leave: { transform: 'scale(0)', opacity: 0 },
+        }} class="origin-center">
+            <span class="text-xs text-gray-800 font-bold bg-gray-200 mt-2 px-1 rounded whitespace-nowrap">Enter to save text</span>
+        </AnimContainer>
     </div>
 }
 
@@ -93,7 +101,7 @@ export function TextSelectableArea({ annotation, events, class: cls }: Selectabl
 
     return editing
         ? <CounterSelectableArea annotation={{ ...annotation, left: _left }} events={events} class="cursor-move" />
-        : <div style={{ left, top }} class={join("w-min cursor-text whitespace-nowrap", cls,
+        : <div style={{ left, top }} class={join("w-min cursor-pointer whitespace-nowrap", cls,
             CLASS_POSITION, CLASS_STYLE, isDevMode ? "opacity-30" : "opacity-0")}>
             <span>{text}</span>
             <div {...events} class={join("absolute -inset-2", isDevMode && "bg-black")} />

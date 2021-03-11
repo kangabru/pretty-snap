@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import FadeInContainer from '../../../common/components/anim-container';
+import { FadeInContainer } from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { useDocumentListener } from '../../../common/hooks/use-misc';

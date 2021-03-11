@@ -1,5 +1,5 @@
 import { Fragment, h } from 'preact';
-import FadeInContainer from '../../../common/components/anim-container';
+import { FadeInContainer } from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
 import { PADDING_PERC_MAX, PADDING_PERC_MIN } from '../../misc/constants';

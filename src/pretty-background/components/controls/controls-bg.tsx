@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'react';
-import FadeInContainer from '../../../common/components/anim-container';
+import { FadeInContainer } from '../../../common/components/anim-container';
 import { join } from '../../../common/misc/utils';
 import useUnsplashStore from '../../stores/unsplash';
 import ImageSelector from '../image-selector';

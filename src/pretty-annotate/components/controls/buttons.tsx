@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { AnimatedValue, ForwardedProps } from 'react-spring';
-import FadeInContainer from '../../../common/components/anim-container';
+import { FadeInContainer } from '../../../common/components/anim-container';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { IsKey } from '../../../common/misc/keyboard';
 import { Children, CssStyle } from '../../../common/misc/types';
