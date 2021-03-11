@@ -8,16 +8,19 @@ import { ModalId, ModalUpdateChildNav } from './modal';
 
 export default function ShapeStyleButtonGroup({ command }: Command) {
     const shapeStyle = useCurrentStyle().shapeStyle
-    const [shape, { canUseFill, canUseLine }] = useCurrentShape()
+    const [shape, supportedStyles] = useCurrentShape()
 
-    return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" command={command} button={(active, open) => (
-        <CurrentShape title="Shape Style" onClick={open} refocus={active} command={command} />
+    const disabled = isDisabled(supportedStyles)
+    const _command = disabled ? undefined : command
+
+    return <ButtonWithModal modalId={ModalId.ShapeStyle} text="Style" command={_command} button={(active, open) => (
+        <CurrentShape title="Shape Style" onClick={open} refocus={active} command={_command} />
     )}>
-        {canUseLine && <>
+        {supportedStyles.canUseLine && <>
             <ShapeStyleButtonGeneric title="Solid line" shapeStyle={ShapeStyle.Outline} command="1" />
             <ShapeStyleButtonGeneric title="Dashed line" shapeStyle={ShapeStyle.OutlineDashed} command="2" />
         </>}
-        {canUseFill && <>
+        {supportedStyles.canUseFill && <>
             <ShapeStyleButtonGeneric title="Solid fill" shapeStyle={ShapeStyle.Solid} command="3" />
             <ShapeStyleButtonGeneric title="Transparent fill" shapeStyle={ShapeStyle.Transparent} command="4" />
         </>}
@@ -29,9 +32,13 @@ export default function ShapeStyleButtonGroup({ command }: Command) {
 
 function CurrentShape(props: Pick<ShapeStyleButtonProps, 'onClick' | 'refocus' | 'command' | 'title'>) {
     const shapeStyle = useCurrentStyle().shapeStyle
-    const [shape, { canUseFill, canUseLine }] = useCurrentShape()
+    const [shape, supportedStyles] = useCurrentShape()
     const _shapeStyle = getRealShapeIcon(shape, shapeStyle)
-    return <ShapeStyleButtonGeneric {...props} disabled={!(canUseFill || canUseLine)} shapeStyle={_shapeStyle} />
+    return <ShapeStyleButtonGeneric {...props} disabled={isDisabled(supportedStyles)} shapeStyle={_shapeStyle} />
+}
+
+function isDisabled({ canUseFill, canUseLine }: SupportedStyle) {
+    return !(canUseFill || canUseLine)
 }
 
 /** Returns the most appropriate shape style based on the current shape.
