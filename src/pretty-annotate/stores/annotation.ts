@@ -11,6 +11,7 @@ type AnnotationStore = {
     save(_: AnnotationAny): string,
     saveText(_: Annotation<Shape.Text>): string,
     saveStyle(_: Partial<StyleOptions>): void,
+    delete(id: string): void,
 
     undo(): void,
     redo(): void,
@@ -38,7 +39,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             count: 1,
         },
 
-        save: _annotation => {
+        save(_annotation) {
             const { undos, index, ids, style } = get()
 
             const id = _annotation.id ?? Math.random().toString(36).slice(2)
@@ -58,7 +59,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
         },
 
         /** Updated the global state and currently selected annotation with the given style. */
-        saveStyle: stylePartial => {
+        saveStyle(stylePartial) {
             const { editId, style } = get()
 
             // Update the global style settings
@@ -83,7 +84,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
          *
          * The 'editStop' function handles the case were the user cancels before the second save.
          */
-        saveText: annotation => {
+        saveText(annotation) {
             const { index, save } = get()
             const lastSave = index[annotation.id as string] // The last save if it exists
 
@@ -114,30 +115,42 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
             return id
         },
 
-        undo: () => {
+        delete(id: string) {
+            const { undos, index, ids } = get()
+            const undoEvent: UndoEvent = { id, dataPrev: index[id], dataNext: undefined }
+            set("Delete", {
+                ids: OtherIds(ids, id),
+                index: { ...index, [id]: undefined },
+                undos: [...undos, undoEvent],
+                redos: [],
+                editId: undefined,
+            })
+        },
+
+        undo() {
             const { undos, redos, index, ids, style } = get()
             if (!undos.length) return
 
             const lastUndo = undos.slice(-1)[0]
-            const wasNew = lastUndo.dataPrev === undefined
 
             set("Undo", {
                 index: { ...index, [lastUndo.id]: lastUndo.dataPrev },
-                ids: wasNew ? ids.slice(0, -1) : ids.slice(),
+                ids: AddIfNewId(ids, lastUndo.id),
                 undos: undos.slice(0, -1), redos: [...redos, lastUndo],
                 style: { ...style, count: lastUndo.dataNext?.count ?? style.count },
                 editId: undefined,
             })
         },
-        redo: () => {
+        redo() {
             const { undos, redos, index, ids, style } = get()
             if (!redos.length) return
 
             const lastRedo = redos.slice(-1)[0]
+            const wasDelete = !lastRedo.dataNext
 
             set("Redo", {
                 index: { ...index, [lastRedo.id]: lastRedo.dataNext },
-                ids: AddIfNewId(ids, lastRedo.id),
+                ids: wasDelete ? ids : AddIfNewId(ids, lastRedo.id),
                 undos: [...undos, lastRedo],
                 redos: redos.slice(0, -1),
                 style: { ...style, count: 1 + (lastRedo.dataNext?.count ?? style.count) },
@@ -149,7 +162,7 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
 
         edit: idEditing => set("Edit", { editId: idEditing }),
 
-        editStop: () => {
+        editStop() {
             const { editId: idEditing, index, ids, undos } = get()
             const item = index[idEditing ?? ""]
 
@@ -169,8 +182,12 @@ const useAnnotateStore = create<AnnotationStore>(devtools((setRaw, get) => {
 
 /** Adds an ID if the ID is new */
 function AddIfNewId(ids: string[], newId: string) {
-    const _ids = ids.slice().filter(id => id !== newId)
-    return [..._ids, newId] // move updates to the top of the z-index
+    return [...OtherIds(ids, newId), newId] // move updates to the top of the z-index
+}
+
+/** Filters out an id from a list of ids */
+function OtherIds(ids: string[], id: string) {
+    return ids.slice().filter(_id => _id !== id)
 }
 
 export default useAnnotateStore

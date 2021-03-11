@@ -1,5 +1,7 @@
 import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
+import { useWindowListener } from '../../../common/hooks/use-misc';
+import { IsDelete } from '../../../common/misc/keyboard';
 import { ChildrenWithProps } from '../../../common/misc/types';
 import useEditingAnnotation from '../../hooks/use-annotation';
 import { onResizeStart, useMove } from '../../hooks/use-move';
@@ -23,6 +25,11 @@ export default function Editor() {
     const editStop = useAnnotateStore(s => s.editStop)
     const save = (bounds: Bounds) => annotation && useAnnotateStore.getState().save({ ...annotation, ...bounds })
 
+    // Add ability to delete selected annotations
+    useWindowListener('keyup', e => {
+        IsDelete(e) && editId && useAnnotateStore.getState().delete(editId)
+    }, [editId])
+
     // Render the 'move UI' or the 'selectable areas' depending on if we're editing an annoation
     return annotation
         ? <MoveUi key={editId} close={editStop} onSave={save} annotation={annotation}>
@@ -42,14 +49,16 @@ function SelectableAreas() {
 
 /** Renders the shape-specific selectable area. */
 function SelectableArea({ id }: { id: string }) {
-    const annotation = useAnnotateStore(useCallback(s => s.index[id], [id])) as AnnotationAny
-    return <GenericSelectableArea class="cursor-pointer" annotation={annotation}
-        events={{
-            onClick: e => {
-                editAnnotation(id)
-                e.stopPropagation()
-            }
-        }} />
+    const annotation = useAnnotateStore(useCallback(s => s.index[id], [id]))
+    return annotation
+        ? <GenericSelectableArea class="cursor-pointer" annotation={annotation}
+            events={{
+                onClick: e => {
+                    editAnnotation(id)
+                    e.stopPropagation()
+                }
+            }} />
+        : null
 }
 
 /** Renders a shape-specific UI that allows the user to move/resize/edit the annotation. */

@@ -1,6 +1,7 @@
 export const KEYS = {
     Enter: "Enter",
     Escape: "Escape",
+    Delete: "Delete",
 }
 
 export const IsKey = (e: KeyboardEvent, ...keys: string[]) => keys.find(key => e.key.toLowerCase() === key.toLowerCase())
@@ -8,6 +9,7 @@ export const IsKeyCallback = (...keys: string[]) => (e: KeyboardEvent) => IsKey(
 
 export const IsEnter = IsKeyCallback(KEYS.Enter)
 export const IsEscape = IsKeyCallback(KEYS.Escape)
+export const IsDelete = IsKeyCallback(KEYS.Delete)
 
 export const IsUp = IsKeyCallback("ArrowUp", "Up")
 export const IsDown = IsKeyCallback("ArrowDown", "Down")
