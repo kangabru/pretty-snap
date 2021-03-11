@@ -60,7 +60,12 @@ export default function ControlModalContext({ children }: ChildrenWithProps<Chil
 
     // Add global events to hide the modal
     useDocumentListener('mousedown', resetModal)
-    useDocumentListener('keydown', e => (IsEscape(e) || IsEnter(e)) && resetModal())
+    useDocumentListener('keydown', e => {
+        if (IsEscape(e) || IsEnter(e)) {
+            resetModal()
+            e.preventDefault() // stop default enter action
+        }
+    })
 
     // Modal content will be rendered inside this ref
     const _modalRef = useRef<HTMLElement>()
