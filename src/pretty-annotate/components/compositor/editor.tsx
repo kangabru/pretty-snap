@@ -2,7 +2,7 @@ import { Fragment, h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { ChildrenWithProps } from '../../../common/misc/types';
 import useEditingAnnotation from '../../hooks/use-annotation';
-import { onResizeEvents, useMove } from '../../hooks/use-move';
+import { onResizeStart, useMove } from '../../hooks/use-move';
 import { AnnotationAny, Bounds, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import GenericAnnotation, { GenericSelectableArea, GetResizeUiConfig } from '../annotations';
@@ -52,64 +52,61 @@ function SelectableArea({ id }: { id: string }) {
         }} />
 }
 
-/** Renders a shape-specific UI that allows the user to move/resize/edit the annotation.
- *
- */
+/** Renders a shape-specific UI that allows the user to move/resize/edit the annotation. */
 function MoveUi({ onSave, close, annotation, children }:
     ChildrenWithProps<Bounds> & {
         annotation: AnnotationAny,
         close: () => void, onSave: (_: Bounds) => void,
     }) {
-    // We pass in the initial bounds and get new bounds and event that allow for moving and resizing
-    const [bounds, onDrag, onResize] = useMove(annotation as Bounds, onSave)
+    // We pass in the initial bounds and get new bounds and drag/resize events
+    const [bounds, { onDragStart, onResizeStart, onMove, onStop }] = useMove(annotation as Bounds, onSave)
 
     // Update the annotation position so we can render the latest version
     // The 'viewer' component hides the currently selected annotation so a double isn't shown
     const movedAnnotation = { ...annotation, ...bounds }
 
     return <div class="absolute inset-0" onClick={close}
-        onMouseMove={onDrag.move} onMouseUp={onDrag.stop} onMouseLeave={onDrag.stop}>
+        onMouseMove={onMove} onMouseUp={onStop} onMouseLeave={onStop}>
 
+        {/* The actual annotation is rendered via children */}
         {children(bounds)}
 
         {/* A hidden area which allow the user to drag the element */}
         <GenericSelectableArea annotation={movedAnnotation}
             class="cursor-move" events={{
-                onMouseDown: onDrag.start,
+                onMouseDown: onDragStart,
                 onClick: e => e.stopPropagation(),
             }} />
 
         {/* Renders the shape-specific resize nodes around the components. */}
-        <ResizeUi {...bounds} {...onResize} shape={annotation.shape} />
+        <ResizeUi {...bounds} start={onResizeStart} shape={annotation.shape} />
     </div>
 }
 
-function ResizeUi({ start, shape, ...bounds }: Bounds & onResizeEvents & { shape: Shape }) {
-    const _l = bounds.left, _t = bounds.top
-    const _r = bounds.left + bounds.width
-    const _b = bounds.top + bounds.height
-
-    const negX = bounds.width < 0
-    const negY = bounds.height < 0
+/** Renders the draggable nodes that allow for resizing an annotation */
+function ResizeUi({ start, shape, ...bounds }: Bounds & { start: onResizeStart, shape: Shape }) {
+    const { left, top, width, height } = bounds
+    const right = left + width, bottom = top + height
 
     // Ensure nodes are always on the same edge/corner regardless of negative widths/heights
-    const l = Math.min(_l, _r), t = Math.min(_t, _b)
-    const r = Math.max(_l, _r), b = Math.max(_t, _b)
+    const l = Math.min(left, right), t = Math.min(top, bottom)
+    const r = Math.max(left, right), b = Math.max(top, bottom)
+    const mx = (l + r) / 2, my = (t + b) / 2 // Middle coordinates
 
-    // Middle coordinates
-    const mx = (l + r) / 2, my = (t + b) / 2
-
+    /** The draggable node that allows for resizing an annotation. The 'sides' determine which edges will be updated on resize. */
     function Point(ps: { style: any, top?: boolean, right?: boolean, bottom?: boolean, left?: boolean }) {
+
         // Account for nagative width/height values so we always move the correct edge/corner
+        const negX = width < 0, negY = height < 0
         const left = negX ? ps.right : ps.left, right = negX ? ps.left : ps.right
         const top = negY ? ps.bottom : ps.top, bottom = negY ? ps.top : ps.bottom
-        return <div style={ps.style} class="absolute bg-white border-t border-gray-300 w-4 h-4 -ml-2 -mt-2 rounded-full shadow"
-            onMouseDown={e => start(top, right, bottom, left)(e)}></div>
+
+        return <div style={ps.style} onMouseDown={e => start(top, right, bottom, left)(e)}
+            class="absolute bg-white border-t border-gray-300 w-4 h-4 -ml-2 -mt-2 rounded-full shadow" />
     }
 
     // Get the shape-specific corners/edges as some shape don't need all nodes
     const config = GetResizeUiConfig(shape, bounds)
-
     return <>
         {config?.topLeft && <Point style={{ left: l, top: t, cursor: "nwse-resize" }} top left />}
         {config?.topRight && <Point style={{ left: r, top: t, cursor: "nesw-resize" }} top right />}

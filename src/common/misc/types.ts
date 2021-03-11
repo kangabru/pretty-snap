@@ -7,3 +7,5 @@ export type CssClass = { class?: string }
 export type CssStyle = { style?: string | h.JSX.CSSProperties }
 
 export type ForegroundImage = { src: string, width: number, height: number }
+
+export type MouseFunc = (e: MouseEvent) => void

@@ -1,6 +1,5 @@
 import { Fragment, h } from 'preact';
-import { CssClass } from '../../../common/misc/types';
-import { MouseFunc } from '../../hooks/use-move';
+import { CssClass, MouseFunc } from '../../../common/misc/types';
 import { Annotation, AnnotationAny, Bounds, Shape } from '../../misc/types';
 import Box, { BoxSelectableArea } from '../annotations/box';
 import Arrow from './arrow';
