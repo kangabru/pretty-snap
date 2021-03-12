@@ -20,7 +20,7 @@ type ButtonProps = h.JSX.HTMLAttributes<HTMLButtonElement> & Command
 /** Renders the annotation button but with children wrapped in an SVG element. */
 export function AnnotateButtonSvg({ children, ...props }: ButtonProps & AnimatedValue<ForwardedProps<any>>) {
     return <AnnotateButton {...props}>
-        <svg class="w-8 h-8 transform" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">{children}</svg>
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">{children}</svg>
     </AnnotateButton>
 }
 
