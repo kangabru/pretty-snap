@@ -3,7 +3,7 @@ import { Ref, useEffect, useRef, useState } from "preact/hooks";
 import mergeRefs from 'react-merge-refs';
 import { delay } from '../misc/utils';
 
-type Size = [number, number] // [width, height]
+export type ExportSize = { scale: number, width: number, height: number }
 export type Exports = { download: ExportOptions, copy: ExportOptions }
 export type ExportOptions = { run: () => void, state: ExportState, supported: boolean }
 
@@ -14,9 +14,9 @@ export enum ExportState {
     error, // On error
 }
 
+const FINAL_SCALE = 1
 
-export default function useExport<T extends HTMLElement>(width: number, height: number, onSuccess?: () => void): [Ref<T>, ExportOptions, ExportOptions] {
-    const size: Size = [width, height]
+export default function useExport<T extends HTMLElement>(size: ExportSize, onSuccess?: () => void): [Ref<T>, ExportOptions, ExportOptions] {
     const [ref1, downloadStuff] = useDownload(size, onSuccess)
     const [ref2, copyStuff] = useCopy(size, onSuccess)
     const ref = mergeRefs([ref1, ref2]) as any as Ref<T>
@@ -29,7 +29,7 @@ export default function useExport<T extends HTMLElement>(width: number, height: 
  * @returns download: a function to trigger the download
  * @returns state: info about the progress of the download
  */
-function useDownload<T extends HTMLElement>(size: Size, onSuccess?: () => void): [Ref<T>, ExportOptions] {
+function useDownload<T extends HTMLElement>(size: ExportSize, onSuccess?: () => void): [Ref<T>, ExportOptions] {
     const ref = useRef<T>()
     const [download, state] = useExportImage(size, optns => domToImage.toPng(ref.current, optns).then(downloadImage).then(onSuccess))
     return [ref, { run: download, state, supported: true }]
@@ -41,7 +41,7 @@ function useDownload<T extends HTMLElement>(size: Size, onSuccess?: () => void):
  * @returns download: a function to trigger the download
  * @returns state: info about the availability/progress of the download
  */
-function useCopy<T extends HTMLElement>(size: Size, onSuccess?: () => void): [Ref<T>, ExportOptions] {
+function useCopy<T extends HTMLElement>(size: ExportSize, onSuccess?: () => void): [Ref<T>, ExportOptions] {
     const ref = useRef<T>()
     const [copy, state] = useExportImage(size, optns => domToImage.toBlob(ref.current, optns).then(copyImageToClipboard).then(onSuccess))
 
@@ -55,14 +55,21 @@ function useCopy<T extends HTMLElement>(size: Size, onSuccess?: () => void): [Re
 /** A hook to provide common state management for exporting images.
  * @param The callback to perform the image save when the returned action is run.
  */
-function useExportImage([width, height]: Size, saveImage: (o: Dom2ImgOptions) => void): [() => void, ExportState] {
+function useExportImage({ scale, width, height }: ExportSize, saveImage: (o: Dom2ImgOptions) => void): [() => void, ExportState] {
     const [saveState, setSaveState] = useState<ExportState>(ExportState.idle)
 
     const action = async () => {
         try {
             setSaveState(ExportState.loading)
             await delay(500)
-            await saveImage({ width, height })
+            await saveImage({
+                width: width * FINAL_SCALE,
+                height: height * FINAL_SCALE,
+                style: {
+                    transform: `scale(${scale * FINAL_SCALE})`,
+                    transformOrigin: 'top left',
+                }
+            })
             setSaveState(ExportState.success)
             setTimeout(() => setSaveState(ExportState.idle), 1000) // Hide tick in a bit but continue the promise
         } catch (error) {

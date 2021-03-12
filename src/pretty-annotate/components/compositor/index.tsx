@@ -2,11 +2,12 @@ import { h } from 'preact';
 import { useCallback } from 'react';
 import useMeasure from 'react-use-measure';
 import DropZone from '../../../common/components/drop-zone';
+import ExportWrapper from '../../../common/components/export';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
 import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
-import { ChildrenWithProps, ForegroundImage } from '../../../common/misc/types';
+import { ChildrenWithProps, CssStyle, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
 import { Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
@@ -21,13 +22,13 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     const image = useOptionsStore(s => s.image)
     const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
-    const [exportRef, download, copy] = useExport(image?.width ?? 0, image?.height ?? 0, () => setWarningOnClose(false))
 
     useWarningOnClose(!!image) // Assume they're editing if they've add an image
     const [editorRef, { width }] = useMeasure()
-    const renderScale = getRenderScale(width, image?.width)
+    const scale = getRenderScale(width, image?.width)
 
-    const outerRadiusRender = useRenderBorderRadius(renderScale)
+    const renderBorderRadius = useRenderBorderRadius()
+    const [exportRef, download, copy] = useExport({ scale, ...(image as any) }, () => setWarningOnClose(false))
 
     return <div class="col w-full space-y-6">
         <section ref={editorRef} style={{ borderRadius: OUTER_BORDER_RADIUS }}
@@ -41,13 +42,11 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
-        {image && <div class="hidden">
-            <section ref={exportRef} class="relative overflow-hidden"
-                style={{ width: image?.width, height: image?.height, borderRadius: outerRadiusRender }}>
-                <Image />
-                <Viewer scale={renderScale} />
-            </section>
-        </div>}
+        {image && <ExportWrapper ref={exportRef}
+            class="relative overflow-hidden" style={{ borderRadius: renderBorderRadius }}>
+            <Image style={{ width: image?.width / scale, height: image?.height / scale }} />
+            <Viewer />
+        </ExportWrapper>}
 
         {image && children({ download, copy })}
     </div>
@@ -61,14 +60,12 @@ function ViewerEditor() {
 
     return <section class="relative">
         <Image />
-        <div class="absolute inset-0">
-            <Viewer hideEditing />
-            {isEditing ? <Editor /> : <Dragger />}
-        </div>
+        <Viewer hideEditing />
+        {isEditing ? <Editor /> : <Dragger />}
     </section>
 }
 
-function Image() {
+function Image({ style }: CssStyle) {
     const image = useOptionsStore(s => s.image)
-    return <img src={image?.src} class="w-full h-full" />
+    return <img src={image?.src} class="w-full h-full" style={style} />
 }
