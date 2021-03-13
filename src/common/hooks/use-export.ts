@@ -3,7 +3,13 @@ import { Ref, useEffect, useRef, useState } from "preact/hooks";
 import mergeRefs from 'react-merge-refs';
 import { delay } from '../misc/utils';
 
+/**
+ * @param scale - The amount to scale the export node by.
+ * @param width - The export image width.
+ * @param height - The export image height.
+ */
 export type ExportSize = { scale: number, width: number, height: number }
+
 export type Exports = { download: ExportOptions, copy: ExportOptions }
 export type ExportOptions = { run: () => void, state: ExportState, supported: boolean }
 
@@ -14,7 +20,7 @@ export enum ExportState {
     error, // On error
 }
 
-const FINAL_SCALE = 1
+const EXTRA_SCALE = 1
 
 export default function useExport<T extends HTMLElement>(size: ExportSize, onSuccess?: () => void): [Ref<T>, ExportOptions, ExportOptions] {
     const [ref1, downloadStuff] = useDownload(size, onSuccess)
@@ -22,7 +28,6 @@ export default function useExport<T extends HTMLElement>(size: ExportSize, onSuc
     const ref = mergeRefs([ref1, ref2]) as any as Ref<T>
     return [ref, downloadStuff, copyStuff]
 }
-
 
 /** Allows download an element as an image.
  * @returns containerRef: the ref to place on the element to export
@@ -34,7 +39,6 @@ function useDownload<T extends HTMLElement>(size: ExportSize, onSuccess?: () => 
     const [download, state] = useExportImage(size, optns => domToImage.toPng(ref.current, optns).then(downloadImage).then(onSuccess))
     return [ref, { run: download, state, supported: true }]
 }
-
 
 /** Allows copying an element as an image to the clipboard.
  * @returns containerRef: the ref to place on the element to export
@@ -63,10 +67,10 @@ function useExportImage({ scale, width, height }: ExportSize, saveImage: (o: Dom
             setSaveState(ExportState.loading)
             await delay(500)
             await saveImage({
-                width: width * FINAL_SCALE,
-                height: height * FINAL_SCALE,
+                width: width * EXTRA_SCALE,
+                height: height * EXTRA_SCALE,
                 style: {
-                    transform: `scale(${scale * FINAL_SCALE})`,
+                    transform: `scale(${scale * EXTRA_SCALE})`,
                     transformOrigin: 'top left',
                 }
             })

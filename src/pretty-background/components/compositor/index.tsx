@@ -3,6 +3,7 @@ import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import { DropZoneWrap } from '../../../common/components/drop-zone';
+import ExportWrapper from '../../../common/components/export';
 import ImportDetails from '../../../common/components/import-info';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
@@ -13,12 +14,15 @@ import { getRenderScale, join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useGetSizeBackground } from './use-comp-styles';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useCompositionStyles, useGetSizeBackground } from './use-comp-styles';
 
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
-    const [width, height] = useGetSizeBackground()
-    const [ref, download, copy] = useExport(width, height, () => {
+    const [refCont, { width, height }] = useMeasure()
+    const [widthRender, heightRender] = useGetSizeBackground()
+    const scale = getRenderScale(width, widthRender)
+
+    const [ref, download, copy] = useExport({ scale, width: widthRender, height: heightRender }, () => {
         setWarningOnClose(false)
 
         // Trigger 'download' call as required by the API guidelines
@@ -37,12 +41,10 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
     useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
 
     // Get the styles for the preview and hidden render components
-    const [refCont, { width: contWidth }] = useMeasure()
-    const [stylesScreen, stylesRender] = useAnimatedCompositionStyles(contWidth)
+    const styles = useCompositionStyles(width, height)
+    const stylesScreen = useAnimatedCompositionStyles(styles)
 
-    // Get the outer border radius as the user can set the settings to render the image with transparent corners
-    const outerRadiusRender = useRenderBorderRadius(getRenderScale(contWidth, stylesRender.outer?.width as number))
-
+    const renderBorderRadius = useRenderBorderRadius()
     const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
     return <div class="col w-full space-y-6">
@@ -60,11 +62,10 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
         {/** A hacky hidden element used by dom-to-image to render the image.
          * We do this so we can set the image size exactly and render consistently on different browsers. */}
-        {foreground && <div class="hidden">
-            <section ref={ref} class={backgroundClasses} style={{ ...stylesRender.outer, borderRadius: outerRadiusRender } as any}>
-                <Image style={stylesRender.inner as any} />
-            </section>
-        </div>}
+        {foreground && <ExportWrapper ref={ref} class={backgroundClasses}
+            style={{ ...styles.outer, width, height, borderRadius: renderBorderRadius }}>
+            <Image style={{ ...styles.inner }} />
+        </ExportWrapper>}
 
         {foreground && children({ download, copy })}
     </div>
