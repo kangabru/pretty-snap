@@ -31,7 +31,6 @@ function isAppleMobileDevice() {
  */
 function isSupportedBrowser() {
     const isFirefox = typeof InstallTrigger !== 'undefined';
-    const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-    const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
-    return isFirefox || isChrome || isEdgeChromium
+    const isChromium = !!window.chrome // includes edge and opera but it should work there
+    return isFirefox || isChromium
 }
