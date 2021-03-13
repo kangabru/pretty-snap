@@ -33,3 +33,7 @@ export function remToPixels(rem: number) {
 export function getRenderScale(screenContWidth: number, renderContWidth: number | undefined) {
     return screenContWidth > 1 ? (renderContWidth ?? 0) / screenContWidth : 1
 }
+
+export function stopPropagation(e: Event) {
+    e.stopPropagation()
+}

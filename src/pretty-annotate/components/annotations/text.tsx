@@ -5,7 +5,7 @@ import AnimContainer from '../../../common/components/anim-container';
 import useDevMode from '../../../common/hooks/use-dev-mode';
 import { useDocumentListener } from '../../../common/hooks/use-misc';
 import { KEYS } from '../../../common/misc/keyboard';
-import { join, onKeys, remToPixels, textClass, useRandomItem } from '../../../common/misc/utils';
+import { join, onKeys, remToPixels, stopPropagation, textClass, useRandomItem } from '../../../common/misc/utils';
 import { Annotation, Position, Shape } from '../../misc/types';
 import useAnnotateStore from '../../stores/annotation';
 import { CounterSelectableArea } from './counter';
@@ -73,8 +73,9 @@ function TextInput(props: Props) {
         {/* The editable text input */}
         <input ref={ref as any} value={textEdits} style={{ backgroundColor: colour }}
             class={join(CLASS_STYLE, "pl-7 ring-4 ring-gray-300 ring-opacity-60 outline-none focus:outline-none pointer-events-auto")}
-            onMouseDown={e => e.stopPropagation()}
-            onClick={e => e.stopPropagation()}
+            onMouseDown={stopPropagation}
+            onClick={stopPropagation}
+            onKeyPress={stopPropagation}
             onKeyDown={onKeys({ [KEYS.Escape]: cancel, [KEYS.Enter]: save })}
             onInput={e => setTextEdits(e.currentTarget.value)} />
 
