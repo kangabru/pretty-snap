@@ -6,7 +6,7 @@ import ExportWrapper from '../../../common/components/export';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
 import useExport, { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
-import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
+import useExportBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, CssStyle, ForegroundImage } from '../../../common/misc/types';
 import { getRenderScale } from '../../../common/misc/utils';
 import { Shape } from '../../misc/types';
@@ -27,7 +27,7 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
     const [editorRef, { width }] = useMeasure()
     const scale = getRenderScale(width, image?.width)
 
-    const renderBorderRadius = useRenderBorderRadius()
+    const renderBorderRadius = useExportBorderRadius()
     const [exportRef, download, copy] = useExport({ scale, ...(image as any) }, () => setWarningOnClose(false))
 
     return <div class="col w-full space-y-6">

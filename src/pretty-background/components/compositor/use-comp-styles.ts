@@ -18,31 +18,31 @@ type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
  *
  * We also need to style 2 components equally:
  * - The visible preview element that the user can see and interact with
- * - A hidden element used to render the final image
+ * - A hidden element used to export the final image
  *
- * These elements need similar but slightly different styles that that viewing and rendering behave as expected.
+ * These elements need similar but slightly different styles that that viewing and exporting behave as expected.
  */
 export function useCompositionStyles(width: number, height: number): CompositionStyles {
     const settings = useOptionsStore() // Not this refreshes on every external option update
     return useStylesPreview(settings, width, height)
 }
 
-/** Like useCompositionStyles but all properties are animated using react-spring. Must be rendered with animated components. */
+/** Like useCompositionStyles but all properties are animated using react-spring. Must be exported with animated components. */
 export function useAnimatedCompositionStyles(styles: CompositionStyles): CompositionStyles {
-    const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesScreenInner } = styles.inner as CSSProperties
-    const animStylesScreenInner = useSpring({ borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius })
+    const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesClientInner } = styles.inner as CSSProperties
+    const animStylesClientInner = useSpring({ borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius })
 
-    const { backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom, ...restStylesScreenOuter } = styles.outer as CSSProperties
-    const animStylesScreenOuter = useSpring({ backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom })
+    const { backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom, ...restStylesClientOuter } = styles.outer as CSSProperties
+    const animStylesClientOuter = useSpring({ backgroundColor, paddingLeft, paddingTop, paddingRight, paddingBottom })
 
     return {
-        inner: { ...animStylesScreenInner, ...restStylesScreenInner },
-        outer: { ...animStylesScreenOuter, ...restStylesScreenOuter },
+        inner: { ...animStylesClientInner, ...restStylesClientInner },
+        outer: { ...animStylesClientOuter, ...restStylesClientOuter },
     }
 }
 
-/** Returns styles for the compositor visible on screen.
- * These styles are made to render the iamge on screen as it would look when rendered.
+/** Returns styles for the compositor visible on client.
+ * These styles are made to export the iamge on client as it would look when exported.
  */
 function useStylesPreview(settings: Settings, width: number, height: number): CompositionStyles {
     const { paddingPerc, position } = settings

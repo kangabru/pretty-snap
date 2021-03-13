@@ -59,18 +59,19 @@ function useCopy<T extends HTMLElement>(size: ExportSize, onSuccess?: () => void
 /** A hook to provide common state management for exporting images.
  * @param The callback to perform the image save when the returned action is run.
  */
-function useExportImage({ scale, width, height }: ExportSize, saveImage: (o: Dom2ImgOptions) => void): [() => void, ExportState] {
+function useExportImage(size: ExportSize, saveImage: (o: Dom2ImgOptions) => void): [() => void, ExportState] {
     const [saveState, setSaveState] = useState<ExportState>(ExportState.idle)
 
     const action = async () => {
         try {
             setSaveState(ExportState.loading)
             await delay(500)
+            const scale = size.scale * EXTRA_SCALE
             await saveImage({
-                width: width * EXTRA_SCALE,
-                height: height * EXTRA_SCALE,
+                width: size.width * scale,
+                height: size.height * scale,
                 style: {
-                    transform: `scale(${scale * EXTRA_SCALE})`,
+                    transform: `scale(${scale})`,
                     transformOrigin: 'top left',
                 }
             })
