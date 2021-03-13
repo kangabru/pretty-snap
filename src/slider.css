@@ -1,0 +1,60 @@
+/* Styles for the slider input in the Pretty Background app.
+*
+* NOTE:
+* - Psuedo element styles must be defined separately or else they'll break on chrome.
+* - We use Tailwind to apply a common base class to avoid duplicating code.
+*/
+
+.slider-track {
+    @apply appearance-none w-full h-2 cursor-pointer bg-gray-200 rounded-full border-transparent text-transparent;
+}
+
+.slider-thumb {
+    @apply h-6 w-6 -mt-2 bg-primary border-white border-2 border-solid ring-opacity-40 ring-primary-dark;
+    @apply appearance-none cursor-pointer rounded-full transition;
+}
+
+.slider-thumb-hover {
+    @apply bg-primary-dark;
+}
+
+.slider-thumb-focus {
+    @apply ring-4;
+}
+
+/* Base */
+.slider {
+    @apply appearance-none outline-none;
+}
+
+/* Track */
+.slider::-moz-range-track {
+    @apply slider-track;
+}
+.slider::-webkit-slider-runnable-track {
+    @apply slider-track;
+}
+
+/* Thumb */
+.slider::-moz-range-thumb {
+    @apply slider-thumb;
+}
+.slider::-webkit-slider-thumb {
+    @apply slider-thumb;
+}
+
+/* Thumb hover */
+.slider:hover::-moz-range-thumb {
+    @apply slider-thumb-hover;
+}
+.slider:hover::-webkit-slider-thumb {
+    @apply slider-thumb-hover;
+}
+
+/* Thumb focus */
+.slider:focus::-moz-range-thumb {
+    @apply slider-thumb-focus;
+}
+.slider:focus::-webkit-slider-thumb {
+    @apply slider-thumb-focus;
+}
