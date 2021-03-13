@@ -4,9 +4,17 @@ import mergeRefs from 'react-merge-refs';
 import { delay } from '../misc/utils';
 
 /**
+ * This file handles the core export logic via 'download' and 'copy' actions.
+ *
+ * The core iamge logic works by using the 'dom-to-image' library which exports a DOM node into an image.
+ * To export the image we take a DOM node (i.e. a react component) and pass the ref to the library.
+ * We can render the image to any size so we apply a final scale so that image resolution isn't limited by the screen size.
+ */
+
+/**
  * @param scale - The amount to scale the export node by.
- * @param width - The export image width.
- * @param height - The export image height.
+ * @param width - The client component width which will be scaled.
+ * @param height - The client component height which will be scaled.
  */
 export type ExportSize = { scale: number, width: number, height: number }
 
@@ -15,9 +23,9 @@ export type ExportOptions = { run: () => void, state: ExportState, supported: bo
 
 export enum ExportState {
     idle,
-    loading, //
-    success, // For a couple seconds after success
-    error, // On error
+    loading,
+    success, // Allows us to show a tick for a bit after export
+    error,
 }
 
 const EXTRA_SCALE = 1
@@ -66,6 +74,10 @@ function useExportImage(size: ExportSize, saveImage: (o: Dom2ImgOptions) => void
         try {
             setSaveState(ExportState.loading)
             await delay(500)
+
+            // We scale the component to match our target image size.
+            // We can also apply an extra scale if we have super high resolution or quality.
+            // https://github.com/tsayen/dom-to-image/issues/69#issuecomment-486146688
             const scale = size.scale * EXTRA_SCALE
             await saveImage({
                 width: size.width * scale,
@@ -75,6 +87,7 @@ function useExportImage(size: ExportSize, saveImage: (o: Dom2ImgOptions) => void
                     transformOrigin: 'top left',
                 }
             })
+
             setSaveState(ExportState.success)
             setTimeout(() => setSaveState(ExportState.idle), 1000) // Hide tick in a bit but continue the promise
         } catch (error) {

@@ -17,17 +17,22 @@ import Viewer from './viewer';
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
+    // This is the user's imported image
     const image = useOptionsStore(s => s.image)
     const setImage = useCallback((image: ForegroundImage) => useOptionsStore.setState({ image }), [])
+
+    // Assume they're editing if they've added an image but haven't exported it
+    useWarningOnClose(!!image)
     const onExport = useCallback(() => setWarningOnClose(false), [])
 
-    useWarningOnClose(!!image) // Assume they're editing if they've add an image
+    return <ExportWrapper onExport={onExport} exportWidth={image?.width} exportHeight={image?.width}
 
-    return <ExportWrapper exportWidth={image?.width} exportHeight={image?.width} onExport={onExport}
-
+        // The visible component the user interacts with
         renderClient={
             ({ ref, download, copy }) => (
                 <div class="col w-full space-y-6">
+
+                    {/* The image compositor where the user imports an image and draws annotations */}
                     <section ref={ref} style={{ borderRadius: OUTER_BORDER_RADIUS }}
                         class="max-w-screen-md block w-full mx-auto overflow-hidden shadow-md">
                         {image
@@ -37,13 +42,16 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
                                 contentProps={{ "class": "bg-white rounded-t-lg" }} />}
                     </section>
 
+                    {/* Render controls like export buttons etc */}
                     {image && children({ download, copy })}
                 </div>
             )}
 
+        // An invisible component that will be exported as an image
         renderExport={
             ({ ref, width, height }) => (
                 <div ref={ref as any}>
+                    {/* Lock the image size otherwise it will scale on export */}
                     <Image style={{ width, height }} />
                     <Viewer />
                 </div>
@@ -64,6 +72,7 @@ function ViewerEditor() {
     </section>
 }
 
+/** Renders the imported image rendered behind annotations */
 function Image({ style }: CssStyle) {
     const image = useOptionsStore(s => s.image)
     return <img src={image?.src} class="w-full h-full" style={style} />
