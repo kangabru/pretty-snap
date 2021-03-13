@@ -1,75 +1,101 @@
 import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
-import useMeasure from 'react-use-measure';
 import { DropZoneWrap } from '../../../common/components/drop-zone';
+import ExportWrapper from '../../../common/components/export';
 import ImportDetails from '../../../common/components/import-info';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
-import useExport, { Exports } from '../../../common/hooks/use-export';
+import { Exports } from '../../../common/hooks/use-export';
 import { setWarningOnClose, useWarningOnClose } from '../../../common/hooks/use-misc';
-import useRenderBorderRadius from '../../../common/hooks/use-round-corners';
 import { ChildrenWithProps, CssStyle, ForegroundImage } from '../../../common/misc/types';
-import { getRenderScale, join } from '../../../common/misc/utils';
+import { join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useGetSizeBackground } from './use-comp-styles';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useCompositionStyles, useGetSizeBackground } from './use-comp-styles';
 
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
-    const [width, height] = useGetSizeBackground()
-    const [ref, download, copy] = useExport(width, height, () => {
-        setWarningOnClose(false)
+
+    // Well render the image at the same size as the imported image + background padding
+    const [exportWidth, exportHeight] = useGetSizeBackground()
+
+    const imageFg = useOptionsStore(s => s.foreground) // the user's imported image
+    const imageBg = useOptionsStore(s => s.backgroundImage) // an unsplash image (if selected)
+    const pattern = useOptionsStore(s => s.backgroundPattern)
+    const importImage = useCallback((foreground: ForegroundImage) => useOptionsStore.setState({ foreground }), [])
+
+    // Assume they're editing if they've added an image but haven't exported it
+    useWarningOnClose(!!imageFg)
+
+    const onExport = useCallback(() => {
+        setWarningOnClose(false) // Turn off warnings once they've exported something
 
         // Trigger 'download' call as required by the API guidelines
         const settings = useOptionsStore.getState()
 
         // eslint-disable-next-line no-console
         settings.backgroundImage && fetch(urls.apiUnsplashUse, { method: "POST", body: getImageSrcDownload(settings.backgroundImage) }).catch(console.error)
-    })
+    }, [])
 
-    // Handle foreground inputs
-    const image = useOptionsStore(s => s.backgroundImage)
-    const pattern = useOptionsStore(s => s.backgroundPattern)
-    const foreground = useOptionsStore(s => s.foreground)
-    const setForeground = useCallback((foreground: ForegroundImage) => useOptionsStore.setState({ foreground }), [])
+    const backgroundClasses = imageBg ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
 
-    useWarningOnClose(!!foreground) // Assume they're editing if they've add an image
+    return <ExportWrapper {...{ exportWidth, exportHeight, onExport }}
 
-    // Get the styles for the preview and hidden render components
-    const [refCont, { width: contWidth }] = useMeasure()
-    const [stylesScreen, stylesRender] = useAnimatedCompositionStyles(contWidth)
+        // The visible component the user interacts with
+        renderClient={
+            ({ ref, width, height, download, copy }) => (
+                <div class="col w-full space-y-6">
 
-    // Get the outer border radius as the user can set the settings to render the image with transparent corners
-    const outerRadiusRender = useRenderBorderRadius(getRenderScale(contWidth, stylesRender.outer?.width as number))
+                    {/* The image compositor where the user imports an image and views the composition */}
+                    <Composition {...{ width, height }}>
+                        {({ stylesAnim }) => (
+                            <animated.section ref={ref} style={{ ...stylesAnim.outer, borderRadius: OUTER_BORDER_RADIUS }}
+                                className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
 
-    const backgroundClasses = image ? CLASSES_OUTER_IMAGE : join(CLASSES_OUTER_PATTERN, pattern?.bgColour)
+                                <DropZoneWrap setImage={importImage} title="Add a pretty background to your screenshots">
+                                    {innerProps => imageFg?.src
+                                        ? <Image style={stylesAnim.inner as any} />
+                                        : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesAnim.inner}>
+                                            <ImportDetails {...innerProps} title="Add a pretty background to your screenshots" />
+                                        </animated.div>}
+                                </DropZoneWrap>
 
-    return <div class="col w-full space-y-6">
-        {/* Renders the preview */}
-        <animated.section ref={refCont as any} style={{ ...stylesScreen.outer, borderRadius: OUTER_BORDER_RADIUS }}
-            className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
-            <DropZoneWrap setImage={setForeground} title="Add a pretty background to your screenshots">
-                {innerProps => foreground?.src
-                    ? <Image style={stylesScreen.inner as any} />
-                    : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesScreen.inner}>
-                        <ImportDetails {...innerProps} title="Add a pretty background to your screenshots" />
-                    </animated.div>}
-            </DropZoneWrap>
-        </animated.section>
+                            </animated.section>
+                        )}
+                    </Composition>
 
-        {/** A hacky hidden element used by dom-to-image to render the image.
-         * We do this so we can set the image size exactly and render consistently on different browsers. */}
-        {foreground && <div class="hidden">
-            <section ref={ref} class={backgroundClasses} style={{ ...stylesRender.outer, borderRadius: outerRadiusRender } as any}>
-                <Image style={stylesRender.inner as any} />
-            </section>
-        </div>}
+                    {/* Render controls like export buttons etc */}
+                    {imageFg && children({ download, copy })}
+                </div>
+            )}
 
-        {foreground && children({ download, copy })}
-    </div>
+        // An invisible component that will be exported as an image
+        renderExport={
+            ({ ref, width, height }) => (
+                <Composition {...{ width, height }}>
+                    {({ styles }) => (
+                        <div ref={ref as any} class={backgroundClasses} style={{ ...styles.outer, width, height }}>
+                            <Image style={styles.inner} />
+                        </div>
+                    )}
+                </Composition>
+            )}
+    />
 }
 
+/** This component gets the styles (like padding and borders) based on the selected image composition settings.
+ * @returns The styles in two formats:
+ *     - Raw styles that can be passed directly to an HTMl element
+ *     - Animated styles that must be passed to a react-spring animated element
+ */
+function Composition({ children, width, height }: ChildrenWithProps<any> & { width: number, height: number }) {
+    const styles = useCompositionStyles(width, height)
+    const stylesAnim = useAnimatedCompositionStyles(styles)
+    return children({ styles, stylesAnim })
+}
+
+/** Renders the imported 'foreground' image. */
 function Image({ style }: CssStyle) {
     const image = useOptionsStore(s => s.foreground)
     return <animated.img src={image?.src} alt="Screenshot" className={CLASSES_INNER} style={style as any} />
