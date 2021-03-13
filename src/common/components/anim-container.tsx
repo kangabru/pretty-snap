@@ -11,9 +11,7 @@ export default function AnimContainer({ show, config, class: cls, style, childre
     const rowTransition = useTransition(show ?? true, null, config)
 
     return rowTransition.map(({ item, props }) => item && (
-        <animated.section style={{ ...props, ...style as any }} className={join(cls)}>
-            {children}
-        </animated.section>
+        <animated.div style={{ ...props, ...style as any }} className={join(cls)}>{children}</animated.div>
     )) as any
 }
 

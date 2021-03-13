@@ -33,7 +33,8 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
                 <div class="col w-full space-y-6">
 
                     {/* The image compositor where the user imports an image and draws annotations */}
-                    <section ref={ref} style={{ borderRadius: OUTER_BORDER_RADIUS }}
+                    <section aria-label="Image compositor" ref={ref}
+                        style={{ borderRadius: OUTER_BORDER_RADIUS }}
                         class="max-w-screen-md block w-full mx-auto overflow-hidden shadow-md">
                         {image
                             ? <ViewerEditor />
@@ -65,7 +66,7 @@ function ViewerEditor() {
     const isEditTool = useAnnotateStore(s => s.style.shape) === Shape.Mouse
     const isEditing = editId || isEditTool
 
-    return <section class="relative">
+    return <section class="relative" aria-label="Image and annotations">
         <Image />
         <Viewer hideEditing />
         {isEditing ? <Editor /> : <Dragger />}

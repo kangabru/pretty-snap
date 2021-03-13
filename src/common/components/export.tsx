@@ -63,7 +63,8 @@ export default function ExportWrapper(props: ExportWrapperProps) {
         {/* This component will be scaled up and rendered into the final image */}
         <div class="hidden">
             <div ref={exportRef as any}>
-                <section class="overflow-hidden" style={{ width, height, borderRadius: exportBorderRadius }}>
+                <section aria-label="Image export elements"
+                    class="overflow-hidden" style={{ width, height, borderRadius: exportBorderRadius }}>
                     {props.renderExport({ ref: exportRef, width, height })}
                 </section>
             </div>

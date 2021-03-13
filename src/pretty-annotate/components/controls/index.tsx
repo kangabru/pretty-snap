@@ -21,7 +21,8 @@ export default function Controls(props: Exports) {
     const exports = hasEdits && <ButtonRowWithAnim><ExportButtonGroup {...props} /></ButtonRowWithAnim>
 
     return <>
-        <section class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-y-3 sm:space-y-0 sm:space-x-3 z-10">
+        <section aria-label="Annotation controls"
+            class="col sm:flex-row items-center justify-center max-w-xl w-full mx-auto space-y-3 sm:space-y-0 sm:space-x-3 z-10">
 
             {isWide && history}
 

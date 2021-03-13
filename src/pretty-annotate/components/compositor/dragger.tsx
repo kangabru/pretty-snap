@@ -19,7 +19,8 @@ const clickTypes = new Set([Shape.Counter, Shape.Text])
 export default function Dragger() {
     const style = useAnnotateStore(s => s.style)
     const useClick = clickTypes.has(style.shape)
-    return <section class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
+    return <section aria-label="Annotation edit pane"
+        class={join("absolute inset-0", useClick ? "cursor-pointer" : "cursor-crosshair")}>
         <DragEdits />
     </section>
 }

@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { h } from 'preact';
 import { FadeInContainer } from '../../../common/components/anim-container';
 import { ExportButtons, ExportError } from '../../../common/components/export-buttons';
 import { Exports } from '../../../common/hooks/use-export';
@@ -9,7 +9,7 @@ import PositionButtonGroup from './positions';
 /** Renders the image compositional control component. */
 export default function Controls(props: Exports) {
     const hasImage = !!useOptionsStore(s => s.foreground)
-    return <>
+    return <section aria-label="Image controls and export" class="space-y-20">
         <ExportError {...props} />
         <FadeInContainer class="col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-8 p-3 rounded-lg bg-white shadow-md">
             <PositionButtonGroup />
@@ -20,7 +20,7 @@ export default function Controls(props: Exports) {
                 <ExportButtons {...props} notReady={!hasImage} class="outline-primary" />
             </div>
         </FadeInContainer>
-    </>
+    </section>
 }
 
 function PaddingSlider() {

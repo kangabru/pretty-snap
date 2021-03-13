@@ -119,7 +119,7 @@ function ModalPortal(_: ModalPortalProps, modalRef: Ref<HTMLElement>) {
 
 export function FadeInModalContainer({ show, children }: Children & { show: boolean, }) {
     const rowTransition = useSpring({ opacity: show ? 1 : 0 })
-    return <animated.section style={rowTransition} className={join(!show && "pointer-events-none")}>{children}</animated.section>
+    return <animated.section aria-aria-label="Controls modal" style={rowTransition} className={join(!show && "pointer-events-none")}>{children}</animated.section>
 }
 
 function Triangle() {

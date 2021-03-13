@@ -30,7 +30,7 @@ function PrettySnap() {
 
 function AppSelector() {
     return <>
-        <section class="flex-1 col justify-center space-y-5">
+        <section class="flex-1 col justify-center space-y-5" aria-label="App selector">
             <h2 class="text-2xl text-center">
                 <span>Make your screenshots look</span>
                 <svg class="inline w-10 h-10 mx-1 -mt-3 text-orange-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>
@@ -38,11 +38,11 @@ function AppSelector() {
             </h2>
             <div class="row flex-wrap justify-center items-center text-center text-4xl font-cursive">
                 <a href={routes.background} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
-                    <img src={srcBackground} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
+                    <img src={srcBackground} alt="Pretty Background cover image" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
                     <span class="group-hover:underline">Pretty Background</span>
                 </a>
                 <a href={routes.annotate} class="col w-full max-w-md space-y-3 group focus:outline-none m-5">
-                    <img src={srcAnnotate} alt="Background app cover" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
+                    <img src={srcAnnotate} alt="Pretty Annotate cover image" class="rounded-md overflow-hidden shadow outline-primary group-focus:ring-4 group-hover:ring-4 pointer-events-none" />
                     <span class="group-hover:underline">Pretty Annotate</span>
                 </a>
             </div>
@@ -90,7 +90,7 @@ function Footer() {
 }
 
 function Shortcuts() {
-    return <section class="hidden sm:flex flex-col items-center">
+    return <section class="hidden sm:flex flex-col items-center" aria-label="Shortcut information">
         <h2 class="text-2xl">Quickly screenshot an area:</h2>
         <div class="row justify-center flex-wrap text-gray-500">
             <ShortcutGroup title="Windows" href="https://www.bloggingtriggers.com/quickly-take-screenshot-windows/">
@@ -120,7 +120,7 @@ function Shortcuts() {
 
 function ShortcutGroup({ title, href, children }: Children & { title: string, href: string }) {
     return <a class="col mx-6 my-2 p-2 space-y-3 group rounded outline-primary" href={href}>
-        <span class="group-hover:underline text-blue-500">{title}</span>
+        <span class="group-hover:underline text-blue-600">{title}</span>
         <div class="flex items-center space-x-2">{children}</div>
     </a>
 }

@@ -50,7 +50,8 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
                     {/* The image compositor where the user imports an image and views the composition */}
                     <Composition {...{ width, height }}>
                         {({ stylesAnim }) => (
-                            <animated.section ref={ref} style={{ ...stylesAnim.outer, borderRadius: OUTER_BORDER_RADIUS }}
+                            <animated.section aria-label="Image compositor" ref={ref}
+                                style={{ ...stylesAnim.outer, borderRadius: OUTER_BORDER_RADIUS }}
                                 className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
 
                                 <DropZoneWrap setImage={importImage} title="Add a pretty background to your screenshots">

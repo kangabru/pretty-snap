@@ -11,9 +11,9 @@ export default function Viewer({ hideEditing }: { hideEditing?: boolean }) {
     const ids = useAnnotateStore(s => s.ids)
     const editingId = useAnnotateStore(s => s.editId)
 
-    return <section class="absolute inset-0">
+    return <div class="absolute inset-0">
         {ids.map(id => hideEditing && editingId === id ? null : <Annotation key={id} id={id} />)}
-    </section>
+    </div>
 }
 
 function Annotation({ id }: { id: string }) {

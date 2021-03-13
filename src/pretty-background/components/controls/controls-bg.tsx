@@ -24,14 +24,16 @@ export default function BackgroundControls() {
 
 
     const optionClass = "flex-1 mx-5 pb-2 border-b-2 focus:underline outline-none focus:outline-none transition"
-    return <FadeInContainer class="w-full max-w-screen-lg bg-white shadow-md p-5 space-y-3 rounded-lg">
+    return <FadeInContainer class="w-full max-w-screen-lg">
+        <section aria-label="Image background selector" class="w-full bg-white shadow-md p-5 space-y-3 rounded-lg">
 
-        <div class="grid grid-cols-2">
-            <button onClick={switchScreen(Screen.Pattern)} class={join(optionClass, screen == Screen.Pattern ? "border-primary-light" : "border-transparent")}>Pattern</button>
-            <button onClick={switchScreen(Screen.Image)} class={join(optionClass, screen == Screen.Image ? "border-primary-light" : "border-transparentn")}>Image</button>
-        </div>
+            <div class="grid grid-cols-2">
+                <button onClick={switchScreen(Screen.Pattern)} class={join(optionClass, screen == Screen.Pattern ? "border-primary-light" : "border-transparent")}>Pattern</button>
+                <button onClick={switchScreen(Screen.Image)} class={join(optionClass, screen == Screen.Image ? "border-primary-light" : "border-transparentn")}>Image</button>
+            </div>
 
-        {screen == Screen.Image && <ImageSelector />}
-        {screen == Screen.Pattern && <PatternSelector />}
+            {screen == Screen.Image && <ImageSelector />}
+            {screen == Screen.Pattern && <PatternSelector />}
+        </section>
     </FadeInContainer>
 }
