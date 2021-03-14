@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'preact/hooks';
 import useMeasure from 'react-use-measure';
 import { ChildrenWithProps } from '../../../common/misc/types';
 import { Bounds, Position } from '../../misc/types';

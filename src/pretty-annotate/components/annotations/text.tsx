@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { SelectableAreaProps } from '.';
 import AnimContainer from '../../../common/components/anim-container';
 import useDevMode from '../../../common/hooks/use-dev-mode';

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useCallback } from 'react';
+import { useCallback } from 'preact/hooks';
 import useStoredSettings, { SettingRenderTransparentCorners, SettingRoundedImageCorners, StoredSetting } from '../hooks/use-stored-settings';
 
 function SettingToggle({ setting, text }: { setting: StoredSetting, text: string }) {

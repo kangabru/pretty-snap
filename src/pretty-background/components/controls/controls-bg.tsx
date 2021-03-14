@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'preact/hooks';
 import { FadeInContainer } from '../../../common/components/anim-container';
 import { join } from '../../../common/misc/utils';
 import useUnsplashStore from '../../stores/unsplash';

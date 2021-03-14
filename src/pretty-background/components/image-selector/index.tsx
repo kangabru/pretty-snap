@@ -1,6 +1,5 @@
 import { Fragment, h } from 'preact';
-import { useRef } from 'preact/hooks';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useChildNavigate } from '../../../common/hooks/use-child-nav';
 import { join, srcToUrl } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';

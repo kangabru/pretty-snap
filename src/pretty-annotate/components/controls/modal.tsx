@@ -1,6 +1,6 @@
 import { createContext, Fragment, h } from 'preact';
-import { createPortal, forwardRef, Ref, useContext, useEffect, useRef } from 'preact/compat';
-import { useState } from 'react';
+import { createPortal, forwardRef } from 'preact/compat';
+import { Ref, useContext, useEffect, useRef, useState } from 'preact/hooks';
 import { animated, config, useSpring, useTransition } from 'react-spring';
 import { focusActive, getNode, useChildNavigateWithTrigger } from '../../../common/hooks/use-child-nav';
 import { useDocumentListener } from '../../../common/hooks/use-misc';

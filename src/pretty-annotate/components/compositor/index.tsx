@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useCallback } from 'react';
+import { useCallback } from 'preact/hooks';
 import DropZone from '../../../common/components/drop-zone';
 import ExportWrapper from '../../../common/components/export';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';

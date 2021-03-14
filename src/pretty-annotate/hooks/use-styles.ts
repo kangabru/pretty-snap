@@ -1,5 +1,4 @@
-import { Ref, useRef } from 'preact/hooks';
-import { useLayoutEffect, useState } from 'react';
+import { Ref, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { colors, SHAPE_TRANSPARENT_OPACITY } from '../misc/constants';
 import { Shape, ShapeStyle, StyleOptions, SupportedStyle, supportedStyles } from "../misc/types";
 import useAnnotateStore from "../stores/annotation";

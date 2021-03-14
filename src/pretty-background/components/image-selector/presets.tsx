@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { CSSProperties, useState } from 'react';
+import { useState } from 'preact/hooks';
+import { CSSProperties } from 'react';
 import { animated, useSpring } from 'react-spring';
 import { useChildNavigate } from '../../../common/hooks/use-child-nav';
 import { IsEnter } from '../../../common/misc/keyboard';
