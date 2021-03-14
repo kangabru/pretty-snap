@@ -68,8 +68,8 @@ There are also some similar components in each app.
 
 Core file | Pretty Background | Pretty Annotate
 | :-: | :-: | :-: |
-Compositor | [file link](src/pretty-background/components/compositor/viewer.tsx) | [file link](src/pretty-annotate/components/compositor/index.tsx)
-Controls | [file link](src/pretty-background/components/compositor/controls.tsx) | [file link](src/pretty-annotate/components/controls/index.tsx)
+Compositor | [file link](src/pretty-background/components/compositor/index.tsx) | [file link](src/pretty-annotate/components/compositor/index.tsx)
+Controls | [file link](src/pretty-background/components/controls/index.tsx) | [file link](src/pretty-annotate/components/controls/index.tsx)
 Store | [file link](src/pretty-background/stores/options.ts) | [file link](src/pretty-annotate/stores/annotation.ts)
 
 ---
@@ -106,7 +106,7 @@ This app allows you to add pretty background patterns or images to screenshots. 
 
 Some interesting code details:
 - Patterns are [dynamic SVG strings](src/pretty-background/data/patterns.ts) that can be used as CSS `background-image` properties. By defining them as SVG strings we can change the size and colours dynamically according to the chosen settings.
-- The main [compositor hook](src/pretty-background/components/compositor/hooks.ts) outputs the CSS styles for both the visible and render elements. It must scale the padding and position appropriately because the visible component must shrink in order to fix on screen and match the rendered image.
+- The main [compositor hook](src/pretty-background/components/compositor/use-comp-styles.ts) outputs the CSS styles for both the visible and render elements. It must scale the padding and position appropriately because the visible component must shrink in order to fix on screen and match the rendered image.
 
 ---
 
