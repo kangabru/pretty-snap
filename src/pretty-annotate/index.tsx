@@ -6,7 +6,7 @@ import NotSupportedWarning from '../common/components/not-supported';
 import { ToggleRenderTransparent } from '../common/components/stored-settings';
 import Compositor from './components/compositor';
 import Controls from './components/controls';
-import Shortcuts from './components/shortcuts';
+import Shortcuts, { Command } from './components/shortcuts';
 
 export default function PrettyAnnotate() {
     return <>
@@ -16,6 +16,9 @@ export default function PrettyAnnotate() {
                 <NotSupportedWarning />
                 <Advanced>
                     <div class="col space-y-5">
+                        <p class="text-center">Use the edit tool (<Command text="V" />) to select, move, resize, and delete annotations.</p>
+                        <p class="text-center">All shapes can be activated via their keyboard commands without opening the modal.</p>
+                        <hr class="w-4/5 border-t border-gray-300" />
                         <Shortcuts />
                         <hr class="w-4/5 border-t border-gray-300" />
                         <ToggleRenderTransparent />
