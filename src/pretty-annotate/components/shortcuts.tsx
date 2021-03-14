@@ -1,7 +1,7 @@
 import { Fragment, h } from 'preact';
 
 export default function Shortcuts() {
-    return <div class="overflow-x-auto">
+    return <div class="overflow-x-auto space-y-5">
         <table class="max-w-full mx-auto overflow-x-auto">
             <thead>
                 <td class="px-2 font-semibold">Shortcut</td>
@@ -34,13 +34,15 @@ export default function Shortcuts() {
                     col2={<p class="text-center">Undo</p>} />
 
                 {/* Redo */}
-                <Row
+                <Row rowSpan2={2} rowSpan3={2}
                     col1={<><Ctrl /> + <Command text="Y" /></>}
-                    col2={<p class="text-center">Redo</p>} rowSpan2={2} />
+                    col2={<p class="text-center">Redo</p>}
+                    col3={<p class="w-full text-center">-</p>} />
                 <Row
                     col1={<><Ctrl /> + <Shift /> + <Command text="Z" /></>} />
             </tbody>
         </table>
+        <p>Note that shape commands can be activated without opening the modal.</p>
     </div>
 }
 
