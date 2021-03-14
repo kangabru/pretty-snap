@@ -13,21 +13,7 @@ export const CLASSES_INNER = "relative z-10 shadow-xl transition"
 
 type CompositionStyles = { inner?: CSSProperties, outer?: CSSProperties }
 
-/** This hook handles the composition styling based on the given options the user has selected.
- * It handles styles like the image position, the padding, and general container styles.
- *
- * We also need to style 2 components equally:
- * - The visible preview element that the user can see and interact with
- * - A hidden element used to export the final image
- *
- * These elements need similar but slightly different styles that that viewing and exporting behave as expected.
- */
-export function useCompositionStyles(width: number, height: number): CompositionStyles {
-    const settings = useOptionsStore() // Not this refreshes on every external option update
-    return useStylesPreview(settings, width, height)
-}
-
-/** Like useCompositionStyles but all properties are animated using react-spring. Must be exported with animated components. */
+/** Wraps 'useCompositionStyles' but all properties are animated with react-spring. Must be used with animated components. */
 export function useAnimatedCompositionStyles(styles: CompositionStyles): CompositionStyles {
     const { borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius, ...restStylesClientInner } = styles.inner as CSSProperties
     const animStylesClientInner = useSpring({ borderTopLeftRadius, borderTopRightRadius, borderBottomLeftRadius, borderBottomRightRadius })
@@ -41,10 +27,15 @@ export function useAnimatedCompositionStyles(styles: CompositionStyles): Composi
     }
 }
 
-/** Returns styles for the compositor visible on client.
- * These styles are made to export the iamge on client as it would look when exported.
+/** Handles the composition styling based on the given options the user has selected.
+ * It handles styles like the image position, the padding, and general container styles.
+ *
+ * Two styles are returned:
+ * - The 'inner' container where the imported image is placed
+ * - The 'outer' container which the background is placed
  */
-function useStylesPreview(settings: Settings, width: number, height: number): CompositionStyles {
+export function useCompositionStyles(width: number, height: number): CompositionStyles {
+    const settings = useOptionsStore() // Note this refreshes on every external option update
     const { paddingPerc, position } = settings
 
     const padding = getPadding(width, height, paddingPerc)
@@ -64,18 +55,18 @@ function getPadding(width: number, height: number, paddingPerc: number) {
 
 /** A hook that returns the size of the background image accounting for positional padding.
  * @returns [width, height] of the background image. */
-export function useGetSizeBackground(): [number, number] {
+export function useBackgroundSize(): [number, number] {
     const position = useOptionsStore(s => s.position)
     const foreground = useOptionsStore(s => s.foreground)
     const paddingPerc = useOptionsStore(s => s.paddingPerc)
 
     const width = foreground?.width ?? 0, height = foreground?.height ?? 0
-    return getSizeBackground(width, height, position, paddingPerc)
+    return getBackgroundSize(width, height, position, paddingPerc)
 }
 
 /** Returns the size of the background image accounting for positional padding.
  * @returns [width, height] of the background image. */
-export function getSizeBackground(width: number, height: number, position: number, paddingPerc: number): [number, number] {
+export function getBackgroundSize(width: number, height: number, position: number, paddingPerc: number): [number, number] {
     const padding = getPadding(width, height, paddingPerc)
 
     const shortX = position == Position.Left || position == Position.Right
@@ -84,9 +75,7 @@ export function getSizeBackground(width: number, height: number, position: numbe
     return [width + padding * (shortX ? 1 : 2), height + padding * (shortY ? 1 : 2)]
 }
 
-/** Returns styles for the background properties.
- * @param bgSizeScale - Scales the background svg pattern if a pattern is selected.
- */
+/** Returns styles for the background properties. */
 function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings, bgSizeScale = 1): CSSProperties {
     const backgroundColor = backgroundPattern ? backgroundPattern.bgColour : 'white'
     const pattern = backgroundPattern?.getSrc && backgroundPattern?.getSrc(backgroundPattern)
@@ -98,9 +87,7 @@ function getBackgroundStyles({ backgroundImage, backgroundPattern }: Settings, b
     }
 }
 
-/** Returns styles for fore and background images to position the foreground according to the user selected options.
- * @param scale - Scales the border radius of the inner image
- */
+/** Returns styles for fore and background images to position the foreground according to the selected options. */
 function usePositionStyles(padding: number, position: Position): [CSSProperties, CSSProperties] {
     const useImageBorderRadius = useStoredSettings(s => s[SettingRoundedImageCorners])
     const rad = useImageBorderRadius ? INNER_BORDER_RADIUS : 0

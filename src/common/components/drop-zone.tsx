@@ -8,14 +8,14 @@ type DropZoneProps = CssClass & { setImage: SetImage, title: string | JSX.Elemen
 type DropZoneContentProps = CssStyle & CssClass
 
 export default function DropZone(props: DropZoneProps) {
-    return <DropZoneWrap {...props}>
+    return <DropZoneContainer {...props}>
         {importProps => <ImportDetails {...importProps} />}
-    </DropZoneWrap>
+    </DropZoneContainer>
 }
 
 type InnerDropZoneProps = { isDropping: boolean, isError: boolean, setImage: SetImage, title: string | JSX.Element }
 
-export function DropZoneWrap({ contentProps, ...props }: ChildrenWithProps<InnerDropZoneProps> & DropZoneProps) {
+export function DropZoneContainer({ contentProps, ...props }: ChildrenWithProps<InnerDropZoneProps> & DropZoneProps) {
     const { title, setImage, children } = props
 
     useImagePaste(setImage)

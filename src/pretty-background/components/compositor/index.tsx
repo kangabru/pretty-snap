@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { animated } from 'react-spring';
-import { DropZoneWrap } from '../../../common/components/drop-zone';
+import { DropZoneContainer } from '../../../common/components/drop-zone';
 import ExportWrapper from '../../../common/components/export';
 import ImportDetails from '../../../common/components/import-info';
 import { OUTER_BORDER_RADIUS } from '../../../common/constants';
@@ -12,13 +12,13 @@ import { join } from '../../../common/misc/utils';
 import { urls } from '../../misc/constants';
 import { getImageSrcDownload } from '../../misc/utils';
 import useOptionsStore from '../../stores/options';
-import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useCompositionStyles, useGetSizeBackground } from './use-comp-styles';
+import { CLASSES_INNER, CLASSES_OUTER_IMAGE, CLASSES_OUTER_PATTERN, useAnimatedCompositionStyles, useBackgroundSize, useCompositionStyles } from './use-comp-styles';
 
 /** Renders the main image composition preview component. */
 export default function Compositor({ children }: ChildrenWithProps<Exports>) {
 
     // Well render the image at the same size as the imported image + background padding
-    const [exportWidth, exportHeight] = useGetSizeBackground()
+    const [exportWidth, exportHeight] = useBackgroundSize()
 
     const imageFg = useOptionsStore(s => s.foreground) // the user's imported image
     const imageBg = useOptionsStore(s => s.backgroundImage) // an unsplash image (if selected)
@@ -54,13 +54,13 @@ export default function Compositor({ children }: ChildrenWithProps<Exports>) {
                                 style={{ ...stylesAnim.outer, borderRadius: OUTER_BORDER_RADIUS }}
                                 className={join(backgroundClasses, "inline-block max-w-screen-lg overflow-hidden shadow-md")}>
 
-                                <DropZoneWrap setImage={importImage} title="Add a pretty background to your screenshots">
+                                <DropZoneContainer setImage={importImage} title="Add a pretty background to your screenshots">
                                     {innerProps => imageFg?.src
                                         ? <Image style={stylesAnim.inner as any} />
                                         : <animated.div className={join(CLASSES_INNER, "overflow-hidden bg-white")} style={stylesAnim.inner}>
                                             <ImportDetails {...innerProps} title="Add a pretty background to your screenshots" />
                                         </animated.div>}
-                                </DropZoneWrap>
+                                </DropZoneContainer>
 
                             </animated.section>
                         )}
